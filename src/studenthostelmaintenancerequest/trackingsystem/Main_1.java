@@ -14,7 +14,6 @@ public class Main_1 {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        System.out.println("thank you");
         // TODO code application logic here
     }
     
