@@ -5,7 +5,7 @@
 package studenthostelmaintenancerequest.trackingsystem;
 
 /**
- *
+ * 
  * @author vian
  */
 public class Main_1 {
@@ -14,6 +14,7 @@ public class Main_1 {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        System.out.println("Try");
         // TODO code application logic here
     }
     
