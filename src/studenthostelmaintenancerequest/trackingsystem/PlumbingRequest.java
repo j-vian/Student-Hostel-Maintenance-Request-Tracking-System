@@ -14,7 +14,7 @@ public class PlumbingRequest extends MaintenanceRequest {
         super(requestId, description, priority);
     }
     
-    //processRequest method - Override
+    //processRequest method - polymorphism
     @Override
     public void processRequest() {
         System.out.println("Processing Plumbing Request [ID: " + getRequestId() + "]");
