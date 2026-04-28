@@ -14,7 +14,7 @@ public class FurnitureRequest extends MaintenanceRequest {
         super(requestId, description, priority);
     }
     
-    //processRequest method - Override
+    //processRequest method - polymorphism
     @Override
     public void processRequest() {
         System.out.println("Processing Furniture Request [ID: " + getRequestId() + "]");
