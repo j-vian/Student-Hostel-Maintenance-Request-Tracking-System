@@ -30,32 +30,29 @@ public class Staff extends User {
         this.assignedRequests = new MaintenanceRequest[100]; // max 100 requests
     }
 
-    // ---------- Overridden Abstract Methods ----------
+    //Overridden Abstract Methods
 
-    /** Logs the staff member into the system. */
+    
     @Override
     public void login() {
         System.out.println("Staff " + getName() + " logged in.");
     }
 
-    /** Logs the staff member out of the system. */
+    
     @Override
     public void logout() {
         System.out.println("Staff " + getName() + " logged out.");
     }
 
-    // ---------- Staff-Specific Methods ----------
 
-    /** Assigns a maintenance request to this staff member. */
+    //Assigns a maintenance request to this staff member. 
     public void assignRequest(MaintenanceRequest request) {
         assignedRequests[count] = request;
         count++;
         System.out.println("Request " + request.getRequestId() + " assigned to " + getName() + ".");
     }
 
-    /**
-     * Updates the status of a given request if it belongs to this staff member's assigned list.
-     */
+    //Updates the status of a given request if it belongs to this staff member's assigned list.
     public void updateRequestStatus(String requestId, Status newStatus) {
         // Loop only through filled slots using count, not the full 100
         for (int i = 0; i < count; i++) {
@@ -69,7 +66,7 @@ public class Staff extends User {
         System.out.println("Request " + requestId + " not found in assigned list.");
     }
 
-    /** Displays all maintenance requests assigned to this staff member. */
+    //Displays all maintenance requests assigned to this staff member.
     public void viewAssignedRequests() {
         // Use count to check if any requests have been assigned
         if (count == 0) {
@@ -83,26 +80,25 @@ public class Staff extends User {
         }
     }
 
-    // ---------- Getters ----------
+    // Getters/Setter
 
-    /** Returns the staff member's role. */
     public String getStaffRole() {
         return staffRole;
     }
 
-    /** Returns the array of maintenance requests assigned to this staff member. */
+    //Returns the array of maintenance requests assigned to this staff member.
     public MaintenanceRequest[] getAssignedRequests() {
         return assignedRequests;
     }
 
-    /** Returns the number of requests currently assigned to this staff member. */
+    //Returns the number of requests currently assigned to this staff member. 
     public int getCount() {
         return count;
     }
 
-    // ---------- Setters ----------
+   
 
-    /** Updates the staff member's role. */
+    //Updates the staff member's role. 
     public void setStaffRole(String staffRole) {
         this.staffRole = staffRole;
     }
