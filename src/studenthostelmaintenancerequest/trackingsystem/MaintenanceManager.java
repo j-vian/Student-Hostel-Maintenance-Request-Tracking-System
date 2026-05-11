@@ -43,7 +43,7 @@ public class MaintenanceManager {
     //updateRequestStatus method
     public void updateRequestStatus(String requestId, Status newStatus) {
         for (int i = 0; i < count; i++) {
-            if (requests[i].getRequest().equals(requestId)) {
+            if (requests[i].getRequestId().equals(requestId)) {
                 requests[i].setStatus(newStatus);
                 System.out.println("Request [" + requestId + "] status updated to: " + newStatus);
                 return;
