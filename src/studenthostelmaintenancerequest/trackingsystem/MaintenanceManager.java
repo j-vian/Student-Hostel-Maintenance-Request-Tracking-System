@@ -33,7 +33,8 @@ public class MaintenanceManager {
         for (int i = 0; i < count; i++) {
             if (requests[i].getRequestId().equals(requestId)) {
                 requests[i].setStatus(Status.IN_PROGRESS);
-                System.out.println("Staff [" + staff.getName() + "] assigned to Request " + requestId + "]. Status updated to IN_PROGRESS.");
+                staff.addAssignedRequest(requests[i]);
+                System.out.println("Staff [" + staff.getName() + "] assigned to Request [" + requestId + "]. Status updated to IN_PROGRESS.");
                 return;
             }
         }

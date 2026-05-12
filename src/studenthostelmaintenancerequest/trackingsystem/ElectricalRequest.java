@@ -20,7 +20,7 @@ public class ElectricalRequest extends MaintenanceRequest {
         System.out.println("Processing Electrical Request [ID: " + getRequestId() + "]");
         System.out.println("Issue: " + getDescription());
         System.out.println("Priority: " + getPriority());
-        System.out.println("Action: Dispatching electrcian to inspect and resolve the issue.");
+        System.out.println("Action: Dispatching electrician to inspect and resolve the issue.");
         System.out.println("Status updated to: " + getStatus());
     }
 }

@@ -68,7 +68,7 @@ public class Main {
                     System.out.println("Select Student:");
                     System.out.println("  1. " + student1.getName() + " (Room: " + student1.getRoomNumber() + ")");
                     System.out.println("  2. " + student2.getName() + " (Room: " + student2.getRoomNumber() + ")");
-                    System.out.println("  Enter choice (1 or 2): ");
+                    System.out.print("  Enter choice (1 or 2): ");
                     String studentChoice = sc.nextLine().trim();
                     
                     Student selectedStudent;

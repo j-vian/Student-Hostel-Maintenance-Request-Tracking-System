@@ -19,7 +19,7 @@ public class Staff extends User {
     // Private attributes - access through getters/setters only
     private String staffRole;
     private MaintenanceRequest[] assignedRequests;
-    private int count = 0; // tracks how many requests have been assigned
+    private int count; // tracks how many requests have been assigned
 
     /**
      * Constructor initialises all Staff attributes including inherited ones.
@@ -28,42 +28,21 @@ public class Staff extends User {
         super(userId, name, email); // Call parent User constructor
         this.staffRole        = staffRole;
         this.assignedRequests = new MaintenanceRequest[100]; // max 100 requests
-    }
-
-    //Overridden Abstract Methods
-
-    
-    @Override
-    public void login() {
-        System.out.println("Staff " + getName() + " logged in.");
-    }
-
-    
-    @Override
-    public void logout() {
-        System.out.println("Staff " + getName() + " logged out.");
-    }
-
-
-    //Assigns a maintenance request to this staff member. 
-    public void assignRequest(MaintenanceRequest request) {
-        assignedRequests[count] = request;
-        count++;
-        System.out.println("Request " + request.getRequestId() + " assigned to " + getName() + ".");
+        this.count = 0; //set count to 0 by default
     }
 
     //Updates the status of a given request if it belongs to this staff member's assigned list.
-    public void updateRequestStatus(String requestId, Status newStatus) {
+    public void updateRequestStatus(String requestId, Status status) {
         // Loop only through filled slots using count, not the full 100
         for (int i = 0; i < count; i++) {
             if (assignedRequests[i].getRequestId().equals(requestId)) {
-                assignedRequests[i].setStatus(newStatus);
-                System.out.println("Request " + requestId + " status updated to " + newStatus + ".");
+                assignedRequests[i].setStatus(status);
+                System.out.println("Request " + requestId + " status updated to " + status + ".");
                 return;
             }
         }
         // If no match was found, notify the user
-        System.out.println("Request " + requestId + " not found in assigned list.");
+        System.out.println("Request " + requestId + " not found in " + getName() + "'s assigned list.");
     }
 
     //Displays all maintenance requests assigned to this staff member.
@@ -101,5 +80,13 @@ public class Staff extends User {
     //Updates the staff member's role. 
     public void setStaffRole(String staffRole) {
         this.staffRole = staffRole;
+    }
+    
+    //addAssignedRequest method - To add the request to the Staff object's assignedRequests array
+    public void addAssignedRequest(MaintenanceRequest request) {
+        if (count < assignedRequests.length) {
+            assignedRequests[count] = request;
+            count++;
+        }
     }
 }

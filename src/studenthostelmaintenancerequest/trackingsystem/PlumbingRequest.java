@@ -18,7 +18,7 @@ public class PlumbingRequest extends MaintenanceRequest {
     @Override
     public void processRequest() {
         System.out.println("Processing Plumbing Request [ID: " + getRequestId() + "]");
-        System.out.println("Description: " + getDescription());
+        System.out.println("Issue: " + getDescription());
         System.out.println("Priority: " + getPriority());
         System.out.println("Action: Dispatcing plumber to inspect and resolve the issue.");
         System.out.println("Statust updated to: " + getStatus());

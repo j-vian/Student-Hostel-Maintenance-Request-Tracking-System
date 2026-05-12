@@ -25,15 +25,14 @@ public abstract class User {
     // Abstract Methods 
  
     
-    public abstract void login();
- 
-    
-    public abstract void logout();
- 
-    
-    public String getUserId() {
-        return userId;
+    public void login() {
+        System.out.println(name + " (ID: " + userId + ") has logged in.");
     }
+
+    public void logout() {
+        System.out.println(name + " (ID: " + userId + ") has logged out.");
+    }
+
  
     
     public String getName() {
