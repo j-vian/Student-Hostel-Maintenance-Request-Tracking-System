@@ -231,7 +231,7 @@ public class Main {
                     System.out.println("Select Staff Member:");
                     System.out.println("  1. " + staff1.getName() + " (" + staff1.getStaffRole() + ")");
                     System.out.println("  2. " + staff2.getName() + " (" + staff2.getStaffRole() + ")");
-                    System.out.println("  Enter choice (1 or 2): ");
+                    System.out.print("  Enter choice (1 or 2): ");
                     String staffChoice = sc.nextLine().trim();
                     
                     Staff selectedStaff;
