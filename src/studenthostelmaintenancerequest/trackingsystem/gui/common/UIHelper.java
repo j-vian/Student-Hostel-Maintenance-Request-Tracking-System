@@ -219,7 +219,10 @@ public final class UIHelper {
         }
     }
 
-    /** @deprecated Use {@link #styleAuthInstructionLine(JLabel...)} for reliable centered lines. */
+    /**
+     * @deprecated Use {@link #styleAuthInstructionLine(JLabel...)} for reliable centered lines.
+     */
+    @Deprecated
     public static void styleAuthInstruction(JLabel lblInstruction, int contentWidth) {
         String text = lblInstruction.getText()
                 .replace("<html>", "")

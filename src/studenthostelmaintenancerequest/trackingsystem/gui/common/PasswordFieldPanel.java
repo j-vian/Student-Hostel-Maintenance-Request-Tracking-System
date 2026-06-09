@@ -8,6 +8,11 @@ public class PasswordFieldPanel extends JPanel {
 
     private final PlaceholderPasswordField passwordField;
 
+    /** No-arg constructor required by the NetBeans Form Editor at design time. */
+    public PasswordFieldPanel() {
+        this("Placeholder");
+    }
+
     public PasswordFieldPanel(String placeholder) {
         this(placeholder, UIHelper.FIELD_WIDTH);
     }

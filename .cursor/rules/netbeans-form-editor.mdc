@@ -26,7 +26,7 @@ In the `.form` file, keep `JavaCodeGenerator_CreateCodeCustom` so generated `ini
           value="new PlaceholderTextField(&quot;Enter your email&quot;)"/>
 ```
 
-Apply this pattern to all custom Swing beans: `PlaceholderTextField`, `PlaceholderPasswordField`, `GradientBackgroundPanel`, `LogoPanel`, `CardPanel`, etc.
+Apply this pattern to all custom Swing beans: `PlaceholderTextField`, `PlaceholderPasswordField`, `PasswordFieldPanel`, `GradientBackgroundPanel`, `LogoPanel`, `CardPanel`, etc.
 
 ## `.form` layout metadata must be complete
 
