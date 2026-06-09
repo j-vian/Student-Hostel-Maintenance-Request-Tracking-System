@@ -28,7 +28,7 @@ public class SignUpFrame extends javax.swing.JFrame {
                 lblFirstName, lblLastName, lblUsername, lblUserId, lblEmail,
                 lblPassword, lblConfirmPassword, lblRole, lblRoomNumber, lblExpertise);
         UIHelper.styleSignupHalfTextField(txtFirstName, txtLastName);
-        UIHelper.styleSignupTextField(txtUsername, txtUserId, txtEmail, txtRoomNumber);
+        UIHelper.styleSignupTextField(txtUsername, txtUserId, txtEmail, txtRoomNumber, txtOtherExpertise);
         UIHelper.styleSignupHalfPasswordField(txtPassword, txtConfirmPassword);
         UIHelper.styleSignupComboBox(cmbRole, cmbExpertise);
 
@@ -36,6 +36,7 @@ public class SignUpFrame extends javax.swing.JFrame {
         txtRoomNumber.setVisible(false);
         lblExpertise.setVisible(false);
         cmbExpertise.setVisible(false);
+        txtOtherExpertise.setVisible(false);
 
         UIHelper.centerCardInScrollPane(scrollMain, pnlScrollHost, pnlCard);
 
@@ -52,6 +53,25 @@ public class SignUpFrame extends javax.swing.JFrame {
         txtRoomNumber.setVisible(student);
         lblExpertise.setVisible(staff);
         cmbExpertise.setVisible(staff);
+        updateOtherExpertiseField();
+        refreshCardLayout();
+    }
+
+    private void cmbExpertiseActionPerformed(java.awt.event.ActionEvent evt) {
+        updateOtherExpertiseField();
+        refreshCardLayout();
+    }
+
+    private void updateOtherExpertiseField() {
+        boolean staff = "Staff".equals(cmbRole.getSelectedItem());
+        boolean other = "Other".equals(cmbExpertise.getSelectedItem());
+        txtOtherExpertise.setVisible(staff && other);
+        if (!other) {
+            txtOtherExpertise.setText("");
+        }
+    }
+
+    private void refreshCardLayout() {
         pnlCard.revalidate();
         pnlCard.repaint();
         UIHelper.refreshScrollHostSize(scrollMain, pnlScrollHost, pnlCard);
@@ -95,6 +115,7 @@ public class SignUpFrame extends javax.swing.JFrame {
         txtRoomNumber = new PlaceholderTextField("Room Number");
         lblExpertise = new javax.swing.JLabel();
         cmbExpertise = new javax.swing.JComboBox<>();
+        txtOtherExpertise = new PlaceholderTextField("e.g. Electrician, Plumber");
         btnSignUp = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -143,6 +164,11 @@ public class SignUpFrame extends javax.swing.JFrame {
         lblExpertise.setText("Select Expertise");
 
         cmbExpertise.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select your expertise", "Electrician", "Plumber", "Furniture Tech", "Other" }));
+        cmbExpertise.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbExpertiseActionPerformed(evt);
+            }
+        });
 
         btnSignUp.setText("Sign Up");
         btnSignUp.addActionListener(new java.awt.event.ActionListener() {
@@ -171,6 +197,7 @@ public class SignUpFrame extends javax.swing.JFrame {
                     .addComponent(txtRoomNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblExpertise)
                     .addComponent(cmbExpertise, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtOtherExpertise, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnSignUp, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(pnlCardLayout.createSequentialGroup()
                         .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -235,6 +262,8 @@ public class SignUpFrame extends javax.swing.JFrame {
                 .addComponent(lblExpertise)
                 .addGap(6, 6, 6)
                 .addComponent(cmbExpertise, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(txtOtherExpertise, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(16, 16, 16)
                 .addComponent(btnSignUp, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(40, 40, 40))
@@ -326,6 +355,7 @@ public class SignUpFrame extends javax.swing.JFrame {
     private PlaceholderTextField txtFirstName;
     private PlaceholderTextField txtLastName;
     private PlaceholderPasswordField txtPassword;
+    private PlaceholderTextField txtOtherExpertise;
     private PlaceholderTextField txtRoomNumber;
     private PlaceholderTextField txtUserId;
     private PlaceholderTextField txtUsername;
