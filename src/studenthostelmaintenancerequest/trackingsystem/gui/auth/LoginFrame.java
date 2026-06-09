@@ -4,7 +4,8 @@
  */
 package studenthostelmaintenancerequest.trackingsystem.gui.auth;
 
-import studenthostelmaintenancerequest.trackingsystem.gui.common.LoginCardPanel;
+import studenthostelmaintenancerequest.trackingsystem.gui.common.GradientBackgroundPanel;
+import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderPasswordField;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
@@ -17,34 +18,31 @@ public class LoginFrame extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(LoginFrame.class.getName());
 
-    private LoginCardPanel loginCard;
-
     public LoginFrame() {
         initComponents();
-        buildUi();
+        customizeForm();
     }
 
-    private void buildUi() {
-        UIHelper.setupAuthFrame(this, "Login", true);
+    /**
+     * Fonts, colours, and actions applied after the Form Editor layout is built.
+     */
+    private void customizeForm() {
+        UIHelper.styleLoginFrame(
+                lblTitle1, lblTitle2, lblTitle3, lblTitle4,
+                lblEmail, lblPassword,
+                lblSignUp, lblForgotPassword,
+                btnLogin, txtEmail, txtPassword, pnlCard);
 
-        loginCard = new LoginCardPanel(
-                () -> UIHelper.navigateTo(this, new SignUpFrame()),
-                () -> UIHelper.navigateTo(this, new ForgotPasswordFrame()),
-                () -> {
-                    // Backend login logic will be added later.
-                });
+        UIHelper.addHyperlinkAction(lblSignUp, () -> UIHelper.navigateTo(this, new SignUpFrame()));
+        UIHelper.addHyperlinkAction(lblForgotPassword, () -> UIHelper.navigateTo(this, new ForgotPasswordFrame()));
 
-        UIHelper.mountCenteredCard(this, loginCard);
-        UIHelper.showFrame(this);
-        getRootPane().setDefaultButton(loginCard.getLoginButton());
+        setSize(UIHelper.FRAME_WIDTH, UIHelper.FRAME_HEIGHT);
+        setLocationRelativeTo(null);
+        getRootPane().setDefaultButton(btnLogin);
     }
 
-    public PlaceholderTextField getEmailField() {
-        return loginCard.getEmailField();
-    }
-
-    public PlaceholderPasswordField getPasswordField() {
-        return loginCard.getPasswordField();
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {
+        // Backend login logic will be added later.
     }
 
     /**
@@ -55,8 +53,141 @@ public class LoginFrame extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+
+        pnlBackground = new GradientBackgroundPanel();
+        pnlCard = new javax.swing.JPanel();
+        pnlLogo = new LogoPanel();
+        lblTitle1 = new javax.swing.JLabel();
+        lblTitle2 = new javax.swing.JLabel();
+        lblTitle3 = new javax.swing.JLabel();
+        lblTitle4 = new javax.swing.JLabel();
+        lblEmail = new javax.swing.JLabel();
+        txtEmail = new PlaceholderTextField("Enter your email");
+        lblPassword = new javax.swing.JLabel();
+        txtPassword = new PlaceholderPasswordField("Enter your password");
+        pnlLinks = new javax.swing.JPanel();
+        lblSignUp = new javax.swing.JLabel();
+        lblForgotPassword = new javax.swing.JLabel();
+        btnLogin = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Login");
+        setResizable(true);
+
+        pnlBackground.setOpaque(true);
+
+        pnlCard.setOpaque(true);
+
+        lblTitle1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTitle1.setText("Student Hostel Maintenance");
+
+        lblTitle2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTitle2.setText("Request");
+
+        lblTitle3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTitle3.setText("&");
+
+        lblTitle4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTitle4.setText("Tracking System");
+
+        lblEmail.setText("Email");
+
+        lblPassword.setText("Password");
+
+        pnlLinks.setOpaque(false);
+        pnlLinks.setLayout(new java.awt.BorderLayout(0, 0));
+
+        lblSignUp.setText("No account? Sign Up");
+        pnlLinks.add(lblSignUp, java.awt.BorderLayout.WEST);
+
+        lblForgotPassword.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        lblForgotPassword.setText("Forgot password?");
+        pnlLinks.add(lblForgotPassword, java.awt.BorderLayout.EAST);
+
+        btnLogin.setText("Log In");
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoginActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlCardLayout = new javax.swing.GroupLayout(pnlCard);
+        pnlCard.setLayout(pnlCardLayout);
+        pnlCardLayout.setHorizontalGroup(
+            pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlCardLayout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTitle1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblTitle2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblTitle3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblTitle4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblEmail)
+                    .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblPassword)
+                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlLinks, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlLogo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(40, 40, 40))
+        );
+        pnlCardLayout.setVerticalGroup(
+            pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlCardLayout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addComponent(pnlLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(14, 14, 14)
+                .addComponent(lblTitle1)
+                .addGap(2, 2, 2)
+                .addComponent(lblTitle2)
+                .addGap(2, 2, 2)
+                .addComponent(lblTitle3)
+                .addGap(2, 2, 2)
+                .addComponent(lblTitle4)
+                .addGap(30, 30, 30)
+                .addComponent(lblEmail)
+                .addGap(6, 6, 6)
+                .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(14, 14, 14)
+                .addComponent(lblPassword)
+                .addGap(6, 6, 6)
+                .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
+                .addComponent(pnlLinks, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(22, 22, 22)
+                .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(40, 40, 40))
+        );
+
+        javax.swing.GroupLayout pnlBackgroundLayout = new javax.swing.GroupLayout(pnlBackground);
+        pnlBackground.setLayout(pnlBackgroundLayout);
+        pnlBackgroundLayout.setHorizontalGroup(
+            pnlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlBackgroundLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(pnlCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlBackgroundLayout.setVerticalGroup(
+            pnlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlBackgroundLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(pnlCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnlBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnlBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     /**
@@ -75,9 +206,24 @@ public class LoginFrame extends javax.swing.JFrame {
         }
 
         UIHelper.initApplicationLook();
-        java.awt.EventQueue.invokeLater(() -> new LoginFrame());
+        java.awt.EventQueue.invokeLater(() -> new LoginFrame().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnLogin;
+    private javax.swing.JLabel lblEmail;
+    private javax.swing.JLabel lblForgotPassword;
+    private javax.swing.JLabel lblPassword;
+    private javax.swing.JLabel lblSignUp;
+    private javax.swing.JLabel lblTitle1;
+    private javax.swing.JLabel lblTitle2;
+    private javax.swing.JLabel lblTitle3;
+    private javax.swing.JLabel lblTitle4;
+    private GradientBackgroundPanel pnlBackground;
+    private javax.swing.JPanel pnlCard;
+    private javax.swing.JPanel pnlLinks;
+    private LogoPanel pnlLogo;
+    private PlaceholderPasswordField txtPassword;
+    private PlaceholderTextField txtEmail;
     // End of variables declaration//GEN-END:variables
 }

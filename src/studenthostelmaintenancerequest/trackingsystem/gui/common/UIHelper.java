@@ -14,6 +14,7 @@ import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -21,6 +22,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.plaf.basic.BasicButtonUI;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -85,6 +87,79 @@ public final class UIHelper {
         label.setForeground(AppColors.LABEL);
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
         return label;
+    }
+
+    /**
+     * Applies shared colours and fonts to a login form built in the NetBeans Form Editor.
+     */
+    public static void styleLoginFrame(
+            JLabel lblTitle1, JLabel lblTitle2, JLabel lblTitle3, JLabel lblTitle4,
+            JLabel lblEmail, JLabel lblPassword,
+            JLabel lblSignUp, JLabel lblForgotPassword,
+            JButton btnLogin,
+            PlaceholderTextField txtEmail,
+            PlaceholderPasswordField txtPassword,
+            JPanel pnlCard) {
+
+        lblTitle1.setFont(AppFonts.loginHeader());
+        lblTitle2.setFont(AppFonts.loginHeader());
+        lblTitle3.setFont(AppFonts.loginHeader());
+        lblTitle4.setFont(AppFonts.loginHeader());
+        lblTitle1.setForeground(AppColors.PRIMARY);
+        lblTitle2.setForeground(AppColors.PRIMARY);
+        lblTitle3.setForeground(AppColors.PRIMARY);
+        lblTitle4.setForeground(AppColors.PRIMARY);
+
+        lblEmail.setFont(AppFonts.label());
+        lblPassword.setFont(AppFonts.label());
+        lblEmail.setForeground(AppColors.LABEL);
+        lblPassword.setForeground(AppColors.LABEL);
+
+        lblSignUp.setText("<html><u>No account? Sign Up</u></html>");
+        lblForgotPassword.setText("<html><u>Forgot password?</u></html>");
+        lblSignUp.setFont(AppFonts.link());
+        lblForgotPassword.setFont(AppFonts.link());
+        lblSignUp.setForeground(AppColors.PRIMARY);
+        lblForgotPassword.setForeground(AppColors.PRIMARY);
+        lblSignUp.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        lblForgotPassword.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        fixSize(txtEmail, FIELD_WIDTH, FIELD_HEIGHT);
+        fixSize(txtPassword, FIELD_WIDTH, FIELD_HEIGHT);
+        stylePrimaryButton(btnLogin);
+
+        pnlCard.setBackground(AppColors.CARD);
+        pnlCard.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(AppColors.BORDER, 1, true),
+                new EmptyBorder(0, 0, 0, 0)));
+    }
+
+    public static void stylePrimaryButton(JButton button) {
+        button.setFont(AppFonts.bodyBold());
+        button.setForeground(AppColors.BUTTON_TEXT);
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
+        button.setContentAreaFilled(false);
+        button.setOpaque(false);
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        button.setUI(PrimaryButtonUI.INSTANCE);
+        fixSize(button, FIELD_WIDTH, BUTTON_HEIGHT);
+    }
+
+    private static final class PrimaryButtonUI extends BasicButtonUI {
+
+        private static final PrimaryButtonUI INSTANCE = new PrimaryButtonUI();
+
+        @Override
+        public void paint(Graphics g, JComponent c) {
+            AbstractButton button = (AbstractButton) c;
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setColor(button.isEnabled() ? AppColors.PRIMARY : AppColors.PRIMARY.darker());
+            g2.fillRect(0, 0, c.getWidth(), c.getHeight());
+            g2.dispose();
+            super.paint(g, c);
+        }
     }
 
     public static JLabel createHeaderLabel(String text, int contentWidth) {
@@ -195,25 +270,8 @@ public final class UIHelper {
     }
 
     public static JButton createPrimaryButton(String text) {
-        JButton button = new JButton(text) {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(AppColors.PRIMARY);
-                g2.fillRect(0, 0, getWidth(), getHeight());
-                g2.dispose();
-                super.paintComponent(g);
-            }
-        };
-        button.setFont(AppFonts.bodyBold());
-        button.setForeground(AppColors.BUTTON_TEXT);
-        button.setBorderPainted(false);
-        button.setFocusPainted(false);
-        button.setContentAreaFilled(false);
-        button.setOpaque(false);
-        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        fixSize(button, FIELD_WIDTH, BUTTON_HEIGHT);
+        JButton button = new JButton(text);
+        stylePrimaryButton(button);
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
         return button;
     }
