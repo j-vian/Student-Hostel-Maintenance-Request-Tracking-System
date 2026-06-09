@@ -4,12 +4,7 @@
  */
 package studenthostelmaintenancerequest.trackingsystem.gui.auth;
 
-import java.awt.Component;
-import javax.swing.Box;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import studenthostelmaintenancerequest.trackingsystem.gui.common.CardPanel;
+import studenthostelmaintenancerequest.trackingsystem.gui.common.GradientBackgroundPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderPasswordField;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
@@ -22,91 +17,48 @@ public class SignUpFrame extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(SignUpFrame.class.getName());
 
-    private JPanel pnlStudentExtra;
-    private JPanel pnlStaffExtra;
-    private JComboBox<String> cmbRole;
-
     public SignUpFrame() {
         initComponents();
-        buildUi();
+        customizeForm();
     }
 
-    private void buildUi() {
-        UIHelper.setupAuthFrame(this, "Create Account", false);
+    private void customizeForm() {
+        UIHelper.styleSignupCard(pnlCard, lblTitle, btnSignUp);
+        UIHelper.styleSignupFieldLabel(
+                lblFirstName, lblLastName, lblUsername, lblUserId, lblEmail,
+                lblPassword, lblConfirmPassword, lblRole, lblRoomNumber, lblExpertise);
+        UIHelper.styleSignupHalfTextField(txtFirstName, txtLastName);
+        UIHelper.styleSignupTextField(txtUsername, txtUserId, txtEmail, txtRoomNumber);
+        UIHelper.styleSignupHalfPasswordField(txtPassword, txtConfirmPassword);
+        UIHelper.styleSignupComboBox(cmbRole, cmbExpertise);
 
-        CardPanel card = new CardPanel(UIHelper.SIGNUP_CONTENT_WIDTH);
-        JPanel body = card.getBody();
+        lblRoomNumber.setVisible(false);
+        txtRoomNumber.setVisible(false);
+        lblExpertise.setVisible(false);
+        cmbExpertise.setVisible(false);
 
-        JLabel lblTitle = UIHelper.createHeaderLabel("Create Account", UIHelper.SIGNUP_CONTENT_WIDTH);
-        body.add(lblTitle);
-        body.add(Box.createVerticalStrut(20));
+        UIHelper.centerCardInScrollPane(scrollMain, pnlScrollHost, pnlCard);
 
-        PlaceholderTextField txtFirstName = UIHelper.createSignupHalfTextField("First Name");
-        PlaceholderTextField txtLastName = UIHelper.createSignupHalfTextField("Last Name");
-        JPanel nameRow = UIHelper.createTwoColumnRow(
-                UIHelper.createFieldGroup(UIHelper.createFieldLabel("First Name"), txtFirstName),
-                UIHelper.createFieldGroup(UIHelper.createFieldLabel("Last Name"), txtLastName));
-        body.add(nameRow);
-        body.add(Box.createVerticalStrut(12));
-
-        PlaceholderTextField txtUsername = UIHelper.createSignupTextField("Username");
-        body.add(UIHelper.createFieldGroup(UIHelper.createFieldLabel("Username"), txtUsername));
-        body.add(Box.createVerticalStrut(12));
-
-        PlaceholderTextField txtUserId = UIHelper.createSignupTextField("User ID");
-        body.add(UIHelper.createFieldGroup(UIHelper.createFieldLabel("User ID"), txtUserId));
-        body.add(Box.createVerticalStrut(12));
-
-        PlaceholderTextField txtEmail = UIHelper.createSignupTextField("Email");
-        body.add(UIHelper.createFieldGroup(UIHelper.createFieldLabel("Email"), txtEmail));
-        body.add(Box.createVerticalStrut(12));
-
-        PlaceholderPasswordField txtPassword = UIHelper.createSignupHalfPasswordField("Password");
-        PlaceholderPasswordField txtConfirmPassword = UIHelper.createSignupHalfPasswordField("Confirm Password");
-        JPanel passwordRow = UIHelper.createTwoColumnRow(
-                UIHelper.createFieldGroup(UIHelper.createFieldLabel("Password"), txtPassword),
-                UIHelper.createFieldGroup(UIHelper.createFieldLabel("Confirm Password"), txtConfirmPassword));
-        body.add(passwordRow);
-        body.add(Box.createVerticalStrut(12));
-
-        cmbRole = UIHelper.createComboBox(new String[]{"Select your role", "Student", "Staff"});
-        body.add(UIHelper.createFieldGroup(UIHelper.createFieldLabel("Select Role"), cmbRole));
-        body.add(Box.createVerticalStrut(12));
-
-        pnlStudentExtra = UIHelper.createFieldGroup(
-                UIHelper.createFieldLabel("Room Number"),
-                UIHelper.createSignupTextField("Room Number"));
-        pnlStudentExtra.setVisible(false);
-        body.add(pnlStudentExtra);
-
-        JComboBox<String> cmbExpertise = UIHelper.createComboBox(new String[]{
-            "Select your expertise", "Electrician", "Plumber", "Furniture Tech", "Other"
-        });
-        pnlStaffExtra = UIHelper.createFieldGroup(
-                UIHelper.createFieldLabel("Select Expertise"), cmbExpertise);
-        pnlStaffExtra.setVisible(false);
-        body.add(pnlStaffExtra);
-
-        body.add(Box.createVerticalStrut(16));
-
-        javax.swing.JButton btnSignUp = UIHelper.createSignupPrimaryButton("Sign Up");
-        btnSignUp.addActionListener(e -> {
-            // Backend sign-up logic will be added later.
-        });
-        body.add(btnSignUp);
-
-        cmbRole.addActionListener(e -> updateRoleFields());
-
-        UIHelper.mountScrollableCard(this, card);
-        UIHelper.showFrame(this);
+        setSize(UIHelper.FRAME_WIDTH, UIHelper.FRAME_HEIGHT);
+        setLocationRelativeTo(null);
+        getRootPane().setDefaultButton(btnSignUp);
     }
 
-    private void updateRoleFields() {
+    private void cmbRoleActionPerformed(java.awt.event.ActionEvent evt) {
         String selected = (String) cmbRole.getSelectedItem();
-        pnlStudentExtra.setVisible("Student".equals(selected));
-        pnlStaffExtra.setVisible("Staff".equals(selected));
-        revalidate();
-        repaint();
+        boolean student = "Student".equals(selected);
+        boolean staff = "Staff".equals(selected);
+        lblRoomNumber.setVisible(student);
+        txtRoomNumber.setVisible(student);
+        lblExpertise.setVisible(staff);
+        cmbExpertise.setVisible(staff);
+        pnlCard.revalidate();
+        pnlCard.repaint();
+        UIHelper.refreshScrollHostSize(scrollMain, pnlScrollHost, pnlCard);
+    }
+
+    private void btnSignUpActionPerformed(java.awt.event.ActionEvent evt) {
+        // Backend sign-up logic will be added later.
     }
 
     /**
@@ -118,10 +70,218 @@ public class SignUpFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        pnlBackground = new GradientBackgroundPanel();
+        scrollMain = new javax.swing.JScrollPane();
+        pnlScrollHost = new javax.swing.JPanel();
+        pnlCard = new javax.swing.JPanel();
+        lblTitle = new javax.swing.JLabel();
+        lblFirstName = new javax.swing.JLabel();
+        txtFirstName = new PlaceholderTextField("First Name");
+        lblLastName = new javax.swing.JLabel();
+        txtLastName = new PlaceholderTextField("Last Name");
+        lblUsername = new javax.swing.JLabel();
+        txtUsername = new PlaceholderTextField("Username");
+        lblUserId = new javax.swing.JLabel();
+        txtUserId = new PlaceholderTextField("User ID");
+        lblEmail = new javax.swing.JLabel();
+        txtEmail = new PlaceholderTextField("Email");
+        lblPassword = new javax.swing.JLabel();
+        txtPassword = new PlaceholderPasswordField("Password");
+        lblConfirmPassword = new javax.swing.JLabel();
+        txtConfirmPassword = new PlaceholderPasswordField("Confirm Password");
+        lblRole = new javax.swing.JLabel();
+        cmbRole = new javax.swing.JComboBox<>();
+        lblRoomNumber = new javax.swing.JLabel();
+        txtRoomNumber = new PlaceholderTextField("Room Number");
+        lblExpertise = new javax.swing.JLabel();
+        cmbExpertise = new javax.swing.JComboBox<>();
+        btnSignUp = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Create Account");
         setResizable(true);
 
+        pnlBackground.setOpaque(true);
+
+        scrollMain.setBorder(null);
+        scrollMain.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollMain.setOpaque(false);
+        scrollMain.getViewport().setOpaque(false);
+
+        pnlScrollHost.setOpaque(false);
+
+        pnlCard.setOpaque(true);
+
+        lblTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTitle.setText("Create Account");
+
+        lblFirstName.setText("First Name");
+
+        lblLastName.setText("Last Name");
+
+        lblUsername.setText("Username");
+
+        lblUserId.setText("User ID");
+
+        lblEmail.setText("Email");
+
+        lblPassword.setText("Password");
+
+        lblConfirmPassword.setText("Confirm Password");
+
+        lblRole.setText("Select Role");
+
+        cmbRole.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select your role", "Student", "Staff" }));
+        cmbRole.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbRoleActionPerformed(evt);
+            }
+        });
+
+        lblRoomNumber.setText("Room Number");
+
+        lblExpertise.setText("Select Expertise");
+
+        cmbExpertise.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select your expertise", "Electrician", "Plumber", "Furniture Tech", "Other" }));
+
+        btnSignUp.setText("Sign Up");
+        btnSignUp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSignUpActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlCardLayout = new javax.swing.GroupLayout(pnlCard);
+        pnlCard.setLayout(pnlCardLayout);
+        pnlCardLayout.setHorizontalGroup(
+            pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlCardLayout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTitle, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblUsername)
+                    .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblUserId)
+                    .addComponent(txtUserId, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblEmail)
+                    .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblRole)
+                    .addComponent(cmbRole, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblRoomNumber)
+                    .addComponent(txtRoomNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblExpertise)
+                    .addComponent(cmbExpertise, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSignUp, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(pnlCardLayout.createSequentialGroup()
+                        .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblFirstName)
+                            .addComponent(txtFirstName, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(16, 16, 16)
+                        .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblLastName)
+                            .addComponent(txtLastName, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(pnlCardLayout.createSequentialGroup()
+                        .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblPassword)
+                            .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(16, 16, 16)
+                        .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblConfirmPassword)
+                            .addComponent(txtConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(40, 40, 40))
+        );
+        pnlCardLayout.setVerticalGroup(
+            pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlCardLayout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addComponent(lblTitle)
+                .addGap(20, 20, 20)
+                .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblFirstName)
+                    .addComponent(lblLastName))
+                .addGap(6, 6, 6)
+                .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtFirstName, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtLastName, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addComponent(lblUsername)
+                .addGap(6, 6, 6)
+                .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(lblUserId)
+                .addGap(6, 6, 6)
+                .addComponent(txtUserId, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(lblEmail)
+                .addGap(6, 6, 6)
+                .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblPassword)
+                    .addComponent(lblConfirmPassword))
+                .addGap(6, 6, 6)
+                .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addComponent(lblRole)
+                .addGap(6, 6, 6)
+                .addComponent(cmbRole, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(lblRoomNumber)
+                .addGap(6, 6, 6)
+                .addComponent(txtRoomNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(lblExpertise)
+                .addGap(6, 6, 6)
+                .addComponent(cmbExpertise, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(16, 16, 16)
+                .addComponent(btnSignUp, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(40, 40, 40))
+        );
+
+        javax.swing.GroupLayout pnlScrollHostLayout = new javax.swing.GroupLayout(pnlScrollHost);
+        pnlScrollHost.setLayout(pnlScrollHostLayout);
+        pnlScrollHostLayout.setHorizontalGroup(
+            pnlScrollHostLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlScrollHostLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(pnlCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlScrollHostLayout.setVerticalGroup(
+            pnlScrollHostLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlScrollHostLayout.createSequentialGroup()
+                .addGap(32, 32, 32)
+                .addComponent(pnlCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32))
+        );
+
+        scrollMain.setViewportView(pnlScrollHost);
+
+        javax.swing.GroupLayout pnlBackgroundLayout = new javax.swing.GroupLayout(pnlBackground);
+        pnlBackground.setLayout(pnlBackgroundLayout);
+        pnlBackgroundLayout.setHorizontalGroup(
+            pnlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(scrollMain, javax.swing.GroupLayout.DEFAULT_SIZE, 1100, Short.MAX_VALUE)
+        );
+        pnlBackgroundLayout.setVerticalGroup(
+            pnlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(scrollMain, javax.swing.GroupLayout.DEFAULT_SIZE, 720, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnlBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnlBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     /**
@@ -139,9 +299,36 @@ public class SignUpFrame extends javax.swing.JFrame {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
 
-        java.awt.EventQueue.invokeLater(() -> new SignUpFrame());
+        UIHelper.initApplicationLook();
+        java.awt.EventQueue.invokeLater(() -> new SignUpFrame().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnSignUp;
+    private javax.swing.JComboBox<String> cmbExpertise;
+    private javax.swing.JComboBox<String> cmbRole;
+    private javax.swing.JLabel lblConfirmPassword;
+    private javax.swing.JLabel lblEmail;
+    private javax.swing.JLabel lblExpertise;
+    private javax.swing.JLabel lblFirstName;
+    private javax.swing.JLabel lblLastName;
+    private javax.swing.JLabel lblPassword;
+    private javax.swing.JLabel lblRole;
+    private javax.swing.JLabel lblRoomNumber;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JLabel lblUserId;
+    private javax.swing.JLabel lblUsername;
+    private GradientBackgroundPanel pnlBackground;
+    private javax.swing.JPanel pnlCard;
+    private javax.swing.JPanel pnlScrollHost;
+    private PlaceholderPasswordField txtConfirmPassword;
+    private PlaceholderTextField txtEmail;
+    private PlaceholderTextField txtFirstName;
+    private PlaceholderTextField txtLastName;
+    private PlaceholderPasswordField txtPassword;
+    private PlaceholderTextField txtRoomNumber;
+    private PlaceholderTextField txtUserId;
+    private PlaceholderTextField txtUsername;
+    private javax.swing.JScrollPane scrollMain;
     // End of variables declaration//GEN-END:variables
 }

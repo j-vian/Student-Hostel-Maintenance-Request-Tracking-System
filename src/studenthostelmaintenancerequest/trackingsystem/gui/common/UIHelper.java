@@ -135,6 +135,14 @@ public final class UIHelper {
     }
 
     public static void stylePrimaryButton(JButton button) {
+        stylePrimaryButton(button, FIELD_WIDTH);
+    }
+
+    public static void styleSignupPrimaryButton(JButton button) {
+        stylePrimaryButton(button, SIGNUP_FIELD_WIDTH);
+    }
+
+    public static void stylePrimaryButton(JButton button, int width) {
         button.setFont(AppFonts.bodyBold());
         button.setForeground(AppColors.BUTTON_TEXT);
         button.setBorderPainted(false);
@@ -143,7 +151,54 @@ public final class UIHelper {
         button.setOpaque(false);
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         button.setUI(PrimaryButtonUI.INSTANCE);
-        fixSize(button, FIELD_WIDTH, BUTTON_HEIGHT);
+        fixSize(button, width, BUTTON_HEIGHT);
+    }
+
+    public static void styleSignupFieldLabel(JLabel... labels) {
+        for (JLabel label : labels) {
+            label.setFont(AppFonts.label());
+            label.setForeground(AppColors.LABEL);
+        }
+    }
+
+    public static void styleSignupTextField(PlaceholderTextField... fields) {
+        for (PlaceholderTextField field : fields) {
+            fixSize(field, SIGNUP_FIELD_WIDTH, FIELD_HEIGHT);
+        }
+    }
+
+    public static void styleSignupHalfTextField(PlaceholderTextField... fields) {
+        for (PlaceholderTextField field : fields) {
+            fixSize(field, SIGNUP_HALF_WIDTH, FIELD_HEIGHT);
+        }
+    }
+
+    public static void styleSignupHalfPasswordField(PlaceholderPasswordField... fields) {
+        for (PlaceholderPasswordField field : fields) {
+            fixSize(field, SIGNUP_HALF_WIDTH, FIELD_HEIGHT);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void styleSignupComboBox(JComboBox<?>... combos) {
+        for (JComboBox<?> combo : combos) {
+            combo.setFont(AppFonts.body());
+            combo.setBackground(Color.WHITE);
+            combo.setForeground(AppColors.LABEL);
+            combo.setBorder(comboBorder());
+            fixSize((JComponent) combo, SIGNUP_FIELD_WIDTH, FIELD_HEIGHT);
+        }
+    }
+
+    public static void styleSignupCard(JPanel pnlCard, JLabel lblTitle, JButton btnSignUp) {
+        lblTitle.setFont(AppFonts.header());
+        lblTitle.setForeground(AppColors.PRIMARY);
+        lblTitle.setHorizontalAlignment(JLabel.CENTER);
+        styleSignupPrimaryButton(btnSignUp);
+        pnlCard.setBackground(AppColors.CARD);
+        pnlCard.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(AppColors.BORDER, 1, true),
+                new EmptyBorder(0, 0, 0, 0)));
     }
 
     private static final class PrimaryButtonUI extends BasicButtonUI {
@@ -277,8 +332,8 @@ public final class UIHelper {
     }
 
     public static JButton createSignupPrimaryButton(String text) {
-        JButton button = createPrimaryButton(text);
-        fixSize(button, SIGNUP_FIELD_WIDTH, BUTTON_HEIGHT);
+        JButton button = new JButton(text);
+        styleSignupPrimaryButton(button);
         return button;
     }
 
@@ -395,6 +450,54 @@ public final class UIHelper {
         int x = Math.max(0, (parent.getWidth() - size.width) / 2);
         int y = Math.max(0, (parent.getHeight() - size.height) / 2);
         child.setBounds(x, y, size.width, size.height);
+    }
+
+    /**
+     * Keeps a form card centered inside a scroll pane when it fits, and scrollable when it grows.
+     */
+    public static void centerCardInScrollPane(JScrollPane scrollPane, JPanel host, JComponent card) {
+        host.removeAll();
+        host.setLayout(new GridBagLayout());
+        host.setOpaque(false);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new java.awt.Insets(32, 0, 32, 0);
+        host.add(card, gbc);
+
+        java.awt.event.ComponentAdapter resizeHandler = new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent e) {
+                refreshScrollHostSize(scrollPane, host, card, gbc.insets);
+            }
+        };
+
+        scrollPane.getViewport().addComponentListener(resizeHandler);
+        card.addComponentListener(resizeHandler);
+        javax.swing.SwingUtilities.invokeLater(
+                () -> refreshScrollHostSize(scrollPane, host, card, gbc.insets));
+    }
+
+    public static void refreshScrollHostSize(
+            JScrollPane scrollPane, JPanel host, JComponent card, java.awt.Insets insets) {
+        Dimension viewport = scrollPane.getViewport().getExtentSize();
+        if (viewport.width <= 0 || viewport.height <= 0) {
+            return;
+        }
+        int cardHeight = card.getPreferredSize().height + insets.top + insets.bottom;
+        int cardWidth = card.getPreferredSize().width;
+        host.setPreferredSize(new Dimension(
+                Math.max(viewport.width, cardWidth),
+                Math.max(viewport.height, cardHeight)));
+        host.revalidate();
+    }
+
+    public static void refreshScrollHostSize(JScrollPane scrollPane, JPanel host, JComponent card) {
+        refreshScrollHostSize(scrollPane, host, card, new java.awt.Insets(32, 0, 32, 0));
     }
 
     /**
