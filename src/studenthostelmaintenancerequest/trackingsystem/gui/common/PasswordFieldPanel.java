@@ -9,8 +9,12 @@ public class PasswordFieldPanel extends JPanel {
     private final PlaceholderPasswordField passwordField;
 
     public PasswordFieldPanel(String placeholder) {
+        this(placeholder, UIHelper.FIELD_WIDTH);
+    }
+
+    public PasswordFieldPanel(String placeholder, int width) {
         passwordField = new PlaceholderPasswordField(placeholder);
-        JPanel container = UIHelper.createPasswordWithToggle(passwordField);
+        JPanel container = UIHelper.createPasswordWithToggle(passwordField, width);
         setOpaque(false);
         setLayout(new BorderLayout());
         add(container, BorderLayout.CENTER);

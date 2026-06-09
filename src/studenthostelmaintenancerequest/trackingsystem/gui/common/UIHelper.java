@@ -100,7 +100,6 @@ public final class UIHelper {
             JLabel lblSignUp, JLabel lblForgotPassword,
             JButton btnLogin,
             PlaceholderTextField txtEmail,
-            PlaceholderPasswordField txtPassword,
             JPanel pnlCard) {
 
         lblTitle1.setFont(AppFonts.loginHeader());
@@ -127,7 +126,6 @@ public final class UIHelper {
         lblForgotPassword.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         fixSize(txtEmail, FIELD_WIDTH, FIELD_HEIGHT);
-        fixSize(txtPassword, FIELD_WIDTH, FIELD_HEIGHT);
         stylePrimaryButton(btnLogin);
 
         pnlCard.setBackground(AppColors.CARD);
@@ -631,15 +629,18 @@ public final class UIHelper {
     }
 
     public static JPanel createPasswordWithToggle(PlaceholderPasswordField field) {
-        JPanel container = new JPanel(new BorderLayout());
+        return createPasswordWithToggle(field, FIELD_WIDTH);
+    }
+
+    public static JPanel createPasswordWithToggle(PlaceholderPasswordField field, int width) {
+        JPanel container = new JPanel(new BorderLayout(0, 0));
         container.setOpaque(true);
         container.setBackground(AppColors.INPUT_FILL);
-        container.setBorder(inputBorder());
-        fixSize(container, FIELD_WIDTH, FIELD_HEIGHT);
+        container.setBorder(BorderFactory.createLineBorder(AppColors.BORDER, 1, true));
+        fixSize(container, width, FIELD_HEIGHT);
 
-        field.setBorder(BorderFactory.createEmptyBorder(6, 12, 6, 4));
-        field.setPreferredSize(new Dimension(FIELD_WIDTH - 44, FIELD_HEIGHT - 2));
-        field.setMaximumSize(new Dimension(FIELD_WIDTH - 44, FIELD_HEIGHT - 2));
+        field.setBorder(BorderFactory.createEmptyBorder(10, 14, 10, 4));
+        field.setOpaque(false);
 
         JButton toggle = new JButton() {
             @Override
@@ -655,6 +656,8 @@ public final class UIHelper {
             }
         };
         toggle.setPreferredSize(new Dimension(36, FIELD_HEIGHT - 2));
+        toggle.setMinimumSize(new Dimension(36, FIELD_HEIGHT - 2));
+        toggle.setMaximumSize(new Dimension(36, FIELD_HEIGHT - 2));
         toggle.setBorderPainted(false);
         toggle.setContentAreaFilled(false);
         toggle.setFocusPainted(false);

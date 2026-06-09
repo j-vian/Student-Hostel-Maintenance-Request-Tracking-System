@@ -5,7 +5,7 @@
 package studenthostelmaintenancerequest.trackingsystem.gui.auth;
 
 import studenthostelmaintenancerequest.trackingsystem.gui.common.GradientBackgroundPanel;
-import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderPasswordField;
+import studenthostelmaintenancerequest.trackingsystem.gui.common.PasswordFieldPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
 
@@ -32,7 +32,6 @@ public class SignUpFrame extends javax.swing.JFrame {
                 lblPassword, lblConfirmPassword, lblRole, lblRoomNumber, lblExpertise);
         UIHelper.styleSignupHalfTextField(txtFirstName, txtLastName);
         UIHelper.styleSignupTextField(txtUsername, txtUserId, txtEmail, txtRoomNumber, txtOtherExpertise);
-        UIHelper.styleSignupHalfPasswordField(txtPassword, txtConfirmPassword);
         UIHelper.styleSignupComboBox(cmbRole, cmbExpertise);
 
         lblRoomNumber.setVisible(false);
@@ -131,9 +130,9 @@ public class SignUpFrame extends javax.swing.JFrame {
         lblEmail = new javax.swing.JLabel();
         txtEmail = new PlaceholderTextField("Email");
         lblPassword = new javax.swing.JLabel();
-        txtPassword = new PlaceholderPasswordField("Password");
+        pnlPassword = new PasswordFieldPanel("Password", UIHelper.SIGNUP_HALF_WIDTH);
         lblConfirmPassword = new javax.swing.JLabel();
-        txtConfirmPassword = new PlaceholderPasswordField("Confirm Password");
+        pnlConfirmPassword = new PasswordFieldPanel("Confirm Password", UIHelper.SIGNUP_HALF_WIDTH);
         lblRole = new javax.swing.JLabel();
         cmbRole = new javax.swing.JComboBox();
         lblRoomNumber = new javax.swing.JLabel();
@@ -225,11 +224,11 @@ public class SignUpFrame extends javax.swing.JFrame {
                     .addGroup(pnlCardLayout.createSequentialGroup()
                         .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblPassword)
-                            .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(pnlPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(16, 16, 16)
                         .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblConfirmPassword)
-                            .addComponent(txtConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(pnlConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(40, 40, 40))
         );
         pnlCardLayout.setVerticalGroup(
@@ -263,8 +262,8 @@ public class SignUpFrame extends javax.swing.JFrame {
                     .addComponent(lblConfirmPassword))
                 .addGap(6, 6, 6)
                 .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(pnlPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(12, 12, 12)
                 .addComponent(lblRole)
                 .addGap(6, 6, 6)
@@ -362,13 +361,13 @@ public class SignUpFrame extends javax.swing.JFrame {
     private javax.swing.JLabel lblUsername;
     private studenthostelmaintenancerequest.trackingsystem.gui.common.GradientBackgroundPanel pnlBackground;
     private javax.swing.JPanel pnlCard;
+    private PasswordFieldPanel pnlConfirmPassword;
+    private PasswordFieldPanel pnlPassword;
     private javax.swing.JPanel pnlScrollHost;
-    private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderPasswordField txtConfirmPassword;
     private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtEmail;
     private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtFirstName;
     private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtLastName;
     private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtOtherExpertise;
-    private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderPasswordField txtPassword;
     private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtRoomNumber;
     private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtUserId;
     private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtUsername;

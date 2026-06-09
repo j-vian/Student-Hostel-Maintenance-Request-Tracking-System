@@ -80,7 +80,7 @@
                           <Component id="lblEmail" alignment="0" attributes="0"/>
                           <Component id="txtEmail" alignment="0" min="-2" pref="420" max="-2" attributes="0"/>
                           <Component id="lblPassword" alignment="0" attributes="0"/>
-                          <Component id="txtPassword" alignment="0" min="-2" pref="420" max="-2" attributes="0"/>
+                          <Component id="pnlPassword" alignment="0" min="-2" pref="420" max="-2" attributes="0"/>
                           <Component id="pnlLinks" alignment="0" min="-2" pref="420" max="-2" attributes="0"/>
                           <Component id="btnLogin" alignment="0" min="-2" pref="420" max="-2" attributes="0"/>
                           <Component id="pnlLogo" alignment="1" max="32767" attributes="0"/>
@@ -109,7 +109,7 @@
                       <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
                       <Component id="lblPassword" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
-                      <Component id="txtPassword" min="-2" pref="42" max="-2" attributes="0"/>
+                      <Component id="pnlPassword" min="-2" pref="42" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                       <Component id="pnlLinks" min="-2" pref="22" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
@@ -161,9 +161,9 @@
                 <Property name="text" type="java.lang.String" value="Password"/>
               </Properties>
             </Component>
-            <Component class="studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderPasswordField" name="txtPassword">
+            <Component class="studenthostelmaintenancerequest.trackingsystem.gui.common.PasswordFieldPanel" name="pnlPassword">
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new PlaceholderPasswordField(&quot;Enter your password&quot;)"/>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new PasswordFieldPanel(&quot;Enter your password&quot;)"/>
               </AuxValues>
             </Component>
             <Container class="javax.swing.JPanel" name="pnlLinks">

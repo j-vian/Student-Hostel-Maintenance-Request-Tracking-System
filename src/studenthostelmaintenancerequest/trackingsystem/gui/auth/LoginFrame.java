@@ -6,7 +6,7 @@ package studenthostelmaintenancerequest.trackingsystem.gui.auth;
 
 import studenthostelmaintenancerequest.trackingsystem.gui.common.GradientBackgroundPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
-import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderPasswordField;
+import studenthostelmaintenancerequest.trackingsystem.gui.common.PasswordFieldPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
 
@@ -31,7 +31,7 @@ public class LoginFrame extends javax.swing.JFrame {
                 lblTitle1, lblTitle2, lblTitle3, lblTitle4,
                 lblEmail, lblPassword,
                 lblSignUp, lblForgotPassword,
-                btnLogin, txtEmail, txtPassword, pnlCard);
+                btnLogin, txtEmail, pnlCard);
 
         UIHelper.addHyperlinkAction(lblSignUp, () -> UIHelper.navigateTo(this, new SignUpFrame()));
         UIHelper.addHyperlinkAction(lblForgotPassword, () -> UIHelper.navigateTo(this, new ForgotPasswordFrame()));
@@ -64,7 +64,7 @@ public class LoginFrame extends javax.swing.JFrame {
         lblEmail = new javax.swing.JLabel();
         txtEmail = new PlaceholderTextField("Enter your email");
         lblPassword = new javax.swing.JLabel();
-        txtPassword = new PlaceholderPasswordField("Enter your password");
+        pnlPassword = new PasswordFieldPanel("Enter your password");
         pnlLinks = new javax.swing.JPanel();
         lblSignUp = new javax.swing.JLabel();
         lblForgotPassword = new javax.swing.JLabel();
@@ -125,7 +125,7 @@ public class LoginFrame extends javax.swing.JFrame {
                     .addComponent(lblEmail)
                     .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblPassword)
-                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(pnlLinks, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(pnlLogo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -151,7 +151,7 @@ public class LoginFrame extends javax.swing.JFrame {
                 .addGap(14, 14, 14)
                 .addComponent(lblPassword)
                 .addGap(6, 6, 6)
-                .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addComponent(pnlLinks, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(22, 22, 22)
@@ -223,7 +223,7 @@ public class LoginFrame extends javax.swing.JFrame {
     private javax.swing.JPanel pnlCard;
     private javax.swing.JPanel pnlLinks;
     private LogoPanel pnlLogo;
-    private PlaceholderPasswordField txtPassword;
+    private PasswordFieldPanel pnlPassword;
     private PlaceholderTextField txtEmail;
     // End of variables declaration//GEN-END:variables
 }

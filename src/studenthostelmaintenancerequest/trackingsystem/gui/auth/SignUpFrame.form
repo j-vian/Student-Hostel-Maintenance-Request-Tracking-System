@@ -112,12 +112,12 @@
                               <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="lblPassword" alignment="0" attributes="0"/>
-                                      <Component id="txtPassword" alignment="0" min="-2" pref="272" max="-2" attributes="0"/>
+                                      <Component id="pnlPassword" alignment="0" min="-2" pref="272" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="lblConfirmPassword" alignment="0" attributes="0"/>
-                                      <Component id="txtConfirmPassword" alignment="0" min="-2" pref="272" max="-2" attributes="0"/>
+                                      <Component id="pnlConfirmPassword" alignment="0" min="-2" pref="272" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -159,8 +159,8 @@
                           </Group>
                           <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="txtPassword" alignment="0" min="-2" pref="42" max="-2" attributes="0"/>
-                              <Component id="txtConfirmPassword" alignment="0" min="-2" pref="42" max="-2" attributes="0"/>
+                              <Component id="pnlPassword" alignment="0" min="-2" pref="42" max="-2" attributes="0"/>
+                              <Component id="pnlConfirmPassword" alignment="0" min="-2" pref="42" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                           <Component id="lblRole" min="-2" max="-2" attributes="0"/>
@@ -245,9 +245,9 @@
                     <Property name="text" type="java.lang.String" value="Password"/>
                   </Properties>
                 </Component>
-                <Component class="studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderPasswordField" name="txtPassword">
+                <Component class="studenthostelmaintenancerequest.trackingsystem.gui.common.PasswordFieldPanel" name="pnlPassword">
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new PlaceholderPasswordField(&quot;Password&quot;)"/>
+                    <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new PasswordFieldPanel(&quot;Password&quot;, UIHelper.SIGNUP_HALF_WIDTH)"/>
                   </AuxValues>
                 </Component>
                 <Component class="javax.swing.JLabel" name="lblConfirmPassword">
@@ -255,9 +255,9 @@
                     <Property name="text" type="java.lang.String" value="Confirm Password"/>
                   </Properties>
                 </Component>
-                <Component class="studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderPasswordField" name="txtConfirmPassword">
+                <Component class="studenthostelmaintenancerequest.trackingsystem.gui.common.PasswordFieldPanel" name="pnlConfirmPassword">
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new PlaceholderPasswordField(&quot;Confirm Password&quot;)"/>
+                    <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new PasswordFieldPanel(&quot;Confirm Password&quot;, UIHelper.SIGNUP_HALF_WIDTH)"/>
                   </AuxValues>
                 </Component>
                 <Component class="javax.swing.JLabel" name="lblRole">
