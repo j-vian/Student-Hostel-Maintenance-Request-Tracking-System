@@ -23,6 +23,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.plaf.basic.BasicButtonUI;
+import javax.swing.plaf.basic.BasicHTML;
+import javax.swing.text.View;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -195,10 +197,86 @@ public final class UIHelper {
         lblTitle.setForeground(AppColors.PRIMARY);
         lblTitle.setHorizontalAlignment(JLabel.CENTER);
         styleSignupPrimaryButton(btnSignUp);
+        styleAuthCard(pnlCard);
+    }
+
+    public static void styleAuthCard(JPanel pnlCard) {
         pnlCard.setBackground(AppColors.CARD);
         pnlCard.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(AppColors.BORDER, 1, true),
                 new EmptyBorder(0, 0, 0, 0)));
+    }
+
+    public static void styleAuthTitle(JLabel lblTitle) {
+        lblTitle.setFont(AppFonts.header());
+        lblTitle.setForeground(AppColors.PRIMARY);
+        lblTitle.setHorizontalAlignment(JLabel.CENTER);
+    }
+
+    public static void styleAuthInstructionLine(JLabel... labels) {
+        for (JLabel label : labels) {
+            label.setFont(AppFonts.body());
+            label.setForeground(AppColors.LABEL);
+            label.setHorizontalAlignment(JLabel.CENTER);
+        }
+    }
+
+    /** @deprecated Use {@link #styleAuthInstructionLine(JLabel...)} for reliable centered lines. */
+    public static void styleAuthInstruction(JLabel lblInstruction, int contentWidth) {
+        String text = lblInstruction.getText()
+                .replace("<html>", "")
+                .replace("</html>", "");
+        String html = String.format(
+                "<html><div style='text-align:center;width:%dpx;font-family:%s;font-size:%dpt;"
+                        + "color:#1A1C1C;line-height:1.45;'>%s</div></html>",
+                contentWidth, AppFonts.cssFamily(), AppFonts.BODY_SIZE, text);
+        lblInstruction.setText(html);
+        lblInstruction.setHorizontalAlignment(JLabel.CENTER);
+        lblInstruction.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+
+        int height = measureHtmlLabelHeight(lblInstruction, html, contentWidth);
+        Dimension size = new Dimension(contentWidth, height);
+        lblInstruction.setPreferredSize(size);
+        lblInstruction.setMinimumSize(size);
+        lblInstruction.setMaximumSize(size);
+    }
+
+    private static int measureHtmlLabelHeight(JLabel label, String html, int width) {
+        View view = BasicHTML.createHTMLView(label, html);
+        if (view == null) {
+            return 48;
+        }
+        view.setSize(width, 0);
+        return Math.max((int) Math.ceil(view.getPreferredSpan(View.Y_AXIS)) + 6, 40);
+    }
+
+    public static void styleAuthFieldLabel(JLabel... labels) {
+        for (JLabel label : labels) {
+            label.setFont(AppFonts.label());
+            label.setForeground(AppColors.LABEL);
+        }
+    }
+
+    public static void styleAuthTextField(PlaceholderTextField... fields) {
+        for (PlaceholderTextField field : fields) {
+            fixSize(field, FIELD_WIDTH, FIELD_HEIGHT);
+        }
+    }
+
+    public static void styleReturnLink(JLabel lblReturn) {
+        String text = lblReturn.getText();
+        lblReturn.setText("<html><u>" + text + "</u></html>");
+        lblReturn.setFont(AppFonts.link());
+        lblReturn.setForeground(AppColors.PRIMARY);
+        lblReturn.setHorizontalAlignment(JLabel.CENTER);
+        lblReturn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    }
+
+    public static void centerAuthCard(javax.swing.JFrame frame, JPanel pnlBackground) {
+        frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+        frame.setLocationRelativeTo(null);
+        pnlBackground.revalidate();
+        pnlBackground.repaint();
     }
 
     private static final class PrimaryButtonUI extends BasicButtonUI {

@@ -4,11 +4,7 @@
  */
 package studenthostelmaintenancerequest.trackingsystem.gui.auth;
 
-import java.awt.Component;
-import javax.swing.Box;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import studenthostelmaintenancerequest.trackingsystem.gui.common.CardPanel;
+import studenthostelmaintenancerequest.trackingsystem.gui.common.GradientBackgroundPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
 
@@ -20,44 +16,29 @@ public class ForgotPasswordFrame extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ForgotPasswordFrame.class.getName());
 
-    private PlaceholderTextField txtEmail;
-
     public ForgotPasswordFrame() {
         initComponents();
-        buildUi();
+        customizeForm();
     }
 
-    private void buildUi() {
-        UIHelper.setupAuthFrame(this, "Forgot Password", false);
+    private void customizeForm() {
+        UIHelper.styleAuthCard(pnlCard);
+        UIHelper.styleAuthTitle(lblTitle);
+        UIHelper.styleAuthInstructionLine(lblInstruction1, lblInstruction2);
+        UIHelper.styleAuthFieldLabel(lblEmail);
+        UIHelper.styleAuthTextField(txtEmail);
+        UIHelper.stylePrimaryButton(btnVerify);
+        UIHelper.styleReturnLink(lblReturn);
 
-        CardPanel card = new CardPanel(UIHelper.AUTH_CONTENT_WIDTH);
-        JPanel body = card.getBody();
-
-        JLabel lblTitle = UIHelper.createHeaderLabel("Forgot Password", UIHelper.AUTH_CONTENT_WIDTH);
-        body.add(lblTitle);
-        body.add(Box.createVerticalStrut(12));
-
-        JLabel lblInstruction = UIHelper.createInstructionLabel(
-                "Enter your registered email address to verify your account and proceed with password recovery.",
-                UIHelper.AUTH_CONTENT_WIDTH);
-        body.add(lblInstruction);
-        body.add(Box.createVerticalStrut(20));
-
-        txtEmail = UIHelper.createTextField("e.g. studentID@adab.umpsa.edu.my");
-        body.add(UIHelper.createFieldGroup(UIHelper.createFieldLabel("Email"), txtEmail));
-        body.add(Box.createVerticalStrut(16));
-
-        javax.swing.JButton btnVerify = UIHelper.createPrimaryButton("Verify \u2192");
-        btnVerify.addActionListener(e -> UIHelper.navigateTo(this, new setNewPasswordFrame()));
-        body.add(btnVerify);
-        body.add(Box.createVerticalStrut(16));
-
-        JLabel lblReturn = UIHelper.createHyperlink("\u2190 Return to Login");
         UIHelper.addHyperlinkAction(lblReturn, () -> UIHelper.navigateTo(this, new LoginFrame()));
-        body.add(UIHelper.centerHorizontally(lblReturn, UIHelper.FIELD_WIDTH));
 
-        UIHelper.mountFloatingCard(this, card);
-        UIHelper.showFrame(this);
+        UIHelper.centerAuthCard(this, pnlBackground);
+        pnlCard.revalidate();
+        getRootPane().setDefaultButton(btnVerify);
+    }
+
+    private void btnVerifyActionPerformed(java.awt.event.ActionEvent evt) {
+        UIHelper.navigateTo(this, new setNewPasswordFrame());
     }
 
     /**
@@ -69,10 +50,108 @@ public class ForgotPasswordFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        pnlBackground = new GradientBackgroundPanel();
+        pnlCard = new javax.swing.JPanel();
+        lblTitle = new javax.swing.JLabel();
+        lblInstruction1 = new javax.swing.JLabel();
+        lblInstruction2 = new javax.swing.JLabel();
+        lblEmail = new javax.swing.JLabel();
+        txtEmail = new PlaceholderTextField("e.g. studentID@adab.umpsa.edu.my");
+        btnVerify = new javax.swing.JButton();
+        lblReturn = new javax.swing.JLabel();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Forgot Password");
         setResizable(true);
 
+        pnlBackground.setOpaque(true);
+
+        pnlCard.setOpaque(true);
+
+        lblTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTitle.setText("Forgot Password");
+
+        lblInstruction1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblInstruction1.setText("Enter your registered email address to verify");
+
+        lblInstruction2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblInstruction2.setText("your account and proceed with password recovery.");
+
+        lblEmail.setText("Email");
+
+        btnVerify.setText("Verify \u2192");
+        btnVerify.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVerifyActionPerformed(evt);
+            }
+        });
+
+        lblReturn.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblReturn.setText("\u2190 Return to Login");
+
+        javax.swing.GroupLayout pnlCardLayout = new javax.swing.GroupLayout(pnlCard);
+        pnlCard.setLayout(pnlCardLayout);
+        pnlCardLayout.setHorizontalGroup(
+            pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlCardLayout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTitle, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblInstruction1, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblInstruction2, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblEmail)
+                    .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnVerify, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblReturn, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(40, 40, 40))
+        );
+        pnlCardLayout.setVerticalGroup(
+            pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlCardLayout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addComponent(lblTitle)
+                .addGap(12, 12, 12)
+                .addComponent(lblInstruction1)
+                .addGap(2, 2, 2)
+                .addComponent(lblInstruction2)
+                .addGap(20, 20, 20)
+                .addComponent(lblEmail)
+                .addGap(6, 6, 6)
+                .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(16, 16, 16)
+                .addComponent(btnVerify, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20)
+                .addComponent(lblReturn)
+                .addGap(40, 40, 40))
+        );
+
+        javax.swing.GroupLayout pnlBackgroundLayout = new javax.swing.GroupLayout(pnlBackground);
+        pnlBackground.setLayout(pnlBackgroundLayout);
+        pnlBackgroundLayout.setHorizontalGroup(
+            pnlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlBackgroundLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(pnlCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlBackgroundLayout.setVerticalGroup(
+            pnlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlBackgroundLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(pnlCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnlBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnlBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
     }// </editor-fold>//GEN-END:initComponents
 
     /**
@@ -90,9 +169,19 @@ public class ForgotPasswordFrame extends javax.swing.JFrame {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
 
-        java.awt.EventQueue.invokeLater(() -> new ForgotPasswordFrame());
+        UIHelper.initApplicationLook();
+        java.awt.EventQueue.invokeLater(() -> new ForgotPasswordFrame().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnVerify;
+    private javax.swing.JLabel lblEmail;
+    private javax.swing.JLabel lblInstruction1;
+    private javax.swing.JLabel lblInstruction2;
+    private javax.swing.JLabel lblReturn;
+    private javax.swing.JLabel lblTitle;
+    private GradientBackgroundPanel pnlBackground;
+    private javax.swing.JPanel pnlCard;
+    private PlaceholderTextField txtEmail;
     // End of variables declaration//GEN-END:variables
 }

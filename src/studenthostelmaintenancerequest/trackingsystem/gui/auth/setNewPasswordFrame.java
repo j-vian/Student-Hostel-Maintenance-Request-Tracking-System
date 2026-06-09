@@ -4,12 +4,9 @@
  */
 package studenthostelmaintenancerequest.trackingsystem.gui.auth;
 
-import java.awt.Component;
-import javax.swing.Box;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import studenthostelmaintenancerequest.trackingsystem.gui.common.CardPanel;
-import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderPasswordField;
+import studenthostelmaintenancerequest.trackingsystem.gui.common.GradientBackgroundPanel;
+import studenthostelmaintenancerequest.trackingsystem.gui.common.PasswordFieldPanel;
+import studenthostelmaintenancerequest.trackingsystem.gui.common.PasswordRequirementsPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
 
 /**
@@ -22,68 +19,26 @@ public class setNewPasswordFrame extends javax.swing.JFrame {
 
     public setNewPasswordFrame() {
         initComponents();
-        buildUi();
+        customizeForm();
     }
 
-    private void buildUi() {
-        UIHelper.setupAuthFrame(this, "Set New Password", false);
+    private void customizeForm() {
+        UIHelper.styleAuthCard(pnlCard);
+        UIHelper.styleAuthTitle(lblTitle);
+        UIHelper.styleAuthInstructionLine(lblInstruction1, lblInstruction2);
+        UIHelper.styleAuthFieldLabel(lblNewPassword, lblConfirmPassword);
+        UIHelper.stylePrimaryButton(btnReset);
+        UIHelper.styleReturnLink(lblReturn);
 
-        CardPanel card = new CardPanel(UIHelper.AUTH_CONTENT_WIDTH);
-        JPanel body = card.getBody();
-
-        JLabel lblTitle = UIHelper.createHeaderLabel("Set New Password", UIHelper.AUTH_CONTENT_WIDTH);
-        body.add(lblTitle);
-        body.add(Box.createVerticalStrut(12));
-
-        JLabel lblInstruction = UIHelper.createInstructionLabel(
-                "Please create a new password that you don't use on any other site.",
-                UIHelper.AUTH_CONTENT_WIDTH);
-        body.add(lblInstruction);
-        body.add(Box.createVerticalStrut(20));
-
-        PlaceholderPasswordField txtNewPassword = UIHelper.createPasswordField("Enter new password");
-        PlaceholderPasswordField txtConfirmPassword = UIHelper.createPasswordField("Re-enter new password");
-
-        body.add(buildPasswordGroup("New Password", txtNewPassword));
-        body.add(Box.createVerticalStrut(14));
-        body.add(buildPasswordGroup("Confirm Password", txtConfirmPassword));
-        body.add(Box.createVerticalStrut(14));
-
-        JPanel requirements = UIHelper.createRequirementsPanel();
-        body.add(requirements);
-        body.add(Box.createVerticalStrut(16));
-
-        javax.swing.JButton btnReset = UIHelper.createPrimaryButton("Reset Password");
-        btnReset.addActionListener(e -> {
-            // Backend reset logic will be added later.
-        });
-        body.add(btnReset);
-        body.add(Box.createVerticalStrut(14));
-
-        JLabel lblReturn = UIHelper.createHyperlink("\u2190 Return to Login");
         UIHelper.addHyperlinkAction(lblReturn, () -> UIHelper.navigateTo(this, new LoginFrame()));
-        body.add(UIHelper.centerHorizontally(lblReturn, UIHelper.FIELD_WIDTH));
 
-        UIHelper.mountFloatingCard(this, card);
-        UIHelper.showFrame(this);
+        UIHelper.centerAuthCard(this, pnlBackground);
+        pnlCard.revalidate();
+        getRootPane().setDefaultButton(btnReset);
     }
 
-    private JPanel buildPasswordGroup(String labelText, PlaceholderPasswordField field) {
-        JPanel group = new JPanel();
-        group.setOpaque(false);
-        group.setLayout(new javax.swing.BoxLayout(group, javax.swing.BoxLayout.Y_AXIS));
-        group.setAlignmentX(Component.LEFT_ALIGNMENT);
-        UIHelper.limitWidth(group, UIHelper.FIELD_WIDTH);
-
-        JLabel label = UIHelper.createFieldLabel(labelText);
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        group.add(label);
-        group.add(Box.createVerticalStrut(6));
-
-        JPanel fieldPanel = UIHelper.createPasswordWithToggle(field);
-        fieldPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        group.add(fieldPanel);
-        return group;
+    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {
+        // Backend reset logic will be added later.
     }
 
     /**
@@ -95,10 +50,122 @@ public class setNewPasswordFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        pnlBackground = new GradientBackgroundPanel();
+        pnlCard = new javax.swing.JPanel();
+        lblTitle = new javax.swing.JLabel();
+        lblInstruction1 = new javax.swing.JLabel();
+        lblInstruction2 = new javax.swing.JLabel();
+        lblNewPassword = new javax.swing.JLabel();
+        pnlNewPassword = new PasswordFieldPanel("Enter new password");
+        lblConfirmPassword = new javax.swing.JLabel();
+        pnlConfirmPassword = new PasswordFieldPanel("Re-enter new password");
+        pnlRequirements = new PasswordRequirementsPanel();
+        btnReset = new javax.swing.JButton();
+        lblReturn = new javax.swing.JLabel();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Set New Password");
         setResizable(true);
 
+        pnlBackground.setOpaque(true);
+
+        pnlCard.setOpaque(true);
+
+        lblTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTitle.setText("Set New Password");
+
+        lblInstruction1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblInstruction1.setText("Please create a new password that you don't use");
+
+        lblInstruction2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblInstruction2.setText("on any other site.");
+
+        lblNewPassword.setText("New Password");
+
+        lblConfirmPassword.setText("Confirm Password");
+
+        btnReset.setText("Reset Password");
+        btnReset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnResetActionPerformed(evt);
+            }
+        });
+
+        lblReturn.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblReturn.setText("\u2190 Return to Login");
+
+        javax.swing.GroupLayout pnlCardLayout = new javax.swing.GroupLayout(pnlCard);
+        pnlCard.setLayout(pnlCardLayout);
+        pnlCardLayout.setHorizontalGroup(
+            pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlCardLayout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTitle, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblInstruction1, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblInstruction2, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblNewPassword)
+                    .addComponent(pnlNewPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblConfirmPassword)
+                    .addComponent(pnlConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlRequirements, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblReturn, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(40, 40, 40))
+        );
+        pnlCardLayout.setVerticalGroup(
+            pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlCardLayout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addComponent(lblTitle)
+                .addGap(12, 12, 12)
+                .addComponent(lblInstruction1)
+                .addGap(2, 2, 2)
+                .addComponent(lblInstruction2)
+                .addGap(20, 20, 20)
+                .addComponent(lblNewPassword)
+                .addGap(6, 6, 6)
+                .addComponent(pnlNewPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(14, 14, 14)
+                .addComponent(lblConfirmPassword)
+                .addGap(6, 6, 6)
+                .addComponent(pnlConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(14, 14, 14)
+                .addComponent(pnlRequirements, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(16, 16, 16)
+                .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20)
+                .addComponent(lblReturn)
+                .addGap(40, 40, 40))
+        );
+
+        javax.swing.GroupLayout pnlBackgroundLayout = new javax.swing.GroupLayout(pnlBackground);
+        pnlBackground.setLayout(pnlBackgroundLayout);
+        pnlBackgroundLayout.setHorizontalGroup(
+            pnlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlBackgroundLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(pnlCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlBackgroundLayout.setVerticalGroup(
+            pnlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlBackgroundLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(pnlCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnlBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnlBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
     }// </editor-fold>//GEN-END:initComponents
 
     /**
@@ -116,9 +183,22 @@ public class setNewPasswordFrame extends javax.swing.JFrame {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
 
-        java.awt.EventQueue.invokeLater(() -> new setNewPasswordFrame());
+        UIHelper.initApplicationLook();
+        java.awt.EventQueue.invokeLater(() -> new setNewPasswordFrame().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnReset;
+    private javax.swing.JLabel lblConfirmPassword;
+    private javax.swing.JLabel lblInstruction1;
+    private javax.swing.JLabel lblInstruction2;
+    private javax.swing.JLabel lblNewPassword;
+    private javax.swing.JLabel lblReturn;
+    private javax.swing.JLabel lblTitle;
+    private GradientBackgroundPanel pnlBackground;
+    private javax.swing.JPanel pnlCard;
+    private PasswordFieldPanel pnlConfirmPassword;
+    private PasswordFieldPanel pnlNewPassword;
+    private PasswordRequirementsPanel pnlRequirements;
     // End of variables declaration//GEN-END:variables
 }
