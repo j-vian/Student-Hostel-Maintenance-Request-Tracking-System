@@ -1,8 +1,8 @@
 package studenthostelmaintenancerequest.trackingsystem.gui.common;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
@@ -12,19 +12,51 @@ import javax.swing.border.EmptyBorder;
 
 public class CardPanel extends JPanel {
 
-    private static final int ARC = 0;
-    private static final int SHADOW_OFFSET = 8;
-    private static final int SHADOW_BLUR_LAYERS = 12;
+    private static final int SHADOW_OFFSET = 4;
+    private static final int SHADOW_BLUR = 14;
+    private static final int CORNER_RADIUS = 10;
+    private static final int H_PAD = 40;
+    private static final int V_PAD = 40;
 
-    public CardPanel() {
+    private final JPanel body;
+    private final int contentWidth;
+
+    public CardPanel(int contentWidth) {
+        this.contentWidth = contentWidth;
         setOpaque(false);
         setBackground(AppColors.CARD);
-        setBorder(new EmptyBorder(48, 56, 48, 56));
+        setBorder(new EmptyBorder(V_PAD + SHADOW_OFFSET, H_PAD + SHADOW_OFFSET, V_PAD + SHADOW_OFFSET, H_PAD + SHADOW_OFFSET));
+        setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
+
+        body = new JPanel();
+        body.setOpaque(false);
+        body.setLayout(new javax.swing.BoxLayout(body, javax.swing.BoxLayout.Y_AXIS));
+        body.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+        UIHelper.fixWidth(body, contentWidth);
+        add(body);
     }
 
-    public void setCardSize(int width, int height) {
-        setPreferredSize(new Dimension(width, height));
-        setMaximumSize(new Dimension(width, height));
+    public JPanel getBody() {
+        return body;
+    }
+
+    public int getContentWidth() {
+        return contentWidth;
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        Dimension bodySize = body.getPreferredSize();
+        Insets insets = getInsets();
+        return new Dimension(
+                contentWidth + insets.left + insets.right,
+                bodySize.height + insets.top + insets.bottom);
+    }
+
+    @Override
+    public Dimension getMaximumSize() {
+        Dimension pref = getPreferredSize();
+        return new Dimension(pref.width, Integer.MAX_VALUE);
     }
 
     @Override
@@ -38,25 +70,21 @@ public class CardPanel extends JPanel {
         int w = getWidth() - insets.left - insets.right;
         int h = getHeight() - insets.top - insets.bottom;
 
-        for (int i = SHADOW_BLUR_LAYERS; i >= 1; i--) {
-            float alpha = 25f / 255f / i;
+        for (int i = SHADOW_BLUR; i >= 1; i--) {
+            float alpha = 10f / 255f / (i * 0.55f + 1f);
             g2.setColor(new Color(0f, 0f, 0f, alpha));
-            int spread = i * 2;
+            int spread = SHADOW_OFFSET + i / 2;
             g2.fillRoundRect(
-                    x - SHADOW_OFFSET - spread / 2,
-                    y - SHADOW_OFFSET - spread / 2,
+                    x + SHADOW_OFFSET - spread / 2,
+                    y + SHADOW_OFFSET - spread / 2,
                     w + spread,
                     h + spread,
-                    ARC,
-                    ARC);
+                    CORNER_RADIUS + 2,
+                    CORNER_RADIUS + 2);
         }
 
         g2.setColor(AppColors.CARD);
-        g2.fillRoundRect(x, y, w, h, ARC, ARC);
-
-        g2.setColor(AppColors.BORDER);
-        g2.setStroke(new BasicStroke(4f));
-        g2.drawRoundRect(x + 2, y + 2, w - 4, h - 4, ARC, ARC);
+        g2.fillRoundRect(x, y, w, h, CORNER_RADIUS, CORNER_RADIUS);
 
         g2.dispose();
         super.paintComponent(g);

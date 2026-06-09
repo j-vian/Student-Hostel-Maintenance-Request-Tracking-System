@@ -4,16 +4,7 @@
  */
 package studenthostelmaintenancerequest.trackingsystem.gui.auth;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import javax.swing.Box;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import studenthostelmaintenancerequest.trackingsystem.gui.common.CardPanel;
-import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
+import studenthostelmaintenancerequest.trackingsystem.gui.common.LoginCardPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderPasswordField;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
@@ -26,8 +17,7 @@ public class LoginFrame extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(LoginFrame.class.getName());
 
-    private PlaceholderTextField txtEmail;
-    private PlaceholderPasswordField txtPassword;
+    private LoginCardPanel loginCard;
 
     public LoginFrame() {
         initComponents();
@@ -37,64 +27,24 @@ public class LoginFrame extends javax.swing.JFrame {
     private void buildUi() {
         UIHelper.setupAuthFrame(this, "Login", true);
 
-        CardPanel card = new CardPanel();
-        card.setLayout(new javax.swing.BoxLayout(card, javax.swing.BoxLayout.Y_AXIS));
-        card.setAlignmentX(Component.CENTER_ALIGNMENT);
+        loginCard = new LoginCardPanel(
+                () -> UIHelper.navigateTo(this, new SignUpFrame()),
+                () -> UIHelper.navigateTo(this, new ForgotPasswordFrame()),
+                () -> {
+                    // Backend login logic will be added later.
+                });
 
-        LogoPanel logo = new LogoPanel();
-        logo.setAlignmentX(Component.CENTER_ALIGNMENT);
-        card.add(logo);
-        card.add(Box.createVerticalStrut(24));
+        UIHelper.mountCenteredCard(this, loginCard);
+        UIHelper.showFrame(this);
+        getRootPane().setDefaultButton(loginCard.getLoginButton());
+    }
 
-        JLabel lblTitle = UIHelper.createHeaderLabel(
-                "Student Hostel Maintenance<br>Request<br>&amp;<br>Tracking System");
-        lblTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-        card.add(lblTitle);
-        card.add(Box.createVerticalStrut(40));
+    public PlaceholderTextField getEmailField() {
+        return loginCard.getEmailField();
+    }
 
-        JPanel form = new JPanel();
-        form.setOpaque(false);
-        form.setLayout(new javax.swing.BoxLayout(form, javax.swing.BoxLayout.Y_AXIS));
-        form.setAlignmentX(Component.CENTER_ALIGNMENT);
-        form.setMaximumSize(new Dimension(UIHelper.FIELD_WIDTH, 600));
-
-        txtEmail = UIHelper.createTextField("Enter your email");
-        txtPassword = UIHelper.createPasswordField("Enter your password");
-
-        form.add(UIHelper.createFieldGroup(UIHelper.createFieldLabel("Email"), txtEmail));
-        form.add(Box.createVerticalStrut(24));
-        form.add(UIHelper.createFieldGroup(UIHelper.createFieldLabel("Password"), txtPassword));
-        form.add(Box.createVerticalStrut(16));
-
-        JPanel linksRow = new JPanel(new BorderLayout());
-        linksRow.setOpaque(false);
-        linksRow.setMaximumSize(new Dimension(UIHelper.FIELD_WIDTH, 30));
-        linksRow.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        JLabel lblSignUpLink = UIHelper.createHyperlink("No account? Sign Up");
-        UIHelper.addHyperlinkAction(lblSignUpLink, () -> UIHelper.navigateTo(this, new SignUpFrame()));
-
-        JLabel lblForgotLink = UIHelper.createHyperlink("Forgot password?");
-        UIHelper.addHyperlinkAction(lblForgotLink, () -> UIHelper.navigateTo(this, new ForgotPasswordFrame()));
-
-        linksRow.add(lblSignUpLink, BorderLayout.WEST);
-        linksRow.add(lblForgotLink, BorderLayout.EAST);
-        form.add(linksRow);
-        form.add(Box.createVerticalStrut(32));
-
-        javax.swing.JButton btnLogin = UIHelper.createPrimaryButton("Log In");
-        btnLogin.setAlignmentX(Component.LEFT_ALIGNMENT);
-        btnLogin.addActionListener(e -> {
-            // Backend login logic will be added later.
-        });
-        form.add(btnLogin);
-
-        card.add(form);
-
-        JPanel centered = UIHelper.centerCard(card, 640);
-
-        getContentPane().add(centered, new GridBagConstraints());
-        pack();
+    public PlaceholderPasswordField getPasswordField() {
+        return loginCard.getPasswordField();
     }
 
     /**
@@ -105,19 +55,14 @@ public class LoginFrame extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Login");
-        setPreferredSize(new java.awt.Dimension(1280, 800));
-        setResizable(false);
-
-        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -129,7 +74,8 @@ public class LoginFrame extends javax.swing.JFrame {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
 
-        java.awt.EventQueue.invokeLater(() -> UIHelper.showFrame(new LoginFrame()));
+        UIHelper.initApplicationLook();
+        java.awt.EventQueue.invokeLater(() -> new LoginFrame());
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

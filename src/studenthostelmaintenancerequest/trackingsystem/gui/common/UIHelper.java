@@ -6,13 +6,12 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
@@ -29,25 +28,55 @@ import javax.swing.border.LineBorder;
 
 public final class UIHelper {
 
-    public static final int FIELD_WIDTH = 520;
-    public static final int FIELD_HEIGHT = 52;
-    public static final int HALF_FIELD_WIDTH = 248;
-    public static final int SIGNUP_FIELD_WIDTH = 720;
-    public static final int SIGNUP_HALF_WIDTH = 348;
+    public static final int FRAME_WIDTH = 1100;
+    public static final int FRAME_HEIGHT = 720;
+
+    public static final int FIELD_WIDTH = 420;
+    public static final int FIELD_HEIGHT = 42;
+    public static final int BUTTON_HEIGHT = 44;
+
+    public static final int LOGIN_CONTENT_WIDTH = 420;
+    public static final int AUTH_CONTENT_WIDTH = 500;
+
+    public static final int SIGNUP_FIELD_WIDTH = 560;
+    public static final int SIGNUP_HALF_WIDTH = 272;
+    public static final int SIGNUP_CONTENT_WIDTH = 560;
 
     private UIHelper() {
     }
 
     public static Border inputBorder() {
         return new CompoundBorder(
-                new LineBorder(AppColors.BORDER, 2, true),
-                new EmptyBorder(10, 16, 10, 16));
+                new LineBorder(AppColors.BORDER, 1, true),
+                new EmptyBorder(10, 14, 10, 14));
     }
 
     public static Border comboBorder() {
         return new CompoundBorder(
-                new LineBorder(AppColors.BORDER, 2, true),
-                new EmptyBorder(8, 16, 8, 16));
+                new LineBorder(AppColors.BORDER, 1, true),
+                new EmptyBorder(6, 12, 6, 12));
+    }
+
+    /** Fixed width for inputs/buttons only — never use on labels or cards. */
+    public static void fixSize(JComponent comp, int width, int height) {
+        comp.setAlignmentX(Component.LEFT_ALIGNMENT);
+        Dimension size = new Dimension(width, height);
+        comp.setPreferredSize(size);
+        comp.setMinimumSize(size);
+        comp.setMaximumSize(size);
+    }
+
+    /** Let height grow naturally; only cap width (for columns / text blocks). */
+    public static void limitWidth(JComponent comp, int width) {
+        comp.setAlignmentX(Component.LEFT_ALIGNMENT);
+        comp.setMaximumSize(new Dimension(width, Integer.MAX_VALUE));
+    }
+
+    /** Fixed content width; height grows with children (auth form columns). */
+    public static void fixWidth(JComponent comp, int width) {
+        comp.setAlignmentX(Component.CENTER_ALIGNMENT);
+        comp.setMinimumSize(new Dimension(width, 0));
+        comp.setMaximumSize(new Dimension(width, Integer.MAX_VALUE));
     }
 
     public static JLabel createFieldLabel(String text) {
@@ -58,61 +87,110 @@ public final class UIHelper {
         return label;
     }
 
-    public static JLabel createHeaderLabel(String text) {
-        JLabel label = new JLabel("<html><div style='text-align:center;'>" + text + "</div></html>");
-        label.setFont(AppFonts.header());
-        label.setForeground(AppColors.PRIMARY);
+    public static JLabel createHeaderLabel(String text, int contentWidth) {
+        String html = String.format(
+                "<html><div style='text-align:center;width:%dpx;font-family:%s;font-size:%dpt;"
+                        + "font-weight:700;color:#0D5C63;line-height:1.3;'>%s</div></html>",
+                contentWidth, AppFonts.cssFamily(), AppFonts.HEADER_SIZE, text);
+        JLabel label = new JLabel(html);
         label.setHorizontalAlignment(JLabel.CENTER);
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        sizeMultilineLabel(label, contentWidth);
         return label;
     }
 
-    public static JLabel createInstructionLabel(String text) {
-        JLabel label = new JLabel("<html><div style='text-align:center;width:520px;'>" + text + "</div></html>");
-        label.setFont(AppFonts.body());
-        label.setForeground(AppColors.LABEL);
+    public static JPanel createLoginHeader(String... lines) {
+        JPanel block = new JPanel();
+        block.setOpaque(false);
+        block.setLayout(new javax.swing.BoxLayout(block, javax.swing.BoxLayout.Y_AXIS));
+        block.setAlignmentX(Component.CENTER_ALIGNMENT);
+        fixWidth(block, LOGIN_CONTENT_WIDTH);
+
+        for (String line : lines) {
+            JLabel label = new JLabel(line, JLabel.CENTER);
+            label.setFont(AppFonts.loginHeader());
+            label.setForeground(AppColors.PRIMARY);
+            label.setHorizontalAlignment(JLabel.CENTER);
+            int lineHeight = "&".equals(line) ? 22 : 30;
+            fixSize(label, LOGIN_CONTENT_WIDTH, lineHeight);
+            label.setAlignmentX(Component.CENTER_ALIGNMENT);
+            block.add(label);
+        }
+        return block;
+    }
+
+    public static JLabel createInstructionLabel(String text, int contentWidth) {
+        String html = String.format(
+                "<html><div style='text-align:center;width:%dpx;font-family:%s;font-size:%dpt;"
+                        + "color:#1A1C1C;line-height:1.45;'>%s</div></html>",
+                contentWidth, AppFonts.cssFamily(), AppFonts.BODY_SIZE, text);
+        JLabel label = new JLabel(html);
         label.setHorizontalAlignment(JLabel.CENTER);
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        sizeMultilineLabel(label, contentWidth);
         return label;
+    }
+
+    private static void sizeMultilineLabel(JLabel label, int width) {
+        Dimension pref = label.getPreferredSize();
+        int height = Math.max(pref.height + 6, 24);
+        Dimension size = new Dimension(width, height);
+        label.setPreferredSize(size);
+        label.setMinimumSize(size);
+        label.setMaximumSize(new Dimension(width, Integer.MAX_VALUE));
+    }
+
+    public static JPanel centerHorizontally(JComponent component, int rowWidth) {
+        JPanel row = new JPanel();
+        row.setOpaque(false);
+        row.setLayout(new javax.swing.BoxLayout(row, javax.swing.BoxLayout.X_AXIS));
+        int rowHeight = Math.max(component.getPreferredSize().height, 1);
+        fixSize(row, rowWidth, rowHeight);
+        row.setAlignmentX(Component.CENTER_ALIGNMENT);
+        row.add(javax.swing.Box.createHorizontalGlue());
+        component.setAlignmentX(Component.CENTER_ALIGNMENT);
+        row.add(component);
+        row.add(javax.swing.Box.createHorizontalGlue());
+        return row;
+    }
+
+    public static void initApplicationLook() {
+        java.awt.Font body = AppFonts.body();
+        javax.swing.UIManager.put("Label.font", body);
+        javax.swing.UIManager.put("Button.font", AppFonts.bodyBold());
+        javax.swing.UIManager.put("TextField.font", body);
+        javax.swing.UIManager.put("PasswordField.font", body);
+        javax.swing.UIManager.put("ComboBox.font", body);
+        javax.swing.UIManager.put("ScrollPane.font", body);
     }
 
     public static PlaceholderTextField createTextField(String placeholder) {
         PlaceholderTextField field = new PlaceholderTextField(placeholder);
-        field.setPreferredSize(new Dimension(FIELD_WIDTH, FIELD_HEIGHT));
-        field.setMaximumSize(new Dimension(FIELD_WIDTH, FIELD_HEIGHT));
+        fixSize(field, FIELD_WIDTH, FIELD_HEIGHT);
         return field;
     }
 
     public static PlaceholderTextField createSignupTextField(String placeholder) {
         PlaceholderTextField field = new PlaceholderTextField(placeholder);
-        field.setPreferredSize(new Dimension(SIGNUP_FIELD_WIDTH, FIELD_HEIGHT));
-        field.setMaximumSize(new Dimension(SIGNUP_FIELD_WIDTH, FIELD_HEIGHT));
-        return field;
-    }
-
-    public static PlaceholderTextField createHalfTextField(String placeholder) {
-        PlaceholderTextField field = new PlaceholderTextField(placeholder);
-        field.setPreferredSize(new Dimension(HALF_FIELD_WIDTH, FIELD_HEIGHT));
-        field.setMaximumSize(new Dimension(HALF_FIELD_WIDTH, FIELD_HEIGHT));
+        fixSize(field, SIGNUP_FIELD_WIDTH, FIELD_HEIGHT);
         return field;
     }
 
     public static PlaceholderTextField createSignupHalfTextField(String placeholder) {
         PlaceholderTextField field = new PlaceholderTextField(placeholder);
-        field.setPreferredSize(new Dimension(SIGNUP_HALF_WIDTH, FIELD_HEIGHT));
-        field.setMaximumSize(new Dimension(SIGNUP_HALF_WIDTH, FIELD_HEIGHT));
+        fixSize(field, SIGNUP_HALF_WIDTH, FIELD_HEIGHT);
         return field;
     }
 
     public static PlaceholderPasswordField createPasswordField(String placeholder) {
         PlaceholderPasswordField field = new PlaceholderPasswordField(placeholder);
-        field.setPreferredSize(new Dimension(FIELD_WIDTH, FIELD_HEIGHT));
-        field.setMaximumSize(new Dimension(FIELD_WIDTH, FIELD_HEIGHT));
+        fixSize(field, FIELD_WIDTH, FIELD_HEIGHT);
         return field;
     }
 
     public static PlaceholderPasswordField createSignupHalfPasswordField(String placeholder) {
         PlaceholderPasswordField field = new PlaceholderPasswordField(placeholder);
-        field.setPreferredSize(new Dimension(SIGNUP_HALF_WIDTH, FIELD_HEIGHT));
-        field.setMaximumSize(new Dimension(SIGNUP_HALF_WIDTH, FIELD_HEIGHT));
+        fixSize(field, SIGNUP_HALF_WIDTH, FIELD_HEIGHT);
         return field;
     }
 
@@ -130,21 +208,19 @@ public final class UIHelper {
         };
         button.setFont(AppFonts.bodyBold());
         button.setForeground(AppColors.BUTTON_TEXT);
-        button.setBackground(AppColors.PRIMARY);
         button.setBorderPainted(false);
         button.setFocusPainted(false);
         button.setContentAreaFilled(false);
         button.setOpaque(false);
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        button.setPreferredSize(new Dimension(FIELD_WIDTH, 56));
-        button.setMaximumSize(new Dimension(FIELD_WIDTH, 56));
+        fixSize(button, FIELD_WIDTH, BUTTON_HEIGHT);
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
         return button;
     }
 
     public static JButton createSignupPrimaryButton(String text) {
         JButton button = createPrimaryButton(text);
-        button.setPreferredSize(new Dimension(SIGNUP_FIELD_WIDTH, 56));
-        button.setMaximumSize(new Dimension(SIGNUP_FIELD_WIDTH, 56));
+        fixSize(button, SIGNUP_FIELD_WIDTH, BUTTON_HEIGHT);
         return button;
     }
 
@@ -172,8 +248,7 @@ public final class UIHelper {
         combo.setBackground(Color.WHITE);
         combo.setForeground(AppColors.LABEL);
         combo.setBorder(comboBorder());
-        combo.setPreferredSize(new Dimension(SIGNUP_FIELD_WIDTH, FIELD_HEIGHT));
-        combo.setMaximumSize(new Dimension(SIGNUP_FIELD_WIDTH, FIELD_HEIGHT));
+        fixSize(combo, SIGNUP_FIELD_WIDTH, FIELD_HEIGHT);
         return combo;
     }
 
@@ -184,13 +259,15 @@ public final class UIHelper {
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
         field.setAlignmentX(Component.LEFT_ALIGNMENT);
         group.add(label);
-        group.add(javax.swing.Box.createVerticalStrut(8));
+        group.add(javax.swing.Box.createVerticalStrut(6));
         group.add(field);
+        group.setAlignmentX(Component.CENTER_ALIGNMENT);
+        fixWidth(group, FIELD_WIDTH);
         return group;
     }
 
     public static JPanel createTwoColumnRow(JPanel left, JPanel right) {
-        JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 24, 0));
+        JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 16, 0));
         row.setOpaque(false);
         row.setAlignmentX(Component.LEFT_ALIGNMENT);
         row.add(left);
@@ -198,36 +275,115 @@ public final class UIHelper {
         return row;
     }
 
-    public static JPanel centerCard(JPanel card, int cardWidth) {
-        int height = Math.max(card.getPreferredSize().height, 400);
-        card.setPreferredSize(new Dimension(cardWidth, height));
-        card.setMaximumSize(new Dimension(cardWidth, Integer.MAX_VALUE));
-
-        JPanel wrapper = new JPanel(new GridBagLayout());
-        wrapper.setOpaque(false);
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        wrapper.add(card, gbc);
-        return wrapper;
+    public static JPanel createFormColumn(int width) {
+        JPanel column = new JPanel();
+        column.setOpaque(false);
+        column.setLayout(new javax.swing.BoxLayout(column, javax.swing.BoxLayout.Y_AXIS));
+        column.setAlignmentX(Component.LEFT_ALIGNMENT);
+        column.setMinimumSize(new Dimension(width, 0));
+        limitWidth(column, width);
+        return column;
     }
 
+    /**
+     * Background fills the whole window; card floats centered horizontally and vertically.
+     */
     public static void setupAuthFrame(javax.swing.JFrame frame, String title, boolean exitOnClose) {
         frame.setTitle(title);
         frame.setDefaultCloseOperation(
                 exitOnClose ? javax.swing.WindowConstants.EXIT_ON_CLOSE
                         : javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        frame.setResizable(false);
-        frame.setMinimumSize(new Dimension(1280, 800));
-        frame.setPreferredSize(new Dimension(1280, 800));
-        frame.setContentPane(new GradientBackgroundPanel());
-        frame.getContentPane().setLayout(new GridBagLayout());
+        frame.setResizable(true);
+
+        GradientBackgroundPanel background = new GradientBackgroundPanel();
+        background.setLayout(new BorderLayout());
+        frame.setContentPane(background);
+    }
+
+    public static void mountFloatingCard(javax.swing.JFrame frame, JComponent card) {
+        JPanel centerSlot = new JPanel(new GridBagLayout());
+        centerSlot.setOpaque(false);
+
+        GridBagConstraints cardGbc = new GridBagConstraints();
+        cardGbc.gridx = 0;
+        cardGbc.gridy = 0;
+        cardGbc.anchor = GridBagConstraints.CENTER;
+        cardGbc.fill = GridBagConstraints.NONE;
+        cardGbc.weightx = 0;
+        cardGbc.weighty = 0;
+        centerSlot.add(card, cardGbc);
+
+        frame.getContentPane().add(centerSlot, BorderLayout.CENTER);
+    }
+
+    /**
+     * Pins the card to its preferred size and keeps it centered when the window resizes.
+     */
+    public static void mountCenteredCard(javax.swing.JFrame frame, JComponent card) {
+        java.awt.Container background = frame.getContentPane();
+        background.setLayout(null);
+        background.add(card);
+        background.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent e) {
+                centerComponent(background, card);
+            }
+        });
+        centerComponent(background, card);
+    }
+
+    private static void centerComponent(java.awt.Container parent, JComponent child) {
+        Dimension size = child.getPreferredSize();
+        int x = Math.max(0, (parent.getWidth() - size.width) / 2);
+        int y = Math.max(0, (parent.getHeight() - size.height) / 2);
+        child.setBounds(x, y, size.width, size.height);
+    }
+
+    /**
+     * For tall forms: background fills window, card scrolls if needed and stays centered in view.
+     */
+    public static void mountScrollableCard(javax.swing.JFrame frame, JComponent card) {
+        JPanel viewportHost = new JPanel(new GridBagLayout());
+        viewportHost.setOpaque(false);
+
+        GridBagConstraints cardGbc = new GridBagConstraints();
+        cardGbc.gridx = 0;
+        cardGbc.gridy = 0;
+        cardGbc.weightx = 1;
+        cardGbc.weighty = 1;
+        cardGbc.anchor = GridBagConstraints.CENTER;
+        cardGbc.insets = new java.awt.Insets(32, 0, 32, 0);
+        viewportHost.add(card, cardGbc);
+
+        JScrollPane scroll = new JScrollPane(viewportHost);
+        scroll.setBorder(BorderFactory.createEmptyBorder());
+        scroll.setOpaque(false);
+        scroll.getViewport().setOpaque(false);
+        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        frame.getContentPane().add(scroll, BorderLayout.CENTER);
     }
 
     public static void showFrame(javax.swing.JFrame frame) {
-        frame.pack();
+        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+        int width = Math.min(FRAME_WIDTH, screen.width - 48);
+        int height = Math.min(FRAME_HEIGHT, screen.height - 96);
+        frame.setSize(width, height);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            java.awt.Container content = frame.getContentPane();
+            if (content.getLayout() == null) {
+                for (java.awt.Component child : content.getComponents()) {
+                    if (child instanceof JComponent) {
+                        centerComponent(content, (JComponent) child);
+                    }
+                }
+            }
+            frame.revalidate();
+            frame.repaint();
+        });
     }
 
     public static void navigateTo(javax.swing.JFrame current, javax.swing.JFrame next) {
@@ -237,16 +393,14 @@ public final class UIHelper {
 
     public static JPanel createPasswordWithToggle(PlaceholderPasswordField field) {
         JPanel container = new JPanel(new BorderLayout());
-        container.setOpaque(false);
-        container.setPreferredSize(field.getPreferredSize());
-        container.setMaximumSize(field.getMaximumSize());
-        container.setBorder(inputBorder());
-        container.setBackground(AppColors.INPUT_FILL);
-
-        field.setBorder(BorderFactory.createEmptyBorder(10, 16, 10, 8));
-        field.setPreferredSize(new Dimension(FIELD_WIDTH - 52, FIELD_HEIGHT - 4));
-        field.setMaximumSize(new Dimension(FIELD_WIDTH - 52, FIELD_HEIGHT - 4));
         container.setOpaque(true);
+        container.setBackground(AppColors.INPUT_FILL);
+        container.setBorder(inputBorder());
+        fixSize(container, FIELD_WIDTH, FIELD_HEIGHT);
+
+        field.setBorder(BorderFactory.createEmptyBorder(6, 12, 6, 4));
+        field.setPreferredSize(new Dimension(FIELD_WIDTH - 44, FIELD_HEIGHT - 2));
+        field.setMaximumSize(new Dimension(FIELD_WIDTH - 44, FIELD_HEIGHT - 2));
 
         JButton toggle = new JButton() {
             @Override
@@ -256,12 +410,12 @@ public final class UIHelper {
                 g2.setColor(AppColors.EYE_ICON);
                 int cx = getWidth() / 2;
                 int cy = getHeight() / 2;
-                g2.drawOval(cx - 10, cy - 7, 20, 14);
-                g2.fillOval(cx - 4, cy - 2, 8, 8);
+                g2.drawOval(cx - 9, cy - 6, 18, 12);
+                g2.fillOval(cx - 3, cy - 2, 6, 6);
                 g2.dispose();
             }
         };
-        toggle.setPreferredSize(new Dimension(40, FIELD_HEIGHT - 4));
+        toggle.setPreferredSize(new Dimension(36, FIELD_HEIGHT - 2));
         toggle.setBorderPainted(false);
         toggle.setContentAreaFilled(false);
         toggle.setFocusPainted(false);
@@ -284,28 +438,28 @@ public final class UIHelper {
         panel.setOpaque(true);
         panel.setBackground(AppColors.REQUIREMENTS_FILL);
         panel.setBorder(new CompoundBorder(
-                new LineBorder(AppColors.BORDER, 2, true),
-                new EmptyBorder(20, 24, 20, 24)));
+                new LineBorder(AppColors.BORDER, 1, true),
+                new EmptyBorder(16, 18, 16, 18)));
         panel.setLayout(new javax.swing.BoxLayout(panel, javax.swing.BoxLayout.Y_AXIS));
         panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        panel.setMaximumSize(new Dimension(FIELD_WIDTH, 220));
+        limitWidth(panel, FIELD_WIDTH);
 
         JLabel title = new JLabel("Password must contain:");
         title.setFont(AppFonts.reqTitle());
         title.setForeground(AppColors.LABEL);
         title.setAlignmentX(Component.LEFT_ALIGNMENT);
         panel.add(title);
-        panel.add(javax.swing.Box.createVerticalStrut(12));
+        panel.add(javax.swing.Box.createVerticalStrut(10));
         panel.add(createRequirementItem("At least 8 characters"));
-        panel.add(javax.swing.Box.createVerticalStrut(8));
+        panel.add(javax.swing.Box.createVerticalStrut(6));
         panel.add(createRequirementItem("One uppercase letter"));
-        panel.add(javax.swing.Box.createVerticalStrut(8));
+        panel.add(javax.swing.Box.createVerticalStrut(6));
         panel.add(createRequirementItem("One number or symbol"));
         return panel;
     }
 
     private static JPanel createRequirementItem(String text) {
-        JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 0));
+        JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         row.setOpaque(false);
         row.setAlignmentX(Component.LEFT_ALIGNMENT);
 
@@ -315,15 +469,15 @@ public final class UIHelper {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setColor(AppColors.LABEL);
-                g2.fillOval(2, 2, 22, 22);
+                g2.fillOval(2, 2, 18, 18);
                 g2.setColor(Color.WHITE);
                 g2.setStroke(new java.awt.BasicStroke(2f));
-                g2.drawLine(7, 12, 11, 16);
-                g2.drawLine(11, 16, 18, 8);
+                g2.drawLine(6, 11, 9, 14);
+                g2.drawLine(9, 14, 15, 7);
                 g2.dispose();
             }
         };
-        icon.setPreferredSize(new Dimension(26, 26));
+        icon.setPreferredSize(new Dimension(22, 22));
 
         JLabel label = new JLabel(text);
         label.setFont(AppFonts.reqItem());
@@ -332,16 +486,5 @@ public final class UIHelper {
         row.add(icon);
         row.add(label);
         return row;
-    }
-
-    public static JScrollPane wrapSignupCard(JPanel card) {
-        JScrollPane scroll = new JScrollPane(card);
-        scroll.setBorder(BorderFactory.createEmptyBorder());
-        scroll.setOpaque(false);
-        scroll.getViewport().setOpaque(false);
-        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scroll.setPreferredSize(new Dimension(900, 760));
-        return scroll;
     }
 }

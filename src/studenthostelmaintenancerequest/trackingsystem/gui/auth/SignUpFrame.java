@@ -5,8 +5,6 @@
 package studenthostelmaintenancerequest.trackingsystem.gui.auth;
 
 import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
 import javax.swing.Box;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -27,7 +25,6 @@ public class SignUpFrame extends javax.swing.JFrame {
     private JPanel pnlStudentExtra;
     private JPanel pnlStaffExtra;
     private JComboBox<String> cmbRole;
-    private JComboBox<String> cmbExpertise;
 
     public SignUpFrame() {
         initComponents();
@@ -37,98 +34,77 @@ public class SignUpFrame extends javax.swing.JFrame {
     private void buildUi() {
         UIHelper.setupAuthFrame(this, "Create Account", false);
 
-        CardPanel card = new CardPanel();
-        card.setLayout(new javax.swing.BoxLayout(card, javax.swing.BoxLayout.Y_AXIS));
-        card.setAlignmentX(Component.CENTER_ALIGNMENT);
+        CardPanel card = new CardPanel(UIHelper.SIGNUP_CONTENT_WIDTH);
+        JPanel body = card.getBody();
 
-        JLabel lblTitle = UIHelper.createHeaderLabel("Create Account");
-        lblTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-        card.add(lblTitle);
-        card.add(Box.createVerticalStrut(32));
-
-        JPanel form = new JPanel();
-        form.setOpaque(false);
-        form.setLayout(new javax.swing.BoxLayout(form, javax.swing.BoxLayout.Y_AXIS));
-        form.setAlignmentX(Component.CENTER_ALIGNMENT);
-        form.setMaximumSize(new Dimension(UIHelper.SIGNUP_FIELD_WIDTH, 1200));
+        JLabel lblTitle = UIHelper.createHeaderLabel("Create Account", UIHelper.SIGNUP_CONTENT_WIDTH);
+        body.add(lblTitle);
+        body.add(Box.createVerticalStrut(20));
 
         PlaceholderTextField txtFirstName = UIHelper.createSignupHalfTextField("First Name");
         PlaceholderTextField txtLastName = UIHelper.createSignupHalfTextField("Last Name");
         JPanel nameRow = UIHelper.createTwoColumnRow(
                 UIHelper.createFieldGroup(UIHelper.createFieldLabel("First Name"), txtFirstName),
                 UIHelper.createFieldGroup(UIHelper.createFieldLabel("Last Name"), txtLastName));
-        form.add(nameRow);
-        form.add(Box.createVerticalStrut(20));
+        body.add(nameRow);
+        body.add(Box.createVerticalStrut(12));
 
         PlaceholderTextField txtUsername = UIHelper.createSignupTextField("Username");
-        form.add(UIHelper.createFieldGroup(UIHelper.createFieldLabel("Username"), txtUsername));
-        form.add(Box.createVerticalStrut(20));
+        body.add(UIHelper.createFieldGroup(UIHelper.createFieldLabel("Username"), txtUsername));
+        body.add(Box.createVerticalStrut(12));
 
         PlaceholderTextField txtUserId = UIHelper.createSignupTextField("User ID");
-        form.add(UIHelper.createFieldGroup(UIHelper.createFieldLabel("User ID"), txtUserId));
-        form.add(Box.createVerticalStrut(20));
+        body.add(UIHelper.createFieldGroup(UIHelper.createFieldLabel("User ID"), txtUserId));
+        body.add(Box.createVerticalStrut(12));
 
         PlaceholderTextField txtEmail = UIHelper.createSignupTextField("Email");
-        form.add(UIHelper.createFieldGroup(UIHelper.createFieldLabel("Email"), txtEmail));
-        form.add(Box.createVerticalStrut(20));
+        body.add(UIHelper.createFieldGroup(UIHelper.createFieldLabel("Email"), txtEmail));
+        body.add(Box.createVerticalStrut(12));
 
         PlaceholderPasswordField txtPassword = UIHelper.createSignupHalfPasswordField("Password");
         PlaceholderPasswordField txtConfirmPassword = UIHelper.createSignupHalfPasswordField("Confirm Password");
         JPanel passwordRow = UIHelper.createTwoColumnRow(
                 UIHelper.createFieldGroup(UIHelper.createFieldLabel("Password"), txtPassword),
                 UIHelper.createFieldGroup(UIHelper.createFieldLabel("Confirm Password"), txtConfirmPassword));
-        form.add(passwordRow);
-        form.add(Box.createVerticalStrut(20));
+        body.add(passwordRow);
+        body.add(Box.createVerticalStrut(12));
 
         cmbRole = UIHelper.createComboBox(new String[]{"Select your role", "Student", "Staff"});
-        form.add(UIHelper.createFieldGroup(UIHelper.createFieldLabel("Select Role"), cmbRole));
-        form.add(Box.createVerticalStrut(20));
+        body.add(UIHelper.createFieldGroup(UIHelper.createFieldLabel("Select Role"), cmbRole));
+        body.add(Box.createVerticalStrut(12));
 
         pnlStudentExtra = UIHelper.createFieldGroup(
                 UIHelper.createFieldLabel("Room Number"),
                 UIHelper.createSignupTextField("Room Number"));
         pnlStudentExtra.setVisible(false);
-        pnlStudentExtra.setAlignmentX(Component.LEFT_ALIGNMENT);
-        form.add(pnlStudentExtra);
+        body.add(pnlStudentExtra);
 
-        cmbExpertise = UIHelper.createComboBox(new String[]{
+        JComboBox<String> cmbExpertise = UIHelper.createComboBox(new String[]{
             "Select your expertise", "Electrician", "Plumber", "Furniture Tech", "Other"
         });
         pnlStaffExtra = UIHelper.createFieldGroup(
                 UIHelper.createFieldLabel("Select Expertise"), cmbExpertise);
         pnlStaffExtra.setVisible(false);
-        pnlStaffExtra.setAlignmentX(Component.LEFT_ALIGNMENT);
-        form.add(pnlStaffExtra);
+        body.add(pnlStaffExtra);
 
-        form.add(Box.createVerticalStrut(28));
+        body.add(Box.createVerticalStrut(16));
 
         javax.swing.JButton btnSignUp = UIHelper.createSignupPrimaryButton("Sign Up");
-        btnSignUp.setAlignmentX(Component.LEFT_ALIGNMENT);
         btnSignUp.addActionListener(e -> {
             // Backend sign-up logic will be added later.
         });
-        form.add(btnSignUp);
-
-        card.add(form);
+        body.add(btnSignUp);
 
         cmbRole.addActionListener(e -> updateRoleFields());
 
-        card.setMaximumSize(new Dimension(860, Integer.MAX_VALUE));
-        card.setPreferredSize(new Dimension(860, card.getPreferredSize().height));
-
-        JPanel centered = new JPanel(new java.awt.GridBagLayout());
-        centered.setOpaque(false);
-        centered.add(UIHelper.wrapSignupCard(card));
-        getContentPane().add(centered, new GridBagConstraints());
-        pack();
+        UIHelper.mountScrollableCard(this, card);
+        UIHelper.showFrame(this);
     }
 
     private void updateRoleFields() {
         String selected = (String) cmbRole.getSelectedItem();
-        boolean isStudent = "Student".equals(selected);
-        boolean isStaff = "Staff".equals(selected);
-        pnlStudentExtra.setVisible(isStudent);
-        pnlStaffExtra.setVisible(isStaff);
+        pnlStudentExtra.setVisible("Student".equals(selected));
+        pnlStaffExtra.setVisible("Staff".equals(selected));
         revalidate();
         repaint();
     }
@@ -144,16 +120,14 @@ public class SignUpFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Create Account");
-        setPreferredSize(new java.awt.Dimension(1280, 800));
-        setResizable(false);
+        setResizable(true);
 
-        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -165,7 +139,7 @@ public class SignUpFrame extends javax.swing.JFrame {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
 
-        java.awt.EventQueue.invokeLater(() -> UIHelper.showFrame(new SignUpFrame()));
+        java.awt.EventQueue.invokeLater(() -> new SignUpFrame());
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

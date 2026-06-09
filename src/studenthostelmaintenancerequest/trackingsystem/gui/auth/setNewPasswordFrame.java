@@ -5,8 +5,6 @@
 package studenthostelmaintenancerequest.trackingsystem.gui.auth;
 
 import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
 import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -30,84 +28,62 @@ public class setNewPasswordFrame extends javax.swing.JFrame {
     private void buildUi() {
         UIHelper.setupAuthFrame(this, "Set New Password", false);
 
-        CardPanel card = new CardPanel();
-        card.setLayout(new javax.swing.BoxLayout(card, javax.swing.BoxLayout.Y_AXIS));
-        card.setAlignmentX(Component.CENTER_ALIGNMENT);
+        CardPanel card = new CardPanel(UIHelper.AUTH_CONTENT_WIDTH);
+        JPanel body = card.getBody();
 
-        JLabel lblTitle = UIHelper.createHeaderLabel("Set New Password");
-        lblTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-        card.add(lblTitle);
-        card.add(Box.createVerticalStrut(20));
+        JLabel lblTitle = UIHelper.createHeaderLabel("Set New Password", UIHelper.AUTH_CONTENT_WIDTH);
+        body.add(lblTitle);
+        body.add(Box.createVerticalStrut(12));
 
         JLabel lblInstruction = UIHelper.createInstructionLabel(
-                "Please create a new password that you don't use on any other site.");
-        lblInstruction.setAlignmentX(Component.CENTER_ALIGNMENT);
-        card.add(lblInstruction);
-        card.add(Box.createVerticalStrut(32));
-
-        JPanel form = new JPanel();
-        form.setOpaque(false);
-        form.setLayout(new javax.swing.BoxLayout(form, javax.swing.BoxLayout.Y_AXIS));
-        form.setAlignmentX(Component.CENTER_ALIGNMENT);
-        form.setMaximumSize(new Dimension(UIHelper.FIELD_WIDTH, 700));
+                "Please create a new password that you don't use on any other site.",
+                UIHelper.AUTH_CONTENT_WIDTH);
+        body.add(lblInstruction);
+        body.add(Box.createVerticalStrut(20));
 
         PlaceholderPasswordField txtNewPassword = UIHelper.createPasswordField("Enter new password");
         PlaceholderPasswordField txtConfirmPassword = UIHelper.createPasswordField("Re-enter new password");
 
-        JPanel newPasswordGroup = new JPanel();
-        newPasswordGroup.setOpaque(false);
-        newPasswordGroup.setLayout(new javax.swing.BoxLayout(newPasswordGroup, javax.swing.BoxLayout.Y_AXIS));
-        newPasswordGroup.setAlignmentX(Component.LEFT_ALIGNMENT);
-        newPasswordGroup.setMaximumSize(new Dimension(UIHelper.FIELD_WIDTH, 90));
-        JLabel lblNewPassword = UIHelper.createFieldLabel("New Password");
-        lblNewPassword.setAlignmentX(Component.LEFT_ALIGNMENT);
-        newPasswordGroup.add(lblNewPassword);
-        newPasswordGroup.add(Box.createVerticalStrut(8));
-        JPanel newPasswordField = UIHelper.createPasswordWithToggle(txtNewPassword);
-        newPasswordField.setAlignmentX(Component.LEFT_ALIGNMENT);
-        newPasswordGroup.add(newPasswordField);
-
-        JPanel confirmPasswordGroup = new JPanel();
-        confirmPasswordGroup.setOpaque(false);
-        confirmPasswordGroup.setLayout(new javax.swing.BoxLayout(confirmPasswordGroup, javax.swing.BoxLayout.Y_AXIS));
-        confirmPasswordGroup.setAlignmentX(Component.LEFT_ALIGNMENT);
-        confirmPasswordGroup.setMaximumSize(new Dimension(UIHelper.FIELD_WIDTH, 90));
-        JLabel lblConfirmPassword = UIHelper.createFieldLabel("Confirm Password");
-        lblConfirmPassword.setAlignmentX(Component.LEFT_ALIGNMENT);
-        confirmPasswordGroup.add(lblConfirmPassword);
-        confirmPasswordGroup.add(Box.createVerticalStrut(8));
-        JPanel confirmPasswordField = UIHelper.createPasswordWithToggle(txtConfirmPassword);
-        confirmPasswordField.setAlignmentX(Component.LEFT_ALIGNMENT);
-        confirmPasswordGroup.add(confirmPasswordField);
-
-        form.add(newPasswordGroup);
-        form.add(Box.createVerticalStrut(24));
-        form.add(confirmPasswordGroup);
-        form.add(Box.createVerticalStrut(24));
+        body.add(buildPasswordGroup("New Password", txtNewPassword));
+        body.add(Box.createVerticalStrut(14));
+        body.add(buildPasswordGroup("Confirm Password", txtConfirmPassword));
+        body.add(Box.createVerticalStrut(14));
 
         JPanel requirements = UIHelper.createRequirementsPanel();
-        requirements.setAlignmentX(Component.LEFT_ALIGNMENT);
-        form.add(requirements);
-        form.add(Box.createVerticalStrut(28));
+        body.add(requirements);
+        body.add(Box.createVerticalStrut(16));
 
         javax.swing.JButton btnReset = UIHelper.createPrimaryButton("Reset Password");
-        btnReset.setAlignmentX(Component.LEFT_ALIGNMENT);
         btnReset.addActionListener(e -> {
             // Backend reset logic will be added later.
         });
-        form.add(btnReset);
-        form.add(Box.createVerticalStrut(24));
+        body.add(btnReset);
+        body.add(Box.createVerticalStrut(14));
 
         JLabel lblReturn = UIHelper.createHyperlink("\u2190 Return to Login");
-        lblReturn.setAlignmentX(Component.CENTER_ALIGNMENT);
         UIHelper.addHyperlinkAction(lblReturn, () -> UIHelper.navigateTo(this, new LoginFrame()));
-        form.add(lblReturn);
+        body.add(UIHelper.centerHorizontally(lblReturn, UIHelper.FIELD_WIDTH));
 
-        card.add(form);
+        UIHelper.mountFloatingCard(this, card);
+        UIHelper.showFrame(this);
+    }
 
-        JPanel centered = UIHelper.centerCard(card, 680);
-        getContentPane().add(centered, new GridBagConstraints());
-        pack();
+    private JPanel buildPasswordGroup(String labelText, PlaceholderPasswordField field) {
+        JPanel group = new JPanel();
+        group.setOpaque(false);
+        group.setLayout(new javax.swing.BoxLayout(group, javax.swing.BoxLayout.Y_AXIS));
+        group.setAlignmentX(Component.LEFT_ALIGNMENT);
+        UIHelper.limitWidth(group, UIHelper.FIELD_WIDTH);
+
+        JLabel label = UIHelper.createFieldLabel(labelText);
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        group.add(label);
+        group.add(Box.createVerticalStrut(6));
+
+        JPanel fieldPanel = UIHelper.createPasswordWithToggle(field);
+        fieldPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        group.add(fieldPanel);
+        return group;
     }
 
     /**
@@ -121,16 +97,14 @@ public class setNewPasswordFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Set New Password");
-        setPreferredSize(new java.awt.Dimension(1280, 800));
-        setResizable(false);
+        setResizable(true);
 
-        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -142,7 +116,7 @@ public class setNewPasswordFrame extends javax.swing.JFrame {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
 
-        java.awt.EventQueue.invokeLater(() -> UIHelper.showFrame(new setNewPasswordFrame()));
+        java.awt.EventQueue.invokeLater(() -> new setNewPasswordFrame());
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

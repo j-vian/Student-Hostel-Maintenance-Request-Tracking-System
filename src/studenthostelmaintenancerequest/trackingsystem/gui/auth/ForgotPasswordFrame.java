@@ -5,8 +5,6 @@
 package studenthostelmaintenancerequest.trackingsystem.gui.auth;
 
 import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
 import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -32,47 +30,34 @@ public class ForgotPasswordFrame extends javax.swing.JFrame {
     private void buildUi() {
         UIHelper.setupAuthFrame(this, "Forgot Password", false);
 
-        CardPanel card = new CardPanel();
-        card.setLayout(new javax.swing.BoxLayout(card, javax.swing.BoxLayout.Y_AXIS));
-        card.setAlignmentX(Component.CENTER_ALIGNMENT);
+        CardPanel card = new CardPanel(UIHelper.AUTH_CONTENT_WIDTH);
+        JPanel body = card.getBody();
 
-        JLabel lblTitle = UIHelper.createHeaderLabel("Forgot Password");
-        lblTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-        card.add(lblTitle);
-        card.add(Box.createVerticalStrut(20));
+        JLabel lblTitle = UIHelper.createHeaderLabel("Forgot Password", UIHelper.AUTH_CONTENT_WIDTH);
+        body.add(lblTitle);
+        body.add(Box.createVerticalStrut(12));
 
         JLabel lblInstruction = UIHelper.createInstructionLabel(
-                "Enter your registered email address to verify your account and proceed with password recovery.");
-        lblInstruction.setAlignmentX(Component.CENTER_ALIGNMENT);
-        card.add(lblInstruction);
-        card.add(Box.createVerticalStrut(36));
-
-        JPanel form = new JPanel();
-        form.setOpaque(false);
-        form.setLayout(new javax.swing.BoxLayout(form, javax.swing.BoxLayout.Y_AXIS));
-        form.setAlignmentX(Component.CENTER_ALIGNMENT);
-        form.setMaximumSize(new Dimension(UIHelper.FIELD_WIDTH, 400));
+                "Enter your registered email address to verify your account and proceed with password recovery.",
+                UIHelper.AUTH_CONTENT_WIDTH);
+        body.add(lblInstruction);
+        body.add(Box.createVerticalStrut(20));
 
         txtEmail = UIHelper.createTextField("e.g. studentID@adab.umpsa.edu.my");
-        form.add(UIHelper.createFieldGroup(UIHelper.createFieldLabel("Email"), txtEmail));
-        form.add(Box.createVerticalStrut(32));
+        body.add(UIHelper.createFieldGroup(UIHelper.createFieldLabel("Email"), txtEmail));
+        body.add(Box.createVerticalStrut(16));
 
         javax.swing.JButton btnVerify = UIHelper.createPrimaryButton("Verify \u2192");
-        btnVerify.setAlignmentX(Component.LEFT_ALIGNMENT);
         btnVerify.addActionListener(e -> UIHelper.navigateTo(this, new setNewPasswordFrame()));
-        form.add(btnVerify);
-        form.add(Box.createVerticalStrut(28));
+        body.add(btnVerify);
+        body.add(Box.createVerticalStrut(16));
 
         JLabel lblReturn = UIHelper.createHyperlink("\u2190 Return to Login");
-        lblReturn.setAlignmentX(Component.CENTER_ALIGNMENT);
         UIHelper.addHyperlinkAction(lblReturn, () -> UIHelper.navigateTo(this, new LoginFrame()));
-        form.add(lblReturn);
+        body.add(UIHelper.centerHorizontally(lblReturn, UIHelper.FIELD_WIDTH));
 
-        card.add(form);
-
-        JPanel centered = UIHelper.centerCard(card, 680);
-        getContentPane().add(centered, new GridBagConstraints());
-        pack();
+        UIHelper.mountFloatingCard(this, card);
+        UIHelper.showFrame(this);
     }
 
     /**
@@ -86,16 +71,14 @@ public class ForgotPasswordFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Forgot Password");
-        setPreferredSize(new java.awt.Dimension(1280, 800));
-        setResizable(false);
+        setResizable(true);
 
-        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -107,7 +90,7 @@ public class ForgotPasswordFrame extends javax.swing.JFrame {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
 
-        java.awt.EventQueue.invokeLater(() -> UIHelper.showFrame(new ForgotPasswordFrame()));
+        java.awt.EventQueue.invokeLater(() -> new ForgotPasswordFrame());
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

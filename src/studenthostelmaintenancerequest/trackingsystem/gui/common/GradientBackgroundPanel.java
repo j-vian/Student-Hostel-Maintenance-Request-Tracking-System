@@ -1,9 +1,10 @@
 package studenthostelmaintenancerequest.trackingsystem.gui.common;
 
 import java.awt.Color;
-import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.RadialGradientPaint;
 import java.awt.RenderingHints;
 import javax.swing.JPanel;
 
@@ -11,6 +12,7 @@ public class GradientBackgroundPanel extends JPanel {
 
     public GradientBackgroundPanel() {
         setOpaque(true);
+        setBackground(AppColors.GRADIENT_LIGHT_CYAN);
     }
 
     @Override
@@ -20,23 +22,18 @@ public class GradientBackgroundPanel extends JPanel {
 
         int w = getWidth();
         int h = getHeight();
-
-        g2.setColor(Color.WHITE);
+        float radius = Math.max(w, h) * 0.72f;
+        RadialGradientPaint gradient = new RadialGradientPaint(
+                new Point(w / 2, h / 2),
+                radius,
+                new float[]{0f, 0.42f, 1f},
+                new Color[]{
+                    Color.WHITE,
+                    AppColors.GRADIENT_LIGHT_CYAN,
+                    AppColors.GRADIENT_EDGE
+                });
+        g2.setPaint(gradient);
         g2.fillRect(0, 0, w, h);
-
-        GradientPaint topLeft = new GradientPaint(
-                0, 0, Color.WHITE,
-                (float) (w * 0.69), (float) (h * 0.91), AppColors.GRADIENT_LIGHT_CYAN);
-        g2.setPaint(topLeft);
-        g2.fillRect(0, 0, w, h);
-
-        GradientPaint bottomRight = new GradientPaint(
-                (float) (w * 0.19), (float) (h * 0.52), Color.WHITE,
-                w, h, AppColors.GRADIENT_CYAN);
-        g2.setPaint(bottomRight);
-        g2.fillRect(0, 0, w, h);
-
         g2.dispose();
-        super.paintComponent(g);
     }
 }
