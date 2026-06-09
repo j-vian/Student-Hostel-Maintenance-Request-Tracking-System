@@ -1,0 +1,55 @@
+---
+description: NetBeans Form Editor conventions for Swing GUI screens
+globs: src/**/gui/**/*.{java,form}
+alwaysApply: false
+---
+
+# NetBeans Form Editor
+
+When creating or editing `.form` screens in this project:
+
+## Custom components need a no-arg constructor
+
+NetBeans instantiates beans at design time via reflection. Any custom component used in a `.form` file must expose a public no-arg constructor, even when runtime code uses a parameterized constructor.
+
+```java
+/** No-arg constructor required by the NetBeans Form Editor at design time. */
+public PlaceholderTextField() {
+    this("Placeholder");
+}
+```
+
+In the `.form` file, keep `JavaCodeGenerator_CreateCodeCustom` so generated `initComponents()` still uses the real placeholder text:
+
+```xml
+<AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String"
+          value="new PlaceholderTextField(&quot;Enter your email&quot;)"/>
+```
+
+Apply this pattern to all custom Swing beans: `PlaceholderTextField`, `PlaceholderPasswordField`, `GradientBackgroundPanel`, `LogoPanel`, `CardPanel`, etc.
+
+## `.form` layout metadata must be complete
+
+The Design tab reads layout from the `.form` file, not only from generated Java. Never leave empty layout stubs like:
+
+```xml
+<!-- BAD: Design tab cannot load this -->
+<Layout class="org.netbeans.modules.form.compat2.layouts.DesignGroupLayout"/>
+```
+
+Always include full `DimensionLayout` blocks (dim `0` and `1`) that match the `GroupLayout` in `initComponents()`. Use `LoginFrame.form` or `SignUpFrame.form` as references.
+
+## JScrollPane: design in Java, not in `.form`
+
+The Form Editor cannot load `DesignScrollPaneLayout`. For scrollable screens:
+
+- In `.form`: `pnlBackground` → `pnlScrollHost` (JPanel) → `pnlCard` with full `GroupLayout` metadata
+- In `customizeForm()`: wrap `pnlScrollHost` in a `JScrollPane` (see `SignUpFrame.installScrollPane()`)
+
+Do not place `JScrollPane` in the `.form` file.
+
+## Screen structure pattern
+
+- Put layout and component tree in `initComponents()` (generated from `.form`).
+- Put fonts, colours, scroll-pane wiring, visibility toggles, and navigation in a private `customizeForm()` called after `initComponents()`.
+- Do not hand-edit code inside `GEN-BEGIN` / `GEN-END` regions except through the Form Editor.

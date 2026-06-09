@@ -14,6 +14,11 @@ public class PlaceholderTextField extends JTextField {
 
     private final String placeholder;
 
+    /** No-arg constructor required by the NetBeans Form Editor at design time. */
+    public PlaceholderTextField() {
+        this("Placeholder");
+    }
+
     public PlaceholderTextField(String placeholder) {
         this.placeholder = placeholder;
         setOpaque(true);

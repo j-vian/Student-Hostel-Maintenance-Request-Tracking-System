@@ -16,6 +16,7 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
 public class SignUpFrame extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(SignUpFrame.class.getName());
+    private javax.swing.JScrollPane scrollMain;
 
     public SignUpFrame() {
         initComponents();
@@ -23,6 +24,8 @@ public class SignUpFrame extends javax.swing.JFrame {
     }
 
     private void customizeForm() {
+        installScrollPane();
+
         UIHelper.styleSignupCard(pnlCard, lblTitle, btnSignUp);
         UIHelper.styleSignupFieldLabel(
                 lblFirstName, lblLastName, lblUsername, lblUserId, lblEmail,
@@ -43,6 +46,29 @@ public class SignUpFrame extends javax.swing.JFrame {
         setSize(UIHelper.FRAME_WIDTH, UIHelper.FRAME_HEIGHT);
         setLocationRelativeTo(null);
         getRootPane().setDefaultButton(btnSignUp);
+    }
+
+    /**
+     * JScrollPane is created at runtime because the NetBeans Form Editor cannot load
+     * DesignScrollPaneLayout metadata in the .form file.
+     */
+    private void installScrollPane() {
+        pnlBackground.remove(pnlScrollHost);
+
+        scrollMain = new javax.swing.JScrollPane(pnlScrollHost);
+        scrollMain.setBorder(null);
+        scrollMain.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollMain.setOpaque(false);
+        scrollMain.getViewport().setOpaque(false);
+
+        javax.swing.GroupLayout pnlBackgroundLayout = new javax.swing.GroupLayout(pnlBackground);
+        pnlBackground.setLayout(pnlBackgroundLayout);
+        pnlBackgroundLayout.setHorizontalGroup(
+                pnlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(scrollMain, javax.swing.GroupLayout.DEFAULT_SIZE, 1100, Short.MAX_VALUE));
+        pnlBackgroundLayout.setVerticalGroup(
+                pnlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(scrollMain, javax.swing.GroupLayout.DEFAULT_SIZE, 720, Short.MAX_VALUE));
     }
 
     private void cmbRoleActionPerformed(java.awt.event.ActionEvent evt) {
@@ -90,8 +116,7 @@ public class SignUpFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        pnlBackground = new GradientBackgroundPanel();
-        scrollMain = new javax.swing.JScrollPane();
+        pnlBackground = new studenthostelmaintenancerequest.trackingsystem.gui.common.GradientBackgroundPanel();
         pnlScrollHost = new javax.swing.JPanel();
         pnlCard = new javax.swing.JPanel();
         lblTitle = new javax.swing.JLabel();
@@ -110,28 +135,18 @@ public class SignUpFrame extends javax.swing.JFrame {
         lblConfirmPassword = new javax.swing.JLabel();
         txtConfirmPassword = new PlaceholderPasswordField("Confirm Password");
         lblRole = new javax.swing.JLabel();
-        cmbRole = new javax.swing.JComboBox<>();
+        cmbRole = new javax.swing.JComboBox();
         lblRoomNumber = new javax.swing.JLabel();
         txtRoomNumber = new PlaceholderTextField("Room Number");
         lblExpertise = new javax.swing.JLabel();
-        cmbExpertise = new javax.swing.JComboBox<>();
+        cmbExpertise = new javax.swing.JComboBox();
         txtOtherExpertise = new PlaceholderTextField("e.g. Electrician, Plumber");
         btnSignUp = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Create Account");
-        setResizable(true);
-
-        pnlBackground.setOpaque(true);
-
-        scrollMain.setBorder(null);
-        scrollMain.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollMain.setOpaque(false);
-        scrollMain.getViewport().setOpaque(false);
 
         pnlScrollHost.setOpaque(false);
-
-        pnlCard.setOpaque(true);
 
         lblTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblTitle.setText("Create Account");
@@ -152,7 +167,7 @@ public class SignUpFrame extends javax.swing.JFrame {
 
         lblRole.setText("Select Role");
 
-        cmbRole.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select your role", "Student", "Staff" }));
+        cmbRole.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Select your role", "Student", "Staff" }));
         cmbRole.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmbRoleActionPerformed(evt);
@@ -163,7 +178,7 @@ public class SignUpFrame extends javax.swing.JFrame {
 
         lblExpertise.setText("Select Expertise");
 
-        cmbExpertise.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select your expertise", "Electrician", "Plumber", "Furniture Tech", "Other" }));
+        cmbExpertise.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Select your expertise", "Electrician", "Plumber", "Furniture Tech", "Other" }));
         cmbExpertise.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmbExpertiseActionPerformed(evt);
@@ -223,11 +238,11 @@ public class SignUpFrame extends javax.swing.JFrame {
                 .addGap(40, 40, 40)
                 .addComponent(lblTitle)
                 .addGap(20, 20, 20)
-                .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblFirstName)
                     .addComponent(lblLastName))
                 .addGap(6, 6, 6)
-                .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtFirstName, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtLastName, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(12, 12, 12)
@@ -243,11 +258,11 @@ public class SignUpFrame extends javax.swing.JFrame {
                 .addGap(6, 6, 6)
                 .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12)
-                .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblPassword)
                     .addComponent(lblConfirmPassword))
                 .addGap(6, 6, 6)
-                .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(12, 12, 12)
@@ -273,7 +288,7 @@ public class SignUpFrame extends javax.swing.JFrame {
         pnlScrollHost.setLayout(pnlScrollHostLayout);
         pnlScrollHostLayout.setHorizontalGroup(
             pnlScrollHostLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlScrollHostLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlScrollHostLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(pnlCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -286,17 +301,15 @@ public class SignUpFrame extends javax.swing.JFrame {
                 .addGap(32, 32, 32))
         );
 
-        scrollMain.setViewportView(pnlScrollHost);
-
         javax.swing.GroupLayout pnlBackgroundLayout = new javax.swing.GroupLayout(pnlBackground);
         pnlBackground.setLayout(pnlBackgroundLayout);
         pnlBackgroundLayout.setHorizontalGroup(
             pnlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scrollMain, javax.swing.GroupLayout.DEFAULT_SIZE, 1100, Short.MAX_VALUE)
+            .addComponent(pnlScrollHost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         pnlBackgroundLayout.setVerticalGroup(
             pnlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scrollMain, javax.swing.GroupLayout.DEFAULT_SIZE, 720, Short.MAX_VALUE)
+            .addComponent(pnlScrollHost, javax.swing.GroupLayout.PREFERRED_SIZE, 720, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -334,8 +347,8 @@ public class SignUpFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSignUp;
-    private javax.swing.JComboBox<String> cmbExpertise;
-    private javax.swing.JComboBox<String> cmbRole;
+    private javax.swing.JComboBox cmbExpertise;
+    private javax.swing.JComboBox cmbRole;
     private javax.swing.JLabel lblConfirmPassword;
     private javax.swing.JLabel lblEmail;
     private javax.swing.JLabel lblExpertise;
@@ -347,18 +360,17 @@ public class SignUpFrame extends javax.swing.JFrame {
     private javax.swing.JLabel lblTitle;
     private javax.swing.JLabel lblUserId;
     private javax.swing.JLabel lblUsername;
-    private GradientBackgroundPanel pnlBackground;
+    private studenthostelmaintenancerequest.trackingsystem.gui.common.GradientBackgroundPanel pnlBackground;
     private javax.swing.JPanel pnlCard;
     private javax.swing.JPanel pnlScrollHost;
-    private PlaceholderPasswordField txtConfirmPassword;
-    private PlaceholderTextField txtEmail;
-    private PlaceholderTextField txtFirstName;
-    private PlaceholderTextField txtLastName;
-    private PlaceholderPasswordField txtPassword;
-    private PlaceholderTextField txtOtherExpertise;
-    private PlaceholderTextField txtRoomNumber;
-    private PlaceholderTextField txtUserId;
-    private PlaceholderTextField txtUsername;
-    private javax.swing.JScrollPane scrollMain;
+    private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderPasswordField txtConfirmPassword;
+    private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtEmail;
+    private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtFirstName;
+    private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtLastName;
+    private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtOtherExpertise;
+    private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderPasswordField txtPassword;
+    private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtRoomNumber;
+    private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtUserId;
+    private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtUsername;
     // End of variables declaration//GEN-END:variables
 }

@@ -15,6 +15,11 @@ public class PlaceholderPasswordField extends JPasswordField {
     private final String placeholder;
     private boolean passwordVisible;
 
+    /** No-arg constructor required by the NetBeans Form Editor at design time. */
+    public PlaceholderPasswordField() {
+        this("Placeholder");
+    }
+
     public PlaceholderPasswordField(String placeholder) {
         this.placeholder = placeholder;
         setOpaque(true);
