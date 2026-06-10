@@ -21,7 +21,12 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.plaf.basic.BasicButtonUI;
 import javax.swing.plaf.basic.BasicHTML;
 import javax.swing.text.View;
@@ -45,6 +50,10 @@ public final class UIHelper {
     public static final int SIGNUP_FIELD_WIDTH = 560;
     public static final int SIGNUP_HALF_WIDTH = 272;
     public static final int SIGNUP_CONTENT_WIDTH = 560;
+
+    public static final int MANAGER_SIDEBAR_WIDTH = 220;
+    public static final int MANAGER_HEADER_HEIGHT = 64;
+    public static final int MANAGER_STAT_CARD_HEIGHT = 120;
 
     private UIHelper() {
     }
@@ -701,6 +710,166 @@ public final class UIHelper {
         panel.add(javax.swing.Box.createVerticalStrut(6));
         panel.add(createRequirementItem("One number or symbol"));
         return panel;
+    }
+
+    public static void styleManagerShell(
+            JPanel pnlHeader, JPanel pnlSidebar, JPanel pnlMain,
+            JLabel lblAppTitle, LogoPanel pnlHeaderLogo) {
+
+        pnlHeader.setBackground(AppColors.SURFACE);
+        pnlHeader.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, AppColors.BORDER));
+        pnlSidebar.setBackground(AppColors.SURFACE);
+        pnlSidebar.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, AppColors.BORDER));
+        pnlMain.setBackground(AppColors.BACKGROUND);
+
+        lblAppTitle.setFont(AppFonts.appBarTitle());
+        lblAppTitle.setForeground(AppColors.LABEL);
+
+        pnlHeaderLogo.setPreferredSize(new Dimension(36, 36));
+        pnlHeaderLogo.setMinimumSize(new Dimension(36, 36));
+        pnlHeaderLogo.setMaximumSize(new Dimension(36, 36));
+    }
+
+    public static void styleManagerUserProfile(JLabel lblUserName, JLabel lblUserRole) {
+        lblUserName.setFont(AppFonts.userName());
+        lblUserName.setForeground(AppColors.LABEL);
+        lblUserRole.setFont(AppFonts.userRole());
+        lblUserRole.setForeground(AppColors.MUTED);
+    }
+
+    public static void styleManagerUserMenuToggle(JButton toggle) {
+        toggle.setFont(AppFonts.body());
+        toggle.setForeground(AppColors.MUTED);
+        toggle.setText("\u25BE");
+        toggle.setBorderPainted(false);
+        toggle.setContentAreaFilled(false);
+        toggle.setFocusPainted(false);
+        toggle.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        Dimension size = new Dimension(28, 28);
+        toggle.setPreferredSize(size);
+        toggle.setMinimumSize(size);
+        toggle.setMaximumSize(size);
+    }
+
+    public static void styleManagerLogoutButton(JButton button) {
+        button.setFont(AppFonts.bodyBold());
+        button.setForeground(AppColors.DANGER);
+        button.setBackground(AppColors.SURFACE);
+        button.setBorder(BorderFactory.createLineBorder(AppColors.DANGER, 1, true));
+        button.setFocusPainted(false);
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        fixSize(button, 120, 36);
+    }
+
+    public static void wireManagerUserMenu(JButton toggle, JPopupMenu menu) {
+        toggle.addActionListener(e -> {
+            menu.show(toggle, 0, toggle.getHeight());
+        });
+    }
+
+    public static void styleManagerNavButton(JButton button, boolean active) {
+        button.setFont(AppFonts.bodyBold());
+        button.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
+        button.setContentAreaFilled(true);
+        button.setOpaque(true);
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        button.setBorder(new EmptyBorder(12, 20, 12, 20));
+        if (active) {
+            button.setBackground(AppColors.NAV_ACTIVE_BG);
+            button.setForeground(AppColors.PRIMARY);
+        } else {
+            button.setBackground(AppColors.SURFACE);
+            button.setForeground(AppColors.LABEL);
+        }
+    }
+
+    public static void styleManagerPageTitle(JLabel title) {
+        title.setFont(AppFonts.pageTitle());
+        title.setForeground(AppColors.LABEL);
+    }
+
+    public static void styleStatCard(StatCardPanel card, Color headerText, Color countText) {
+        card.getTitleLabel().setFont(AppFonts.statTitle());
+        card.getTitleLabel().setForeground(headerText);
+        card.getCountLabel().setFont(AppFonts.statCount());
+        card.getCountLabel().setForeground(countText);
+    }
+
+    public static void styleManagerTableSection(JLabel sectionTitle, JTable table, JScrollPane scroll) {
+        sectionTitle.setFont(AppFonts.tableSection());
+        sectionTitle.setForeground(AppColors.LABEL);
+        sectionTitle.setOpaque(true);
+        sectionTitle.setBackground(AppColors.STAT_TOTAL_HEADER);
+        sectionTitle.setBorder(new CompoundBorder(
+                BorderFactory.createLineBorder(AppColors.BORDER, 1),
+                new EmptyBorder(10, 14, 10, 14)));
+
+        table.setFont(AppFonts.body());
+        table.setForeground(AppColors.LABEL);
+        table.setRowHeight(44);
+        table.setShowVerticalLines(true);
+        table.setShowHorizontalLines(true);
+        table.setGridColor(AppColors.BORDER);
+        table.setIntercellSpacing(new Dimension(0, 0));
+        table.setFillsViewportHeight(true);
+        table.setSelectionBackground(AppColors.NAV_ACTIVE_BG);
+        table.setSelectionForeground(AppColors.LABEL);
+        table.setFocusable(false);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+
+        JTableHeader header = table.getTableHeader();
+        header.setFont(AppFonts.label());
+        header.setForeground(AppColors.LABEL);
+        header.setBackground(AppColors.SURFACE);
+        header.setReorderingAllowed(false);
+        header.setResizingAllowed(false);
+        header.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, AppColors.BORDER));
+
+        scroll.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, AppColors.BORDER));
+        scroll.getViewport().setBackground(AppColors.SURFACE);
+    }
+
+    public static DefaultTableModel createManagerRequestTableModel() {
+        return new DefaultTableModel(
+                new Object[][]{
+                    {"REQ001", "Electrical", "Alex Johnson", "John Doe", "IN PROGRESS"},
+                    {"REQ002", "Plumbing", "Alex Johnson", "John Doe", "SUBMITTED"},
+                    {"REQ003", "Furniture", "Alex Johnson", "John Doe", "COMPLETED"}
+                },
+                new String[]{"Request ID", "Request Type", "Student Name", "Assigned Staff", "Status"}) {
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+    }
+
+    public static void applyManagerRequestTableRenderers(JTable table) {
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        centerRenderer.setFont(AppFonts.body());
+        centerRenderer.setForeground(AppColors.LABEL);
+
+        for (int column = 0; column < table.getColumnCount() - 1; column++) {
+            table.getColumnModel().getColumn(column).setCellRenderer(centerRenderer);
+        }
+
+        table.getColumnModel().getColumn(table.getColumnCount() - 1).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
+            StatusBadgeLabel badge = new StatusBadgeLabel(String.valueOf(value));
+            JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
+            wrapper.setBackground(isSelected ? tbl.getSelectionBackground() : AppColors.SURFACE);
+            wrapper.add(badge);
+            return wrapper;
+        });
+    }
+
+    public static void showManagerFrame(javax.swing.JFrame frame) {
+        frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
 
     private static JPanel createRequirementItem(String text) {
