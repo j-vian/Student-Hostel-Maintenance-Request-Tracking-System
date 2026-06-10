@@ -54,9 +54,9 @@ public class LoginFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        pnlBackground = new GradientBackgroundPanel();
+        pnlBackground = new studenthostelmaintenancerequest.trackingsystem.gui.common.GradientBackgroundPanel();
         pnlCard = new javax.swing.JPanel();
-        pnlLogo = new LogoPanel();
+        pnlLogo = new studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel();
         lblTitle1 = new javax.swing.JLabel();
         lblTitle2 = new javax.swing.JLabel();
         lblTitle3 = new javax.swing.JLabel();
@@ -72,11 +72,6 @@ public class LoginFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Login");
-        setResizable(true);
-
-        pnlBackground.setOpaque(true);
-
-        pnlCard.setOpaque(true);
 
         lblTitle1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblTitle1.setText("Student Hostel Maintenance");
@@ -95,12 +90,12 @@ public class LoginFrame extends javax.swing.JFrame {
         lblPassword.setText("Password");
 
         pnlLinks.setOpaque(false);
-        pnlLinks.setLayout(new java.awt.BorderLayout(0, 0));
+        pnlLinks.setLayout(new java.awt.BorderLayout());
 
         lblSignUp.setText("No account? Sign Up");
         pnlLinks.add(lblSignUp, java.awt.BorderLayout.WEST);
 
-        lblForgotPassword.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        lblForgotPassword.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblForgotPassword.setText("Forgot password?");
         pnlLinks.add(lblForgotPassword, java.awt.BorderLayout.EAST);
 
@@ -163,14 +158,14 @@ public class LoginFrame extends javax.swing.JFrame {
         pnlBackground.setLayout(pnlBackgroundLayout);
         pnlBackgroundLayout.setHorizontalGroup(
             pnlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlBackgroundLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlBackgroundLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(pnlCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlBackgroundLayout.setVerticalGroup(
             pnlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlBackgroundLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlBackgroundLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(pnlCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -219,11 +214,11 @@ public class LoginFrame extends javax.swing.JFrame {
     private javax.swing.JLabel lblTitle2;
     private javax.swing.JLabel lblTitle3;
     private javax.swing.JLabel lblTitle4;
-    private GradientBackgroundPanel pnlBackground;
+    private studenthostelmaintenancerequest.trackingsystem.gui.common.GradientBackgroundPanel pnlBackground;
     private javax.swing.JPanel pnlCard;
     private javax.swing.JPanel pnlLinks;
-    private LogoPanel pnlLogo;
-    private PasswordFieldPanel pnlPassword;
-    private PlaceholderTextField txtEmail;
+    private studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel pnlLogo;
+    private studenthostelmaintenancerequest.trackingsystem.gui.common.PasswordFieldPanel pnlPassword;
+    private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtEmail;
     // End of variables declaration//GEN-END:variables
 }
