@@ -745,7 +745,7 @@ public final class UIHelper {
     public static void layoutManagerSidebar(JPanel pnlSidebar, ManagerNavButton... buttons) {
         pnlSidebar.removeAll();
         pnlSidebar.setLayout(new javax.swing.BoxLayout(pnlSidebar, javax.swing.BoxLayout.Y_AXIS));
-        pnlSidebar.setBorder(new EmptyBorder(16, 0, 16, 0));
+        pnlSidebar.setBorder(new EmptyBorder(MANAGER_PAGE_HEADER_HEIGHT, 0, 16, 0));
         for (int i = 0; i < buttons.length; i++) {
             if (i > 0) {
                 pnlSidebar.add(javax.swing.Box.createVerticalStrut(ManagerNavButton.verticalGap()));
@@ -765,6 +765,7 @@ public final class UIHelper {
     public static void styleManagerTableSection(JLabel sectionTitle, JTable table, JScrollPane scroll) {
         sectionTitle.setFont(AppFonts.tableSection());
         sectionTitle.setForeground(AppColors.LABEL);
+        sectionTitle.setHorizontalAlignment(JLabel.CENTER);
         sectionTitle.setOpaque(true);
         sectionTitle.setBackground(AppColors.STAT_TOTAL_HEADER);
         sectionTitle.setBorder(new CompoundBorder(
@@ -791,6 +792,15 @@ public final class UIHelper {
         header.setReorderingAllowed(false);
         header.setResizingAllowed(false);
         header.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, AppColors.BORDER));
+
+        DefaultTableCellRenderer headerRenderer = new DefaultTableCellRenderer();
+        headerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        headerRenderer.setFont(AppFonts.label());
+        headerRenderer.setForeground(AppColors.LABEL);
+        headerRenderer.setBackground(AppColors.SURFACE);
+        for (int column = 0; column < table.getColumnCount(); column++) {
+            table.getColumnModel().getColumn(column).setHeaderRenderer(headerRenderer);
+        }
 
         scroll.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, AppColors.BORDER));
         scroll.getViewport().setBackground(AppColors.SURFACE);

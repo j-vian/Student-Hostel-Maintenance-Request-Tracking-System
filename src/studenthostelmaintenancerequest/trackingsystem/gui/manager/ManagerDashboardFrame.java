@@ -83,11 +83,10 @@ public class ManagerDashboardFrame extends javax.swing.JFrame {
         lblUserRole = new javax.swing.JLabel();
         btnUserMenu = new javax.swing.JButton();
         pnlBody = new javax.swing.JPanel();
-        pnlPageHeader = new javax.swing.JPanel();
-        pnlPageHeaderSpacer = new javax.swing.JPanel();
-        lblPageTitle = new javax.swing.JLabel();
-        pnlContent = new javax.swing.JPanel();
         pnlSidebar = new javax.swing.JPanel();
+        pnlContent = new javax.swing.JPanel();
+        pnlPageHeader = new javax.swing.JPanel();
+        lblPageTitle = new javax.swing.JLabel();
         btnNavDashboard = new ManagerNavButton("Dashboard");
         btnNavManageRequests = new ManagerNavButton("Manage All Requests");
         btnNavAssignStaff = new ManagerNavButton("Assign Staff");
@@ -191,36 +190,6 @@ public class ManagerDashboardFrame extends javax.swing.JFrame {
 
         pnlBody.setLayout(new java.awt.BorderLayout());
 
-        pnlPageHeaderSpacer.setOpaque(false);
-
-        javax.swing.GroupLayout pnlPageHeaderLayout = new javax.swing.GroupLayout(pnlPageHeader);
-        pnlPageHeader.setLayout(pnlPageHeaderLayout);
-        pnlPageHeaderLayout.setHorizontalGroup(
-            pnlPageHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlPageHeaderLayout.createSequentialGroup()
-                .addComponent(pnlPageHeaderSpacer, javax.swing.GroupLayout.PREFERRED_SIZE, UIHelper.MANAGER_SIDEBAR_WIDTH, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(UIHelper.MANAGER_MAIN_PADDING, UIHelper.MANAGER_MAIN_PADDING, UIHelper.MANAGER_MAIN_PADDING)
-                .addComponent(lblPageTitle)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        pnlPageHeaderLayout.setVerticalGroup(
-            pnlPageHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlPageHeaderLayout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addGroup(pnlPageHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlPageHeaderSpacer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(pnlPageHeaderLayout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(lblPageTitle)
-                        .addGap(20, 20, 20))))
-        );
-
-        lblPageTitle.setText("Dashboard");
-
-        pnlBody.add(pnlPageHeader, java.awt.BorderLayout.NORTH);
-
-        pnlContent.setLayout(new java.awt.BorderLayout());
-
         pnlSidebar.setLayout(new javax.swing.BoxLayout(pnlSidebar, javax.swing.BoxLayout.Y_AXIS));
         pnlSidebar.add(btnNavDashboard);
         pnlSidebar.add(btnNavManageRequests);
@@ -228,7 +197,30 @@ public class ManagerDashboardFrame extends javax.swing.JFrame {
         pnlSidebar.add(btnNavRoomDetails);
         pnlSidebar.add(btnNavRequestHistory);
 
-        pnlContent.add(pnlSidebar, java.awt.BorderLayout.WEST);
+        pnlBody.add(pnlSidebar, java.awt.BorderLayout.WEST);
+
+        pnlContent.setLayout(new java.awt.BorderLayout());
+
+        lblPageTitle.setText("Dashboard");
+
+        javax.swing.GroupLayout pnlPageHeaderLayout = new javax.swing.GroupLayout(pnlPageHeader);
+        pnlPageHeader.setLayout(pnlPageHeaderLayout);
+        pnlPageHeaderLayout.setHorizontalGroup(
+            pnlPageHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlPageHeaderLayout.createSequentialGroup()
+                .addGap(UIHelper.MANAGER_MAIN_PADDING, UIHelper.MANAGER_MAIN_PADDING, UIHelper.MANAGER_MAIN_PADDING)
+                .addComponent(lblPageTitle)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlPageHeaderLayout.setVerticalGroup(
+            pnlPageHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlPageHeaderLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(lblPageTitle)
+                .addGap(20, 20, 20))
+        );
+
+        pnlContent.add(pnlPageHeader, java.awt.BorderLayout.NORTH);
 
         pnlStatCards.setOpaque(false);
         pnlStatCards.setLayout(new java.awt.GridLayout(1, 4, 16, 0));
@@ -354,7 +346,6 @@ public class ManagerDashboardFrame extends javax.swing.JFrame {
     private javax.swing.JPanel pnlHeaderLeft;
     private javax.swing.JPanel pnlMain;
     private javax.swing.JPanel pnlPageHeader;
-    private javax.swing.JPanel pnlPageHeaderSpacer;
     private javax.swing.JPanel pnlRoot;
     private javax.swing.JPanel pnlSidebar;
     private javax.swing.JPanel pnlStatCards;

@@ -99,23 +99,54 @@
         <Container class="javax.swing.JPanel" name="pnlBody">
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
           <SubComponents>
-            <Container class="javax.swing.JPanel" name="pnlPageHeader">
+            <Container class="javax.swing.JPanel" name="pnlSidebar">
               <Properties>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[0, 72]"/>
+                  <Dimension value="[220, 0]"/>
                 </Property>
               </Properties>
-              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGroupLayout"/>
+              <Layout class="org.netbeans.modules.form.compat2.layouts.design.DesignBoxLayout">
+                <Property name="axis" type="int" value="1"/>
+              </Layout>
               <SubComponents>
-                <Container class="javax.swing.JPanel" name="pnlPageHeaderSpacer">
-                  <Properties>
-                    <Property name="opaque" type="boolean" value="false"/>
-                  </Properties>
-                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
-                </Container>
-                <Component class="javax.swing.JLabel" name="lblPageTitle">
+                <Component class="studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton" name="btnNavDashboard">
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ManagerNavButton(&quot;Dashboard&quot;)"/>
+                  </AuxValues>
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Dashboard"/>
+                  </Properties>
+                </Component>
+                <Component class="studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton" name="btnNavManageRequests">
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ManagerNavButton(&quot;Manage All Requests&quot;)"/>
+                  </AuxValues>
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Manage All Requests"/>
+                  </Properties>
+                </Component>
+                <Component class="studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton" name="btnNavAssignStaff">
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ManagerNavButton(&quot;Assign Staff&quot;)"/>
+                  </AuxValues>
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Assign Staff"/>
+                  </Properties>
+                </Component>
+                <Component class="studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton" name="btnNavRoomDetails">
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ManagerNavButton(&quot;View Room Details&quot;)"/>
+                  </AuxValues>
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="View Room Details"/>
+                  </Properties>
+                </Component>
+                <Component class="studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton" name="btnNavRequestHistory">
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ManagerNavButton(&quot;View Request History&quot;)"/>
+                  </AuxValues>
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="View Request History"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -123,54 +154,17 @@
             <Container class="javax.swing.JPanel" name="pnlContent">
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
               <SubComponents>
-                <Container class="javax.swing.JPanel" name="pnlSidebar">
+                <Container class="javax.swing.JPanel" name="pnlPageHeader">
                   <Properties>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[220, 0]"/>
+                      <Dimension value="[0, 72]"/>
                     </Property>
                   </Properties>
-                  <Layout class="org.netbeans.modules.form.compat2.layouts.design.DesignBoxLayout">
-                    <Property name="axis" type="int" value="1"/>
-                  </Layout>
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGroupLayout"/>
                   <SubComponents>
-                    <Component class="studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton" name="btnNavDashboard">
-                      <AuxValues>
-                        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ManagerNavButton(&quot;Dashboard&quot;)"/>
-                      </AuxValues>
+                    <Component class="javax.swing.JLabel" name="lblPageTitle">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Dashboard"/>
-                      </Properties>
-                    </Component>
-                    <Component class="studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton" name="btnNavManageRequests">
-                      <AuxValues>
-                        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ManagerNavButton(&quot;Manage All Requests&quot;)"/>
-                      </AuxValues>
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="Manage All Requests"/>
-                      </Properties>
-                    </Component>
-                    <Component class="studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton" name="btnNavAssignStaff">
-                      <AuxValues>
-                        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ManagerNavButton(&quot;Assign Staff&quot;)"/>
-                      </AuxValues>
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="Assign Staff"/>
-                      </Properties>
-                    </Component>
-                    <Component class="studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton" name="btnNavRoomDetails">
-                      <AuxValues>
-                        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ManagerNavButton(&quot;View Room Details&quot;)"/>
-                      </AuxValues>
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="View Room Details"/>
-                      </Properties>
-                    </Component>
-                    <Component class="studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton" name="btnNavRequestHistory">
-                      <AuxValues>
-                        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ManagerNavButton(&quot;View Request History&quot;)"/>
-                      </AuxValues>
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="View Request History"/>
                       </Properties>
                     </Component>
                   </SubComponents>
