@@ -10,7 +10,8 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButto
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerUserMenu;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
-import javax.swing.table.DefaultTableModel;
+import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.ManagerManageRequestTableModel;
+import javax.swing.table.TableCellEditor;
 
 /**
  *
@@ -20,8 +21,9 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ManagerManageRequestFrame.class.getName());
 
-    private DefaultTableModel requestTableModel;
-    private final java.util.Map<Integer, String> originalStatuses = new java.util.HashMap<>();
+    private ManagerManageRequestTableModel requestTableModel;
+    private TableCellEditor statusCellEditor;
+    private boolean statusEditMode;
 
     public ManagerManageRequestFrame() {
         initComponents();
@@ -45,21 +47,26 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
         wireNavigation();
 
         PlaceholderTextField txtSearch = new PlaceholderTextField("Search Request by ID");
-        javax.swing.JPanel pnlSearchField = UIHelper.createSearchField(txtSearch, 640);
+        javax.swing.JPanel pnlSearchField = UIHelper.createSearchField(txtSearch);
         UIHelper.layoutManagerManageRequestToolbar(pnlToolbar, pnlSearchField, btnFilter, btnConfirmChanges);
         UIHelper.styleManagerFilterButton(btnFilter);
-        UIHelper.styleManagerConfirmButton(btnConfirmChanges);
+        UIHelper.styleManagerUpdateButton(btnConfirmChanges);
 
         lblTableSection.setText("All Requests");
 
         requestTableModel = UIHelper.createManagerManageRequestTableModel();
-        captureOriginalStatuses();
         tblRequests.setModel(requestTableModel);
+        statusCellEditor = UIHelper.createManagerManageRequestStatusEditor(tblRequests);
         UIHelper.styleManagerTableSection(lblTableSection, tblRequests, scrTable);
-        UIHelper.applyManagerManageRequestTableRenderers(tblRequests);
-        UIHelper.installManagerManageRequestStatusEditor(tblRequests, requestTableModel, this::refreshConfirmButton);
+        UIHelper.applyManagerManageRequestTableRenderers(tblRequests, () -> statusEditMode);
 
-        btnConfirmChanges.addActionListener(e -> confirmStatusChanges());
+        btnConfirmChanges.addActionListener(e -> {
+            if (statusEditMode) {
+                exitStatusEditMode();
+            } else {
+                enterStatusEditMode();
+            }
+        });
 
         UIHelper.showManagerFrame(this);
         javax.swing.SwingUtilities.invokeLater(() -> {
@@ -76,32 +83,24 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
         btnNavRequestHistory.addActionListener(e -> UIHelper.navigateTo(this, new RequestHistoryFrame()));
     }
 
-    private void captureOriginalStatuses() {
-        originalStatuses.clear();
-        for (int row = 0; row < requestTableModel.getRowCount(); row++) {
-            originalStatuses.put(row, String.valueOf(requestTableModel.getValueAt(row, 5)));
-        }
+    private void enterStatusEditMode() {
+        statusEditMode = true;
+        requestTableModel.setStatusColumnEditable(true);
+        tblRequests.getColumnModel().getColumn(5).setCellEditor(statusCellEditor);
+        btnConfirmChanges.setText("Confirm Changes");
+        UIHelper.styleManagerConfirmButton(btnConfirmChanges);
+        tblRequests.repaint();
     }
 
-    private void refreshConfirmButton() {
-        boolean hasChanges = false;
-        for (int row = 0; row < requestTableModel.getRowCount(); row++) {
-            String current = String.valueOf(requestTableModel.getValueAt(row, 5));
-            String original = originalStatuses.getOrDefault(row, current);
-            if (!current.equals(original)) {
-                hasChanges = true;
-                break;
-            }
-        }
-        UIHelper.setManagerConfirmButtonEnabled(btnConfirmChanges, hasChanges);
-    }
-
-    private void confirmStatusChanges() {
+    private void exitStatusEditMode() {
         if (tblRequests.isEditing()) {
             tblRequests.getCellEditor().stopCellEditing();
         }
-        captureOriginalStatuses();
-        UIHelper.setManagerConfirmButtonEnabled(btnConfirmChanges, false);
+        statusEditMode = false;
+        requestTableModel.setStatusColumnEditable(false);
+        tblRequests.getColumnModel().getColumn(5).setCellEditor(null);
+        btnConfirmChanges.setText("Update");
+        UIHelper.styleManagerUpdateButton(btnConfirmChanges);
         tblRequests.repaint();
     }
 
@@ -266,7 +265,7 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
 
         btnFilter.setText("Filter");
 
-        btnConfirmChanges.setText("Confirm Changes");
+        btnConfirmChanges.setText("Update");
 
         javax.swing.GroupLayout pnlToolbarLayout = new javax.swing.GroupLayout(pnlToolbar);
         pnlToolbar.setLayout(pnlToolbarLayout);

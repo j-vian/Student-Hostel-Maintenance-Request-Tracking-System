@@ -312,7 +312,7 @@
                         </Component>
                         <Component class="javax.swing.JButton" name="btnConfirmChanges">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Confirm Changes"/>
+                            <Property name="text" type="java.lang.String" value="Update"/>
                           </Properties>
                         </Component>
                       </SubComponents>
