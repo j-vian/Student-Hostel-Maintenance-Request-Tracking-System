@@ -47,7 +47,7 @@ public class StatusBadgeComboBox extends JComboBox<String> {
 
             boolean isClosedCombo = list == null || !list.isShowing();
             if (isClosedCombo) {
-                return new StatusDropdownPanel(String.valueOf(value));
+                return new StatusDropdownPanel(String.valueOf(value), false);
             }
 
             JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 4));

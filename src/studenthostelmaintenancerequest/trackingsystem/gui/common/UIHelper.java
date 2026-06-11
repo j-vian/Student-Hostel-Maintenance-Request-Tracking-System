@@ -1068,25 +1068,25 @@ public final class UIHelper {
     private static Object[][] buildManageRequestSampleData() {
         Object[][] seed = {
             {"REQ001", "Electrical", "Alex Johnson", "John Doe", "8 June 2026", "IN PROGRESS"},
-            {"REQ002", "Plumbing", "Maria Chen", "Jane Smith", "8 June 2026", "SUBMITTED"},
+            {"REQ002", "Plumbing", "Maria Chen", null, "8 June 2026", "SUBMITTED"},
             {"REQ003", "Furniture", "Sam Patel", "John Doe", "8 June 2026", "COMPLETED"},
             {"REQ004", "Electrical", "Alex Johnson", "Jane Smith", "9 June 2026", "CANCELLED"},
             {"REQ005", "Plumbing", "Maria Chen", "John Doe", "9 June 2026", "IN PROGRESS"},
-            {"REQ006", "Furniture", "Sam Patel", "Jane Smith", "9 June 2026", "SUBMITTED"},
+            {"REQ006", "Furniture", "Sam Patel", null, "9 June 2026", "SUBMITTED"},
             {"REQ007", "Electrical", "Alex Johnson", "John Doe", "10 June 2026", "COMPLETED"},
             {"REQ008", "Plumbing", "Maria Chen", "Jane Smith", "10 June 2026", "IN PROGRESS"},
-            {"REQ009", "Furniture", "Sam Patel", "John Doe", "10 June 2026", "SUBMITTED"},
+            {"REQ009", "Furniture", "Sam Patel", null, "10 June 2026", "SUBMITTED"},
             {"REQ010", "Electrical", "Alex Johnson", "Jane Smith", "11 June 2026", "COMPLETED"},
             {"REQ011", "Plumbing", "Maria Chen", "John Doe", "11 June 2026", "CANCELLED"},
             {"REQ012", "Furniture", "Sam Patel", "Jane Smith", "11 June 2026", "IN PROGRESS"},
-            {"REQ013", "Electrical", "Alex Johnson", "John Doe", "12 June 2026", "SUBMITTED"},
+            {"REQ013", "Electrical", "Alex Johnson", null, "12 June 2026", "SUBMITTED"},
             {"REQ014", "Plumbing", "Maria Chen", "Jane Smith", "12 June 2026", "COMPLETED"},
             {"REQ015", "Furniture", "Sam Patel", "John Doe", "12 June 2026", "IN PROGRESS"},
-            {"REQ016", "Electrical", "Alex Johnson", "Jane Smith", "13 June 2026", "SUBMITTED"},
+            {"REQ016", "Electrical", "Alex Johnson", null, "13 June 2026", "SUBMITTED"},
             {"REQ017", "Plumbing", "Maria Chen", "John Doe", "13 June 2026", "COMPLETED"},
             {"REQ018", "Furniture", "Sam Patel", "Jane Smith", "13 June 2026", "CANCELLED"},
             {"REQ019", "Electrical", "Alex Johnson", "John Doe", "14 June 2026", "IN PROGRESS"},
-            {"REQ020", "Plumbing", "Maria Chen", "Jane Smith", "14 June 2026", "SUBMITTED"},
+            {"REQ020", "Plumbing", "Maria Chen", null, "14 June 2026", "SUBMITTED"},
             {"REQ021", "Furniture", "Sam Patel", "John Doe", "14 June 2026", "COMPLETED"}
         };
         return seed;
@@ -1186,6 +1186,9 @@ public final class UIHelper {
         public void setValueAt(Object value, int row, int column) {
             allRows.get(toDataIndex(row))[column] = value;
             fireTableCellUpdated(row, column);
+            if (column == MANAGE_REQUEST_COL_STATUS) {
+                fireTableCellUpdated(row, MANAGE_REQUEST_COL_ASSIGNED_STAFF);
+            }
         }
 
         @Override
@@ -1209,13 +1212,18 @@ public final class UIHelper {
         table.getColumnModel().getColumn(MANAGE_REQUEST_COL_DATE_RAISED).setCellRenderer(centerRenderer);
 
         table.getColumnModel().getColumn(MANAGE_REQUEST_COL_ASSIGNED_STAFF).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
-            JLabel staffLabel = new JLabel(String.valueOf(value), JLabel.CENTER);
-            staffLabel.setFont(AppFonts.bodyBold());
-            staffLabel.setForeground(AppColors.LABEL);
-
+            Object status = tbl.getValueAt(row, MANAGE_REQUEST_COL_STATUS);
             JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
             wrapper.setBackground(AppColors.SURFACE);
-            wrapper.add(staffLabel);
+
+            if (isSubmittedStatus(status)) {
+                wrapper.add(new NotAssignedBadgeLabel());
+            } else {
+                JLabel staffLabel = new JLabel(String.valueOf(value), JLabel.CENTER);
+                staffLabel.setFont(AppFonts.bodyBold());
+                staffLabel.setForeground(AppColors.LABEL);
+                wrapper.add(staffLabel);
+            }
             return wrapper;
         });
 
