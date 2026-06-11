@@ -34,15 +34,6 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="javax.swing.JPopupMenu" name="mnuUser">
-      <SubComponents>
-        <Component class="javax.swing.JButton" name="btnLogOut">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Log Out"/>
-          </Properties>
-        </Component>
-      </SubComponents>
-    </Container>
     <Container class="javax.swing.JPanel" name="pnlRoot">
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
       <SubComponents>
@@ -108,117 +99,153 @@
         <Container class="javax.swing.JPanel" name="pnlBody">
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
           <SubComponents>
-            <Container class="javax.swing.JPanel" name="pnlSidebar">
+            <Container class="javax.swing.JPanel" name="pnlPageHeader">
               <Properties>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[220, 0]"/>
+                  <Dimension value="[0, 72]"/>
                 </Property>
               </Properties>
-              <Layout class="org.netbeans.modules.form.compat2.layouts.design.DesignBoxLayout">
-                <Property name="axis" type="int" value="1"/>
-              </Layout>
-              <SubComponents>
-                <Component class="javax.swing.JButton" name="btnNavDashboard">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Dashboard"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JButton" name="btnNavManageRequests">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Manage All Requests"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JButton" name="btnNavAssignStaff">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Assign Staff"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JButton" name="btnNavRoomDetails">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="View Room Details"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JButton" name="btnNavRequestHistory">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="View Request History"/>
-                  </Properties>
-                </Component>
-              </SubComponents>
-            </Container>
-            <Container class="javax.swing.JPanel" name="pnlMain">
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGroupLayout"/>
               <SubComponents>
+                <Container class="javax.swing.JPanel" name="pnlPageHeaderSpacer">
+                  <Properties>
+                    <Property name="opaque" type="boolean" value="false"/>
+                  </Properties>
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
+                </Container>
                 <Component class="javax.swing.JLabel" name="lblPageTitle">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Dashboard"/>
                   </Properties>
                 </Component>
-                <Container class="javax.swing.JPanel" name="pnlStatCards">
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="pnlContent">
+              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
+              <SubComponents>
+                <Container class="javax.swing.JPanel" name="pnlSidebar">
                   <Properties>
-                    <Property name="opaque" type="boolean" value="false"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[220, 0]"/>
+                    </Property>
                   </Properties>
-                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
-                    <Property name="columns" type="int" value="4"/>
-                    <Property name="horizontalGap" type="int" value="16"/>
-                    <Property name="rows" type="int" value="1"/>
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.design.DesignBoxLayout">
+                    <Property name="axis" type="int" value="1"/>
                   </Layout>
                   <SubComponents>
-                    <Container class="studenthostelmaintenancerequest.trackingsystem.gui.common.StatCardPanel" name="cardTotal">
+                    <Component class="studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton" name="btnNavDashboard">
                       <AuxValues>
-                        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new StatCardPanel(&quot;Total Requests&quot;, &quot;24&quot;, AppColors.STAT_TOTAL_HEADER, AppColors.STAT_TOTAL_BODY)"/>
+                        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ManagerNavButton(&quot;Dashboard&quot;)"/>
                       </AuxValues>
-                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
-                    </Container>
-                    <Container class="studenthostelmaintenancerequest.trackingsystem.gui.common.StatCardPanel" name="cardActive">
-                      <AuxValues>
-                        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new StatCardPanel(&quot;Active Requests&quot;, &quot;12&quot;, AppColors.STAT_ACTIVE_HEADER, AppColors.STAT_ACTIVE_BODY)"/>
-                      </AuxValues>
-                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
-                    </Container>
-                    <Container class="studenthostelmaintenancerequest.trackingsystem.gui.common.StatCardPanel" name="cardCompleted">
-                      <AuxValues>
-                        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new StatCardPanel(&quot;Completed Requests&quot;, &quot;10&quot;, AppColors.STAT_COMPLETED_HEADER, AppColors.STAT_COMPLETED_BODY)"/>
-                      </AuxValues>
-                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
-                    </Container>
-                    <Container class="studenthostelmaintenancerequest.trackingsystem.gui.common.StatCardPanel" name="cardCancelled">
-                      <AuxValues>
-                        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new StatCardPanel(&quot;Cancelled Requests&quot;, &quot;2&quot;, AppColors.STAT_CANCELLED_HEADER, AppColors.STAT_CANCELLED_BODY)"/>
-                      </AuxValues>
-                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
-                    </Container>
-                  </SubComponents>
-                </Container>
-                <Container class="javax.swing.JPanel" name="pnlTableSection">
-                  <Properties>
-                    <Property name="opaque" type="boolean" value="false"/>
-                  </Properties>
-                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGroupLayout"/>
-                  <SubComponents>
-                    <Component class="javax.swing.JLabel" name="lblTableSection">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="All Requests"/>
+                        <Property name="text" type="java.lang.String" value="Dashboard"/>
                       </Properties>
                     </Component>
-                    <Container class="javax.swing.JScrollPane" name="scrTable">
+                    <Component class="studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton" name="btnNavManageRequests">
                       <AuxValues>
-                        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+                        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ManagerNavButton(&quot;Manage All Requests&quot;)"/>
                       </AuxValues>
-                      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Manage All Requests"/>
+                      </Properties>
+                    </Component>
+                    <Component class="studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton" name="btnNavAssignStaff">
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ManagerNavButton(&quot;Assign Staff&quot;)"/>
+                      </AuxValues>
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Assign Staff"/>
+                      </Properties>
+                    </Component>
+                    <Component class="studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton" name="btnNavRoomDetails">
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ManagerNavButton(&quot;View Room Details&quot;)"/>
+                      </AuxValues>
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="View Room Details"/>
+                      </Properties>
+                    </Component>
+                    <Component class="studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton" name="btnNavRequestHistory">
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ManagerNavButton(&quot;View Request History&quot;)"/>
+                      </AuxValues>
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="View Request History"/>
+                      </Properties>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Container class="javax.swing.JPanel" name="pnlMain">
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGroupLayout"/>
+                  <SubComponents>
+                    <Container class="javax.swing.JPanel" name="pnlStatCards">
+                      <Properties>
+                        <Property name="opaque" type="boolean" value="false"/>
+                      </Properties>
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
+                        <Property name="columns" type="int" value="4"/>
+                        <Property name="horizontalGap" type="int" value="16"/>
+                        <Property name="rows" type="int" value="1"/>
+                      </Layout>
                       <SubComponents>
-                        <Component class="javax.swing.JTable" name="tblRequests">
+                        <Container class="studenthostelmaintenancerequest.trackingsystem.gui.common.StatCardPanel" name="cardTotal">
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new StatCardPanel(&quot;Total Requests&quot;, &quot;24&quot;, AppColors.STAT_TOTAL_HEADER, AppColors.STAT_TOTAL_BODY)"/>
+                          </AuxValues>
+                          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
+                        </Container>
+                        <Container class="studenthostelmaintenancerequest.trackingsystem.gui.common.StatCardPanel" name="cardActive">
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new StatCardPanel(&quot;Active Requests&quot;, &quot;12&quot;, AppColors.STAT_ACTIVE_HEADER, AppColors.STAT_ACTIVE_BODY)"/>
+                          </AuxValues>
+                          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
+                        </Container>
+                        <Container class="studenthostelmaintenancerequest.trackingsystem.gui.common.StatCardPanel" name="cardCompleted">
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new StatCardPanel(&quot;Completed Requests&quot;, &quot;10&quot;, AppColors.STAT_COMPLETED_HEADER, AppColors.STAT_COMPLETED_BODY)"/>
+                          </AuxValues>
+                          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
+                        </Container>
+                        <Container class="studenthostelmaintenancerequest.trackingsystem.gui.common.StatCardPanel" name="cardCancelled">
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new StatCardPanel(&quot;Cancelled Requests&quot;, &quot;2&quot;, AppColors.STAT_CANCELLED_HEADER, AppColors.STAT_CANCELLED_BODY)"/>
+                          </AuxValues>
+                          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
+                        </Container>
+                      </SubComponents>
+                    </Container>
+                    <Container class="javax.swing.JPanel" name="pnlTableSection">
+                      <Properties>
+                        <Property name="opaque" type="boolean" value="false"/>
+                      </Properties>
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGroupLayout"/>
+                      <SubComponents>
+                        <Component class="javax.swing.JLabel" name="lblTableSection">
                           <Properties>
-                            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                              <Table columnCount="5" rowCount="3">
-                                <Column editable="true" title="Request ID" type="java.lang.Object"/>
-                                <Column editable="true" title="Request Type" type="java.lang.Object"/>
-                                <Column editable="true" title="Student Name" type="java.lang.Object"/>
-                                <Column editable="true" title="Assigned Staff" type="java.lang.Object"/>
-                                <Column editable="true" title="Status" type="java.lang.Object"/>
-                              </Table>
-                            </Property>
+                            <Property name="text" type="java.lang.String" value="All Requests"/>
                           </Properties>
                         </Component>
+                        <Container class="javax.swing.JScrollPane" name="scrTable">
+                          <AuxValues>
+                            <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+                          </AuxValues>
+                          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+                          <SubComponents>
+                            <Component class="javax.swing.JTable" name="tblRequests">
+                              <Properties>
+                                <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+                                  <Table columnCount="5" rowCount="3">
+                                    <Column editable="true" title="Request ID" type="java.lang.Object"/>
+                                    <Column editable="true" title="Request Type" type="java.lang.Object"/>
+                                    <Column editable="true" title="Student Name" type="java.lang.Object"/>
+                                    <Column editable="true" title="Assigned Staff" type="java.lang.Object"/>
+                                    <Column editable="true" title="Status" type="java.lang.Object"/>
+                                  </Table>
+                                </Property>
+                              </Properties>
+                            </Component>
+                          </SubComponents>
+                        </Container>
                       </SubComponents>
                     </Container>
                   </SubComponents>

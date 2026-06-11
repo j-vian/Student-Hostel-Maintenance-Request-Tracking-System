@@ -21,7 +21,6 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -53,7 +52,9 @@ public final class UIHelper {
 
     public static final int MANAGER_SIDEBAR_WIDTH = 220;
     public static final int MANAGER_HEADER_HEIGHT = 64;
+    public static final int MANAGER_PAGE_HEADER_HEIGHT = 72;
     public static final int MANAGER_STAT_CARD_HEIGHT = 120;
+    public static final int MANAGER_MAIN_PADDING = 32;
 
     private UIHelper() {
     }
@@ -730,64 +731,28 @@ public final class UIHelper {
         pnlHeaderLogo.setMaximumSize(new Dimension(36, 36));
     }
 
-    public static void styleManagerUserProfile(JLabel lblUserName, JLabel lblUserRole) {
-        lblUserName.setFont(AppFonts.userName());
-        lblUserName.setForeground(AppColors.LABEL);
-        lblUserRole.setFont(AppFonts.userRole());
-        lblUserRole.setForeground(AppColors.MUTED);
+    public static void styleManagerPageHeader(JPanel pnlPageHeader, JLabel lblPageTitle) {
+        pnlPageHeader.setBackground(AppColors.SURFACE);
+        pnlPageHeader.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, AppColors.BORDER));
+        lblPageTitle.setFont(AppFonts.pageTitle());
+        lblPageTitle.setForeground(AppColors.LABEL);
     }
 
-    public static void styleManagerUserMenuToggle(JButton toggle) {
-        toggle.setFont(AppFonts.body());
-        toggle.setForeground(AppColors.MUTED);
-        toggle.setText("\u25BE");
-        toggle.setBorderPainted(false);
-        toggle.setContentAreaFilled(false);
-        toggle.setFocusPainted(false);
-        toggle.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        Dimension size = new Dimension(28, 28);
-        toggle.setPreferredSize(size);
-        toggle.setMinimumSize(size);
-        toggle.setMaximumSize(size);
+    public static void styleManagerNavButton(ManagerNavButton button, boolean active) {
+        button.setActive(active);
     }
 
-    public static void styleManagerLogoutButton(JButton button) {
-        button.setFont(AppFonts.bodyBold());
-        button.setForeground(AppColors.DANGER);
-        button.setBackground(AppColors.SURFACE);
-        button.setBorder(BorderFactory.createLineBorder(AppColors.DANGER, 1, true));
-        button.setFocusPainted(false);
-        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        fixSize(button, 120, 36);
-    }
-
-    public static void wireManagerUserMenu(JButton toggle, JPopupMenu menu) {
-        toggle.addActionListener(e -> {
-            menu.show(toggle, 0, toggle.getHeight());
-        });
-    }
-
-    public static void styleManagerNavButton(JButton button, boolean active) {
-        button.setFont(AppFonts.bodyBold());
-        button.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        button.setBorderPainted(false);
-        button.setFocusPainted(false);
-        button.setContentAreaFilled(true);
-        button.setOpaque(true);
-        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        button.setBorder(new EmptyBorder(12, 20, 12, 20));
-        if (active) {
-            button.setBackground(AppColors.NAV_ACTIVE_BG);
-            button.setForeground(AppColors.PRIMARY);
-        } else {
-            button.setBackground(AppColors.SURFACE);
-            button.setForeground(AppColors.LABEL);
+    public static void layoutManagerSidebar(JPanel pnlSidebar, ManagerNavButton... buttons) {
+        pnlSidebar.removeAll();
+        pnlSidebar.setLayout(new javax.swing.BoxLayout(pnlSidebar, javax.swing.BoxLayout.Y_AXIS));
+        pnlSidebar.setBorder(new EmptyBorder(16, 0, 16, 0));
+        for (int i = 0; i < buttons.length; i++) {
+            if (i > 0) {
+                pnlSidebar.add(javax.swing.Box.createVerticalStrut(ManagerNavButton.verticalGap()));
+            }
+            pnlSidebar.add(buttons[i]);
         }
-    }
-
-    public static void styleManagerPageTitle(JLabel title) {
-        title.setFont(AppFonts.pageTitle());
-        title.setForeground(AppColors.LABEL);
+        pnlSidebar.add(javax.swing.Box.createVerticalGlue());
     }
 
     public static void styleStatCard(StatCardPanel card, Color headerText, Color countText) {
@@ -813,7 +778,7 @@ public final class UIHelper {
         table.setShowHorizontalLines(true);
         table.setGridColor(AppColors.BORDER);
         table.setIntercellSpacing(new Dimension(0, 0));
-        table.setFillsViewportHeight(true);
+        table.setFillsViewportHeight(false);
         table.setSelectionBackground(AppColors.NAV_ACTIVE_BG);
         table.setSelectionForeground(AppColors.LABEL);
         table.setFocusable(false);
@@ -829,6 +794,18 @@ public final class UIHelper {
 
         scroll.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, AppColors.BORDER));
         scroll.getViewport().setBackground(AppColors.SURFACE);
+        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+    }
+
+    public static void sizeManagerOverviewTable(JTable table, JScrollPane scroll) {
+        int headerHeight = table.getTableHeader().getPreferredSize().height;
+        int bodyHeight = table.getRowHeight() * table.getRowCount();
+        int height = headerHeight + bodyHeight + 2;
+        Dimension size = new Dimension(scroll.getPreferredSize().width, height);
+        scroll.setPreferredSize(size);
+        scroll.setMinimumSize(size);
+        scroll.setMaximumSize(new Dimension(Integer.MAX_VALUE, height));
     }
 
     public static DefaultTableModel createManagerRequestTableModel() {
