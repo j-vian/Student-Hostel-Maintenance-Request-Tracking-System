@@ -183,10 +183,10 @@
                 </Component>
                 <Component class="studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton" name="btnNavManageRequests">
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ManagerNavButton(&quot;Manage All Requests&quot;)"/>
+                    <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ManagerNavButton(&quot;Manage Active Requests&quot;)"/>
                   </AuxValues>
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Manage All Requests"/>
+                    <Property name="text" type="java.lang.String" value="Manage Active Requests"/>
                   </Properties>
                 </Component>
                 <Component class="studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton" name="btnNavAssignStaff">

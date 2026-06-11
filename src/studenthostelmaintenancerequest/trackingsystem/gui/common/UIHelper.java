@@ -1066,30 +1066,24 @@ public final class UIHelper {
     }
 
     private static Object[][] buildManageRequestSampleData() {
-        Object[][] seed = {
-            {"REQ001", "Electrical", "Alex Johnson", "John Doe", "8 June 2026", "IN PROGRESS"},
-            {"REQ002", "Plumbing", "Maria Chen", null, "8 June 2026", "SUBMITTED"},
-            {"REQ003", "Furniture", "Sam Patel", "John Doe", "8 June 2026", "COMPLETED"},
-            {"REQ004", "Electrical", "Alex Johnson", "Jane Smith", "9 June 2026", "CANCELLED"},
-            {"REQ005", "Plumbing", "Maria Chen", "John Doe", "9 June 2026", "IN PROGRESS"},
-            {"REQ006", "Furniture", "Sam Patel", null, "9 June 2026", "SUBMITTED"},
-            {"REQ007", "Electrical", "Alex Johnson", "John Doe", "10 June 2026", "COMPLETED"},
-            {"REQ008", "Plumbing", "Maria Chen", "Jane Smith", "10 June 2026", "IN PROGRESS"},
-            {"REQ009", "Furniture", "Sam Patel", null, "10 June 2026", "SUBMITTED"},
-            {"REQ010", "Electrical", "Alex Johnson", "Jane Smith", "11 June 2026", "COMPLETED"},
-            {"REQ011", "Plumbing", "Maria Chen", "John Doe", "11 June 2026", "CANCELLED"},
-            {"REQ012", "Furniture", "Sam Patel", "Jane Smith", "11 June 2026", "IN PROGRESS"},
-            {"REQ013", "Electrical", "Alex Johnson", null, "12 June 2026", "SUBMITTED"},
-            {"REQ014", "Plumbing", "Maria Chen", "Jane Smith", "12 June 2026", "COMPLETED"},
-            {"REQ015", "Furniture", "Sam Patel", "John Doe", "12 June 2026", "IN PROGRESS"},
-            {"REQ016", "Electrical", "Alex Johnson", null, "13 June 2026", "SUBMITTED"},
-            {"REQ017", "Plumbing", "Maria Chen", "John Doe", "13 June 2026", "COMPLETED"},
-            {"REQ018", "Furniture", "Sam Patel", "Jane Smith", "13 June 2026", "CANCELLED"},
-            {"REQ019", "Electrical", "Alex Johnson", "John Doe", "14 June 2026", "IN PROGRESS"},
-            {"REQ020", "Plumbing", "Maria Chen", null, "14 June 2026", "SUBMITTED"},
-            {"REQ021", "Furniture", "Sam Patel", "John Doe", "14 June 2026", "COMPLETED"}
-        };
-        return seed;
+        String[] types = {"Electrical", "Plumbing", "Furniture"};
+        String[] students = {"Alex Johnson", "Maria Chen", "Sam Patel"};
+        String[] staff = {"John Doe", "Jane Smith"};
+        String[] dates = {"8 June 2026", "9 June 2026", "10 June 2026", "11 June 2026",
+            "12 June 2026", "13 June 2026", "14 June 2026"};
+
+        Object[][] rows = new Object[21][6];
+        for (int i = 0; i < rows.length; i++) {
+            rows[i] = new Object[]{
+                String.format("REQ%03d", i + 1),
+                types[i % types.length],
+                students[i % students.length],
+                staff[i % staff.length],
+                dates[i % dates.length],
+                "IN PROGRESS"
+            };
+        }
+        return rows;
     }
 
     public static final class ManagerManageRequestTableModel extends AbstractTableModel {
@@ -1105,8 +1099,14 @@ public final class UIHelper {
                 this.columnNames[i] = String.valueOf(columns[i]);
             }
             for (Object[] row : data) {
-                allRows.add(row.clone());
+                if (isActiveRequestStatus(row[MANAGE_REQUEST_COL_STATUS])) {
+                    allRows.add(row.clone());
+                }
             }
+        }
+
+        private static boolean isActiveRequestStatus(Object status) {
+            return "IN PROGRESS".equals(StatusBadgeLabel.formatStatus(String.valueOf(status)));
         }
 
         @Override
@@ -1167,6 +1167,17 @@ public final class UIHelper {
             fireTableDataChanged();
         }
 
+        private void clampCurrentPage() {
+            if (allRows.isEmpty()) {
+                currentPage = 0;
+                return;
+            }
+            int maxPage = (allRows.size() - 1) / MANAGE_REQUEST_PAGE_SIZE;
+            if (currentPage > maxPage) {
+                currentPage = maxPage;
+            }
+        }
+
         private int toDataIndex(int viewRow) {
             return currentPage * MANAGE_REQUEST_PAGE_SIZE + viewRow;
         }
@@ -1184,7 +1195,14 @@ public final class UIHelper {
 
         @Override
         public void setValueAt(Object value, int row, int column) {
-            allRows.get(toDataIndex(row))[column] = value;
+            int dataIndex = toDataIndex(row);
+            allRows.get(dataIndex)[column] = value;
+            if (column == MANAGE_REQUEST_COL_STATUS && !isActiveRequestStatus(value)) {
+                allRows.remove(dataIndex);
+                clampCurrentPage();
+                fireTableDataChanged();
+                return;
+            }
             fireTableCellUpdated(row, column);
             if (column == MANAGE_REQUEST_COL_STATUS) {
                 fireTableCellUpdated(row, MANAGE_REQUEST_COL_ASSIGNED_STAFF);

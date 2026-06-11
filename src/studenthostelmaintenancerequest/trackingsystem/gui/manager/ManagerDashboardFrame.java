@@ -106,7 +106,7 @@ public class ManagerDashboardFrame extends javax.swing.JFrame {
         pnlPageHeader = new javax.swing.JPanel();
         lblPageTitle = new javax.swing.JLabel();
         btnNavDashboard = new ManagerNavButton("Dashboard");
-        btnNavManageRequests = new ManagerNavButton("Manage All Requests");
+        btnNavManageRequests = new ManagerNavButton("Manage Active Requests");
         btnNavAssignStaff = new ManagerNavButton("Assign Staff");
         btnNavRoomDetails = new ManagerNavButton("View Room Details");
         btnNavRequestHistory = new ManagerNavButton("View Request History");

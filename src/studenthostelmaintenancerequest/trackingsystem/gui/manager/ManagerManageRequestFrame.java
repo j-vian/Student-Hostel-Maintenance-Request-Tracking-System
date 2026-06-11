@@ -55,7 +55,7 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
         UIHelper.styleManagerFilterButton(btnFilter);
         UIHelper.styleManagerUpdateButton(btnConfirmChanges);
 
-        lblTableSection.setText("All Requests");
+        lblTableSection.setText("Active Requests");
 
         requestTableModel = UIHelper.createManagerManageRequestTableModel();
         tblRequests.setModel(requestTableModel);
@@ -133,7 +133,12 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
         tblRequests.getColumnModel().getColumn(5).setCellEditor(null);
         btnConfirmChanges.setText("Update");
         UIHelper.styleManagerUpdateButton(btnConfirmChanges);
+        refreshPaginationFooter();
         tblRequests.repaint();
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            UIHelper.sizeManagerManageRequestTable(tblRequests, scrTable);
+            pnlTableSection.revalidate();
+        });
     }
 
     /**
@@ -161,7 +166,7 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
         pnlPageHeader = new javax.swing.JPanel();
         lblPageTitle = new javax.swing.JLabel();
         btnNavDashboard = new ManagerNavButton("Dashboard");
-        btnNavManageRequests = new ManagerNavButton("Manage All Requests");
+        btnNavManageRequests = new ManagerNavButton("Manage Active Requests");
         btnNavAssignStaff = new ManagerNavButton("Assign Staff");
         btnNavRoomDetails = new ManagerNavButton("View Room Details");
         btnNavRequestHistory = new ManagerNavButton("View Request History");
@@ -175,7 +180,7 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
         tblRequests = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Manage All Requests");
+        setTitle("Manage Active Requests");
 
         pnlRoot.setLayout(new java.awt.BorderLayout());
 
@@ -272,7 +277,7 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
 
         pnlContent.setLayout(new java.awt.BorderLayout());
 
-        lblPageTitle.setText("Manage All Requests");
+        lblPageTitle.setText("Manage Active Requests");
 
         javax.swing.GroupLayout pnlPageHeaderLayout = new javax.swing.GroupLayout(pnlPageHeader);
         pnlPageHeader.setLayout(pnlPageHeaderLayout);
@@ -317,7 +322,7 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
                 .addComponent(btnConfirmChanges))
         );
 
-        lblTableSection.setText("All Requests");
+        lblTableSection.setText("Active Requests");
 
         tblRequests.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
