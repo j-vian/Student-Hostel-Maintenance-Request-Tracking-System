@@ -5,30 +5,29 @@
 package studenthostelmaintenancerequest.trackingsystem.gui.manager;
 
 import studenthostelmaintenancerequest.trackingsystem.gui.auth.LoginFrame;
-import studenthostelmaintenancerequest.trackingsystem.gui.common.AppColors;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerUserMenu;
-import studenthostelmaintenancerequest.trackingsystem.gui.common.StatCardPanel;
+import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
-import javax.swing.JLabel;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author vian
  */
-public class ManagerDashboardFrame extends javax.swing.JFrame {
+public class ManagerManageRequestFrame extends javax.swing.JFrame {
 
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ManagerDashboardFrame.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ManagerManageRequestFrame.class.getName());
 
-    public ManagerDashboardFrame() {
+    private DefaultTableModel requestTableModel;
+    private final java.util.Map<Integer, String> originalStatuses = new java.util.HashMap<>();
+
+    public ManagerManageRequestFrame() {
         initComponents();
         customizeForm();
     }
 
-    /**
-     * Fonts, colours, table data, and actions applied after the Form Editor layout is built.
-     */
     private void customizeForm() {
         UIHelper.styleManagerShell(pnlHeader, pnlSidebar, pnlMain, lblAppTitle, pnlHeaderLogo);
         UIHelper.styleManagerPageHeader(pnlPageHeader, lblPageTitle);
@@ -37,48 +36,73 @@ public class ManagerDashboardFrame extends javax.swing.JFrame {
         UIHelper.layoutManagerSidebar(pnlSidebar,
                 btnNavDashboard, btnNavManageRequests, btnNavAssignStaff,
                 btnNavRoomDetails, btnNavRequestHistory);
-        UIHelper.styleManagerNavButton(btnNavDashboard, true);
-        UIHelper.styleManagerNavButton(btnNavManageRequests, false);
+        UIHelper.styleManagerNavButton(btnNavDashboard, false);
+        UIHelper.styleManagerNavButton(btnNavManageRequests, true);
         UIHelper.styleManagerNavButton(btnNavAssignStaff, false);
         UIHelper.styleManagerNavButton(btnNavRoomDetails, false);
         UIHelper.styleManagerNavButton(btnNavRequestHistory, false);
 
         wireNavigation();
 
-        UIHelper.styleStatCard(cardTotal, AppColors.LABEL, AppColors.LABEL);
-        UIHelper.styleStatCard(cardActive, AppColors.SURFACE, AppColors.PRIMARY);
-        UIHelper.styleStatCard(cardCompleted, AppColors.SURFACE, AppColors.SUCCESS);
-        UIHelper.styleStatCard(cardCancelled, AppColors.SURFACE, AppColors.DANGER);
+        PlaceholderTextField txtSearch = new PlaceholderTextField("Search Request by ID");
+        javax.swing.JPanel pnlSearchField = UIHelper.createSearchField(txtSearch, 640);
+        UIHelper.layoutManagerManageRequestToolbar(pnlToolbar, pnlSearchField, btnFilter, btnConfirmChanges);
+        UIHelper.styleManagerFilterButton(btnFilter);
+        UIHelper.styleManagerConfirmButton(btnConfirmChanges);
 
-        cardTotal.setCount("24");
-        cardActive.setCount("12");
-        cardCompleted.setCount("10");
-        cardCancelled.setCount("2");
+        lblTableSection.setText("All Requests");
 
-        lblTableSection.setText("Recent Requests");
-
-        tblRequests.setModel(UIHelper.createManagerRequestTableModel());
+        requestTableModel = UIHelper.createManagerManageRequestTableModel();
+        captureOriginalStatuses();
+        tblRequests.setModel(requestTableModel);
         UIHelper.styleManagerTableSection(lblTableSection, tblRequests, scrTable);
-        UIHelper.applyManagerRequestTableRenderers(tblRequests);
+        UIHelper.applyManagerManageRequestTableRenderers(tblRequests);
+        UIHelper.installManagerManageRequestStatusEditor(tblRequests, requestTableModel, this::refreshConfirmButton);
 
-        JLabel lblViewAllRequests = UIHelper.createHyperlink("View All Requests");
-        UIHelper.addHyperlinkAction(lblViewAllRequests,
-                () -> UIHelper.navigateTo(this, new RequestHistoryFrame()));
-        UIHelper.layoutManagerTableSectionFooter(pnlTableSection, lblTableSection, scrTable, lblViewAllRequests);
+        btnConfirmChanges.addActionListener(e -> confirmStatusChanges());
 
         UIHelper.showManagerFrame(this);
         javax.swing.SwingUtilities.invokeLater(() -> {
-            UIHelper.sizeManagerOverviewTable(tblRequests, scrTable);
+            UIHelper.sizeManagerManageRequestTable(tblRequests, scrTable);
             pnlTableSection.revalidate();
         });
     }
 
     private void wireNavigation() {
-        btnNavDashboard.addActionListener(e -> { /* already on this page */ });
-        btnNavManageRequests.addActionListener(e -> UIHelper.navigateTo(this, new ManagerManageRequestFrame()));
+        btnNavDashboard.addActionListener(e -> UIHelper.navigateTo(this, new ManagerDashboardFrame()));
+        btnNavManageRequests.addActionListener(e -> { /* already on this page */ });
         btnNavAssignStaff.addActionListener(e -> { /* placeholder */ });
         btnNavRoomDetails.addActionListener(e -> { /* placeholder */ });
         btnNavRequestHistory.addActionListener(e -> UIHelper.navigateTo(this, new RequestHistoryFrame()));
+    }
+
+    private void captureOriginalStatuses() {
+        originalStatuses.clear();
+        for (int row = 0; row < requestTableModel.getRowCount(); row++) {
+            originalStatuses.put(row, String.valueOf(requestTableModel.getValueAt(row, 5)));
+        }
+    }
+
+    private void refreshConfirmButton() {
+        boolean hasChanges = false;
+        for (int row = 0; row < requestTableModel.getRowCount(); row++) {
+            String current = String.valueOf(requestTableModel.getValueAt(row, 5));
+            String original = originalStatuses.getOrDefault(row, current);
+            if (!current.equals(original)) {
+                hasChanges = true;
+                break;
+            }
+        }
+        UIHelper.setManagerConfirmButtonEnabled(btnConfirmChanges, hasChanges);
+    }
+
+    private void confirmStatusChanges() {
+        if (tblRequests.isEditing()) {
+            tblRequests.getCellEditor().stopCellEditing();
+        }
+        captureOriginalStatuses();
+        UIHelper.setManagerConfirmButtonEnabled(btnConfirmChanges, false);
+        tblRequests.repaint();
     }
 
     /**
@@ -111,18 +135,16 @@ public class ManagerDashboardFrame extends javax.swing.JFrame {
         btnNavRoomDetails = new ManagerNavButton("View Room Details");
         btnNavRequestHistory = new ManagerNavButton("View Request History");
         pnlMain = new javax.swing.JPanel();
-        pnlStatCards = new javax.swing.JPanel();
-        cardTotal = new StatCardPanel("Total Requests", "24", AppColors.STAT_TOTAL_HEADER, AppColors.STAT_TOTAL_BODY);
-        cardActive = new StatCardPanel("Active Requests", "12", AppColors.STAT_ACTIVE_HEADER, AppColors.STAT_ACTIVE_BODY);
-        cardCompleted = new StatCardPanel("Completed Requests", "10", AppColors.STAT_COMPLETED_HEADER, AppColors.STAT_COMPLETED_BODY);
-        cardCancelled = new StatCardPanel("Cancelled Requests", "2", AppColors.STAT_CANCELLED_HEADER, AppColors.STAT_CANCELLED_BODY);
+        pnlToolbar = new javax.swing.JPanel();
+        btnFilter = new javax.swing.JButton();
+        btnConfirmChanges = new javax.swing.JButton();
         pnlTableSection = new javax.swing.JPanel();
         lblTableSection = new javax.swing.JLabel();
         scrTable = new javax.swing.JScrollPane();
         tblRequests = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Manager Dashboard");
+        setTitle("Manage All Requests");
 
         pnlRoot.setLayout(new java.awt.BorderLayout());
 
@@ -219,7 +241,7 @@ public class ManagerDashboardFrame extends javax.swing.JFrame {
 
         pnlContent.setLayout(new java.awt.BorderLayout());
 
-        lblPageTitle.setText("Dashboard");
+        lblPageTitle.setText("Manage All Requests");
 
         javax.swing.GroupLayout pnlPageHeaderLayout = new javax.swing.GroupLayout(pnlPageHeader);
         pnlPageHeader.setLayout(pnlPageHeaderLayout);
@@ -240,23 +262,40 @@ public class ManagerDashboardFrame extends javax.swing.JFrame {
 
         pnlContent.add(pnlPageHeader, java.awt.BorderLayout.NORTH);
 
-        pnlStatCards.setOpaque(false);
-        pnlStatCards.setLayout(new java.awt.GridLayout(1, 4, 16, 0));
-        pnlStatCards.add(cardTotal);
-        pnlStatCards.add(cardActive);
-        pnlStatCards.add(cardCompleted);
-        pnlStatCards.add(cardCancelled);
+        pnlToolbar.setOpaque(false);
 
-        lblTableSection.setText("Recent Requests");
+        btnFilter.setText("Filter");
+
+        btnConfirmChanges.setText("Confirm Changes");
+
+        javax.swing.GroupLayout pnlToolbarLayout = new javax.swing.GroupLayout(pnlToolbar);
+        pnlToolbar.setLayout(pnlToolbarLayout);
+        pnlToolbarLayout.setHorizontalGroup(
+            pnlToolbarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlToolbarLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(btnFilter)
+                .addGap(8, 8, 8)
+                .addComponent(btnConfirmChanges))
+        );
+        pnlToolbarLayout.setVerticalGroup(
+            pnlToolbarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlToolbarLayout.createSequentialGroup()
+                .addComponent(btnFilter)
+                .addGap(8, 8, 8)
+                .addComponent(btnConfirmChanges))
+        );
+
+        lblTableSection.setText("All Requests");
 
         tblRequests.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Request ID", "Request Type", "Student Name", "Assigned Staff", "Status"
+                "Request ID", "Request Type", "Student Name", "Assigned Staff", "Date Raised", "Status"
             }
         ));
         scrTable.setViewportView(tblRequests);
@@ -284,7 +323,7 @@ public class ManagerDashboardFrame extends javax.swing.JFrame {
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addGap(32, 32, 32)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlStatCards, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnlToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(pnlTableSection, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(32, 32, 32))
         );
@@ -292,8 +331,8 @@ public class ManagerDashboardFrame extends javax.swing.JFrame {
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addGap(28, 28, 28)
-                .addComponent(pnlStatCards, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
+                .addComponent(pnlToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(24, 24, 24)
                 .addComponent(pnlTableSection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -338,20 +377,18 @@ public class ManagerDashboardFrame extends javax.swing.JFrame {
         }
 
         UIHelper.initApplicationLook();
-        java.awt.EventQueue.invokeLater(() -> new ManagerDashboardFrame());
+        java.awt.EventQueue.invokeLater(() -> new ManagerManageRequestFrame());
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnConfirmChanges;
+    private javax.swing.JButton btnFilter;
     private javax.swing.JButton btnUserMenu;
     private ManagerNavButton btnNavAssignStaff;
     private ManagerNavButton btnNavDashboard;
     private ManagerNavButton btnNavManageRequests;
     private ManagerNavButton btnNavRequestHistory;
     private ManagerNavButton btnNavRoomDetails;
-    private StatCardPanel cardActive;
-    private StatCardPanel cardCancelled;
-    private StatCardPanel cardCompleted;
-    private StatCardPanel cardTotal;
     private javax.swing.JLabel lblAppTitle;
     private javax.swing.JLabel lblPageTitle;
     private javax.swing.JLabel lblTableSection;
@@ -360,14 +397,14 @@ public class ManagerDashboardFrame extends javax.swing.JFrame {
     private javax.swing.JPanel pnlBody;
     private javax.swing.JPanel pnlContent;
     private javax.swing.JPanel pnlHeader;
-    private studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel pnlHeaderLogo;
+    private LogoPanel pnlHeaderLogo;
     private javax.swing.JPanel pnlHeaderLeft;
     private javax.swing.JPanel pnlMain;
     private javax.swing.JPanel pnlPageHeader;
     private javax.swing.JPanel pnlRoot;
     private javax.swing.JPanel pnlSidebar;
-    private javax.swing.JPanel pnlStatCards;
     private javax.swing.JPanel pnlTableSection;
+    private javax.swing.JPanel pnlToolbar;
     private javax.swing.JPanel pnlUserProfile;
     private javax.swing.JPanel pnlUserText;
     private javax.swing.JScrollPane scrTable;

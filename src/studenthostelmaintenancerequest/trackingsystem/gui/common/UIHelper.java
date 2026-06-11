@@ -16,6 +16,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -26,6 +27,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellEditor;
 import javax.swing.plaf.basic.BasicButtonUI;
 import javax.swing.plaf.basic.BasicHTML;
 import javax.swing.text.View;
@@ -927,6 +929,217 @@ public final class UIHelper {
         frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+
+    public static JPanel createSearchField(PlaceholderTextField field, int width) {
+        JPanel container = new JPanel(new BorderLayout(8, 0));
+        container.setOpaque(true);
+        container.setBackground(AppColors.INPUT_FILL);
+        container.setBorder(inputBorder());
+        fixSize(container, width, FIELD_HEIGHT);
+
+        JLabel icon = new JLabel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(AppColors.MUTED);
+                g2.setStroke(new java.awt.BasicStroke(1.6f));
+                int cx = getWidth() / 2;
+                int cy = getHeight() / 2;
+                g2.drawOval(cx - 7, cy - 7, 12, 12);
+                g2.drawLine(cx + 3, cy + 3, cx + 9, cy + 9);
+                g2.dispose();
+            }
+        };
+        icon.setPreferredSize(new Dimension(36, FIELD_HEIGHT));
+        icon.setMinimumSize(new Dimension(36, FIELD_HEIGHT));
+        icon.setMaximumSize(new Dimension(36, FIELD_HEIGHT));
+        icon.setOpaque(false);
+
+        field.setBorder(new EmptyBorder(10, 0, 10, 14));
+        field.setOpaque(false);
+
+        container.add(icon, BorderLayout.WEST);
+        container.add(field, BorderLayout.CENTER);
+        return container;
+    }
+
+    public static void styleManagerOutlineButton(JButton button) {
+        button.setFont(AppFonts.bodyBold());
+        button.setForeground(AppColors.LABEL);
+        button.setBackground(AppColors.SURFACE);
+        button.setBorder(new CompoundBorder(
+                new LineBorder(AppColors.BORDER, 1, true),
+                new EmptyBorder(8, 14, 8, 14)));
+        button.setFocusPainted(false);
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        button.setPreferredSize(new Dimension(120, FIELD_HEIGHT));
+        button.setMinimumSize(new Dimension(120, FIELD_HEIGHT));
+    }
+
+    public static void styleManagerFilterButton(JButton button) {
+        styleManagerOutlineButton(button);
+        button.setIcon(new javax.swing.Icon() {
+            @Override
+            public void paintIcon(Component c, Graphics g, int x, int y) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(AppColors.LABEL);
+                g2.setStroke(new java.awt.BasicStroke(1.5f));
+                int[] xs = {x + 2, x + 14, x + 10, x + 6, x + 2};
+                int[] ys = {y + 2, y + 2, y + 14, y + 14, y + 2};
+                g2.drawPolyline(xs, ys, 5);
+                g2.drawLine(x + 6, y + 14, x + 10, y + 14);
+                g2.dispose();
+            }
+
+            @Override
+            public int getIconWidth() {
+                return 16;
+            }
+
+            @Override
+            public int getIconHeight() {
+                return 16;
+            }
+        });
+        button.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        button.setIconTextGap(8);
+    }
+
+    public static void styleManagerConfirmButton(JButton button) {
+        button.setFont(AppFonts.bodyBold());
+        button.setForeground(AppColors.MUTED);
+        button.setBackground(AppColors.SURFACE);
+        button.setBorder(new CompoundBorder(
+                new LineBorder(AppColors.BORDER, 1, true),
+                new EmptyBorder(8, 18, 8, 18)));
+        button.setFocusPainted(false);
+        button.setEnabled(false);
+        button.setPreferredSize(new Dimension(160, FIELD_HEIGHT));
+        button.setMinimumSize(new Dimension(160, FIELD_HEIGHT));
+    }
+
+    public static void setManagerConfirmButtonEnabled(JButton button, boolean enabled) {
+        button.setEnabled(enabled);
+        button.setForeground(enabled ? AppColors.LABEL : AppColors.MUTED);
+        button.setCursor(enabled
+                ? Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
+                : Cursor.getDefaultCursor());
+    }
+
+    public static void layoutManagerManageRequestToolbar(
+            JPanel toolbar, JPanel searchField, JButton btnFilter, JButton btnConfirm) {
+
+        toolbar.removeAll();
+        toolbar.setLayout(new BorderLayout(16, 0));
+        toolbar.setOpaque(false);
+
+        JPanel actions = new JPanel();
+        actions.setOpaque(false);
+        actions.setLayout(new javax.swing.BoxLayout(actions, javax.swing.BoxLayout.Y_AXIS));
+        actions.add(btnFilter);
+        actions.add(javax.swing.Box.createVerticalStrut(8));
+        actions.add(btnConfirm);
+
+        toolbar.add(searchField, BorderLayout.CENTER);
+        toolbar.add(actions, BorderLayout.EAST);
+    }
+
+    private static final int MANAGE_REQUEST_COL_ASSIGNED_STAFF = 3;
+    private static final int MANAGE_REQUEST_COL_DATE_RAISED = 4;
+    private static final int MANAGE_REQUEST_COL_STATUS = 5;
+
+    public static DefaultTableModel createManagerManageRequestTableModel() {
+        return new DefaultTableModel(
+                new Object[][]{
+                    {"REQ001", "Electrical", "Alex Johnson", "John Doe", "8 June 2026", "IN PROGRESS"},
+                    {"REQ001", "Plumbing", "Alex Johnson", "John Doe", "8 June 2026", "SUBMITTED"},
+                    {"REQ001", "Furniture", "Alex Johnson", "John Doe", "8 June 2026", "COMPLETED"}
+                },
+                new String[]{
+                    "Request ID", "Request Type", "Student Name",
+                    "Assigned Staff", "Date Raised", "Status"}) {
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == MANAGE_REQUEST_COL_STATUS;
+            }
+        };
+    }
+
+    public static void applyManagerManageRequestTableRenderers(JTable table) {
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        centerRenderer.setFont(AppFonts.body());
+        centerRenderer.setForeground(AppColors.LABEL);
+        centerRenderer.setBackground(AppColors.SURFACE);
+
+        for (int column = 0; column < MANAGE_REQUEST_COL_ASSIGNED_STAFF; column++) {
+            table.getColumnModel().getColumn(column).setCellRenderer(centerRenderer);
+        }
+
+        table.getColumnModel().getColumn(MANAGE_REQUEST_COL_DATE_RAISED).setCellRenderer(centerRenderer);
+
+        table.getColumnModel().getColumn(MANAGE_REQUEST_COL_ASSIGNED_STAFF).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
+            JLabel staffLabel = new JLabel(String.valueOf(value), JLabel.CENTER);
+            staffLabel.setFont(AppFonts.bodyBold());
+            staffLabel.setForeground(AppColors.LABEL);
+
+            JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
+            wrapper.setBackground(AppColors.SURFACE);
+            wrapper.add(staffLabel);
+            return wrapper;
+        });
+
+        table.getColumnModel().getColumn(MANAGE_REQUEST_COL_STATUS).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
+            StatusBadgeLabel badge = new StatusBadgeLabel(String.valueOf(value));
+            JLabel arrow = new JLabel("\u25BE");
+            arrow.setFont(AppFonts.body());
+            arrow.setForeground(AppColors.MUTED);
+
+            JPanel badgeRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 4, 0));
+            badgeRow.setOpaque(false);
+            badgeRow.add(badge);
+            badgeRow.add(arrow);
+
+            JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
+            wrapper.setBackground(AppColors.SURFACE);
+            wrapper.add(badgeRow);
+            return wrapper;
+        });
+    }
+
+    public static void installManagerManageRequestStatusEditor(
+            JTable table, DefaultTableModel model, Runnable onPendingChange) {
+
+        TableCellEditor editor = new DefaultCellEditor(new StatusBadgeComboBox()) {
+            @Override
+            public Component getTableCellEditorComponent(
+                    JTable tbl, Object value, boolean isSelected, int row, int column) {
+                StatusBadgeComboBox combo = (StatusBadgeComboBox) getComponent();
+                combo.setSelectedStatus(String.valueOf(value));
+                return combo;
+            }
+
+            @Override
+            public Object getCellEditorValue() {
+                return ((StatusBadgeComboBox) getComponent()).getSelectedItem();
+            }
+        };
+
+        table.getColumnModel().getColumn(MANAGE_REQUEST_COL_STATUS).setCellEditor(editor);
+
+        model.addTableModelListener(e -> {
+            if (e.getColumn() == MANAGE_REQUEST_COL_STATUS) {
+                onPendingChange.run();
+            }
+        });
+    }
+
+    public static void sizeManagerManageRequestTable(JTable table, JScrollPane scroll) {
+        sizeManagerOverviewTable(table, scroll);
     }
 
     private static JPanel createRequirementItem(String text) {
