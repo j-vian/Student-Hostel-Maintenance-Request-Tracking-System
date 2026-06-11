@@ -745,13 +745,25 @@ public final class UIHelper {
     public static void layoutManagerSidebar(JPanel pnlSidebar, ManagerNavButton... buttons) {
         pnlSidebar.removeAll();
         pnlSidebar.setLayout(new javax.swing.BoxLayout(pnlSidebar, javax.swing.BoxLayout.Y_AXIS));
-        pnlSidebar.setBorder(new EmptyBorder(MANAGER_PAGE_HEADER_HEIGHT, 0, 16, 0));
+        pnlSidebar.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 0, 0, 1, AppColors.BORDER),
+                new EmptyBorder(MANAGER_PAGE_HEADER_HEIGHT, 12, 16, 12)));
+
+        JPanel menuPanel = new JPanel();
+        menuPanel.setLayout(new javax.swing.BoxLayout(menuPanel, javax.swing.BoxLayout.Y_AXIS));
+        menuPanel.setBackground(AppColors.SURFACE);
+        menuPanel.setBorder(BorderFactory.createLineBorder(AppColors.BORDER, 1));
+        menuPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        menuPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+
         for (int i = 0; i < buttons.length; i++) {
             if (i > 0) {
-                pnlSidebar.add(javax.swing.Box.createVerticalStrut(ManagerNavButton.verticalGap()));
+                menuPanel.add(javax.swing.Box.createVerticalStrut(ManagerNavButton.verticalGap()));
             }
-            pnlSidebar.add(buttons[i]);
+            menuPanel.add(buttons[i]);
         }
+
+        pnlSidebar.add(menuPanel);
         pnlSidebar.add(javax.swing.Box.createVerticalGlue());
     }
 
@@ -769,7 +781,7 @@ public final class UIHelper {
         sectionTitle.setOpaque(true);
         sectionTitle.setBackground(AppColors.STAT_TOTAL_HEADER);
         sectionTitle.setBorder(new CompoundBorder(
-                BorderFactory.createLineBorder(AppColors.BORDER, 1),
+                BorderFactory.createLineBorder(AppColors.GRID_LINE, 1),
                 new EmptyBorder(10, 14, 10, 14)));
 
         table.setFont(AppFonts.body());
@@ -777,32 +789,45 @@ public final class UIHelper {
         table.setRowHeight(44);
         table.setShowVerticalLines(true);
         table.setShowHorizontalLines(true);
-        table.setGridColor(AppColors.BORDER);
+        table.setGridColor(AppColors.GRID_LINE);
         table.setIntercellSpacing(new Dimension(0, 0));
         table.setFillsViewportHeight(false);
-        table.setSelectionBackground(AppColors.NAV_ACTIVE_BG);
-        table.setSelectionForeground(AppColors.LABEL);
+        table.setRowSelectionAllowed(false);
+        table.setColumnSelectionAllowed(false);
         table.setFocusable(false);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
         JTableHeader header = table.getTableHeader();
         header.setFont(AppFonts.label());
         header.setForeground(AppColors.LABEL);
-        header.setBackground(AppColors.SURFACE);
+        header.setBackground(AppColors.STAT_TOTAL_HEADER);
         header.setReorderingAllowed(false);
         header.setResizingAllowed(false);
-        header.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, AppColors.BORDER));
+        header.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, AppColors.GRID_LINE));
 
-        DefaultTableCellRenderer headerRenderer = new DefaultTableCellRenderer();
-        headerRenderer.setHorizontalAlignment(JLabel.CENTER);
-        headerRenderer.setFont(AppFonts.label());
-        headerRenderer.setForeground(AppColors.LABEL);
-        headerRenderer.setBackground(AppColors.SURFACE);
         for (int column = 0; column < table.getColumnCount(); column++) {
+            final int columnIndex = column;
+            DefaultTableCellRenderer headerRenderer = new DefaultTableCellRenderer() {
+                @Override
+                public Component getTableCellRendererComponent(
+                        JTable tbl, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+                    JLabel label = (JLabel) super.getTableCellRendererComponent(
+                            tbl, value, isSelected, hasFocus, row, col);
+                    label.setHorizontalAlignment(JLabel.CENTER);
+                    label.setFont(AppFonts.label());
+                    label.setForeground(AppColors.LABEL);
+                    label.setBackground(AppColors.STAT_TOTAL_HEADER);
+                    label.setOpaque(true);
+                    boolean isLastColumn = columnIndex == tbl.getColumnCount() - 1;
+                    label.setBorder(BorderFactory.createMatteBorder(
+                            0, 0, 0, isLastColumn ? 0 : 1, AppColors.GRID_LINE));
+                    return label;
+                }
+            };
             table.getColumnModel().getColumn(column).setHeaderRenderer(headerRenderer);
         }
 
-        scroll.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, AppColors.BORDER));
+        scroll.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, AppColors.GRID_LINE));
         scroll.getViewport().setBackground(AppColors.SURFACE);
         scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
@@ -839,6 +864,7 @@ public final class UIHelper {
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         centerRenderer.setFont(AppFonts.body());
         centerRenderer.setForeground(AppColors.LABEL);
+        centerRenderer.setBackground(AppColors.SURFACE);
 
         for (int column = 0; column < table.getColumnCount() - 1; column++) {
             table.getColumnModel().getColumn(column).setCellRenderer(centerRenderer);
@@ -847,7 +873,7 @@ public final class UIHelper {
         table.getColumnModel().getColumn(table.getColumnCount() - 1).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
             StatusBadgeLabel badge = new StatusBadgeLabel(String.valueOf(value));
             JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
-            wrapper.setBackground(isSelected ? tbl.getSelectionBackground() : AppColors.SURFACE);
+            wrapper.setBackground(AppColors.SURFACE);
             wrapper.add(badge);
             return wrapper;
         });

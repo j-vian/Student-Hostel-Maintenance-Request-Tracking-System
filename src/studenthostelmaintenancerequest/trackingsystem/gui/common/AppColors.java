@@ -10,6 +10,7 @@ public final class AppColors {
     public static final Color BACKGROUND = color("F9F9F6");
     public static final Color INPUT_FILL = color("F9F9F6");
     public static final Color BORDER = color("DADAD7");
+    public static final Color GRID_LINE = Color.BLACK;
     public static final Color CARD = Color.WHITE;
     public static final Color BUTTON_TEXT = Color.WHITE;
     public static final Color REQUIREMENTS_FILL = color("F4F4F0");

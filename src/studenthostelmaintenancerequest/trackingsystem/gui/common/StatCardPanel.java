@@ -20,7 +20,7 @@ public class StatCardPanel extends JPanel {
     public StatCardPanel(String title, String count, Color headerBg, Color bodyBg) {
         setLayout(new BorderLayout());
         setOpaque(false);
-        setBorder(BorderFactory.createLineBorder(AppColors.BORDER, 1));
+        setBorder(BorderFactory.createLineBorder(AppColors.GRID_LINE, 1));
 
         lblTitle = new JLabel(title, JLabel.CENTER);
         lblCount = new JLabel(count, JLabel.CENTER);
@@ -28,7 +28,9 @@ public class StatCardPanel extends JPanel {
         JPanel header = new JPanel(new BorderLayout());
         header.setOpaque(true);
         header.setBackground(headerBg);
-        header.setBorder(new EmptyBorder(10, 12, 10, 12));
+        header.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 0, 1, 0, AppColors.GRID_LINE),
+                new EmptyBorder(10, 12, 10, 12)));
         header.add(lblTitle, BorderLayout.CENTER);
 
         JPanel body = new JPanel(new BorderLayout());
