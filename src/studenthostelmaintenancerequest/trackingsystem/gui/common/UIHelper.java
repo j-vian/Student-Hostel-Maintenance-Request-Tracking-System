@@ -752,7 +752,7 @@ public final class UIHelper {
         JPanel menuPanel = new JPanel();
         menuPanel.setLayout(new javax.swing.BoxLayout(menuPanel, javax.swing.BoxLayout.Y_AXIS));
         menuPanel.setBackground(AppColors.SURFACE);
-        menuPanel.setBorder(BorderFactory.createLineBorder(AppColors.BORDER, 1));
+        menuPanel.setBorder(BorderFactory.createLineBorder(AppColors.SURFACE, 1));
         menuPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         menuPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
