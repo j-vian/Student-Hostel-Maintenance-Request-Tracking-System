@@ -6,6 +6,7 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
 
 public class StatusBadgeComboBox extends JComboBox<String> {
 
@@ -15,7 +16,7 @@ public class StatusBadgeComboBox extends JComboBox<String> {
         super(MANAGER_STATUS_OPTIONS);
         setFont(AppFonts.statusBadge());
         setBackground(AppColors.SURFACE);
-        setBorder(null);
+        setBorder(new LineBorder(AppColors.GRID_LINE, 1, true));
         setRenderer(new StatusBadgeListCellRenderer());
     }
 
@@ -40,11 +41,18 @@ public class StatusBadgeComboBox extends JComboBox<String> {
         public Component getListCellRendererComponent(
                 JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 
+            if (value == null) {
+                return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            }
+
+            boolean isClosedCombo = list == null || !list.isShowing();
+            if (isClosedCombo) {
+                return new StatusDropdownPanel(String.valueOf(value));
+            }
+
             JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 4));
             wrapper.setBackground(AppColors.SURFACE);
-            if (value != null) {
-                wrapper.add(new StatusBadgeLabel(String.valueOf(value)));
-            }
+            wrapper.add(new StatusBadgeLabel(String.valueOf(value)));
             return wrapper;
         }
     }

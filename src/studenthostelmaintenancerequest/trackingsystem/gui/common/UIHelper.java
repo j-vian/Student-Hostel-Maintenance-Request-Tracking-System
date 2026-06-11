@@ -24,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -1053,36 +1054,138 @@ public final class UIHelper {
         toolbar.add(bottomRow);
     }
 
-    private static final int MANAGE_REQUEST_COL_ASSIGNED_STAFF = 3;
-    private static final int MANAGE_REQUEST_COL_DATE_RAISED = 4;
-    private static final int MANAGE_REQUEST_COL_STATUS = 5;
+    public static final int MANAGE_REQUEST_PAGE_SIZE = 7;
+    public static final int MANAGE_REQUEST_COL_ASSIGNED_STAFF = 3;
+    public static final int MANAGE_REQUEST_COL_DATE_RAISED = 4;
+    public static final int MANAGE_REQUEST_COL_STATUS = 5;
 
     public static ManagerManageRequestTableModel createManagerManageRequestTableModel() {
-        return new ManagerManageRequestTableModel(
-                new Object[][]{
-                    {"REQ001", "Electrical", "Alex Johnson", "John Doe", "8 June 2026", "IN PROGRESS"},
-                    {"REQ001", "Plumbing", "Alex Johnson", "John Doe", "8 June 2026", "SUBMITTED"},
-                    {"REQ001", "Furniture", "Alex Johnson", "John Doe", "8 June 2026", "COMPLETED"}
-                },
-                new String[]{
-                    "Request ID", "Request Type", "Student Name",
-                    "Assigned Staff", "Date Raised", "Status"});
+        return new ManagerManageRequestTableModel(buildManageRequestSampleData(), new String[]{
+            "Request ID", "Request Type", "Student Name",
+            "Assigned Staff", "Date Raised", "Status"});
     }
 
-    public static final class ManagerManageRequestTableModel extends DefaultTableModel {
+    private static Object[][] buildManageRequestSampleData() {
+        Object[][] seed = {
+            {"REQ001", "Electrical", "Alex Johnson", "John Doe", "8 June 2026", "IN PROGRESS"},
+            {"REQ002", "Plumbing", "Maria Chen", "Jane Smith", "8 June 2026", "SUBMITTED"},
+            {"REQ003", "Furniture", "Sam Patel", "John Doe", "8 June 2026", "COMPLETED"},
+            {"REQ004", "Electrical", "Alex Johnson", "Jane Smith", "9 June 2026", "CANCELLED"},
+            {"REQ005", "Plumbing", "Maria Chen", "John Doe", "9 June 2026", "IN PROGRESS"},
+            {"REQ006", "Furniture", "Sam Patel", "Jane Smith", "9 June 2026", "SUBMITTED"},
+            {"REQ007", "Electrical", "Alex Johnson", "John Doe", "10 June 2026", "COMPLETED"},
+            {"REQ008", "Plumbing", "Maria Chen", "Jane Smith", "10 June 2026", "IN PROGRESS"},
+            {"REQ009", "Furniture", "Sam Patel", "John Doe", "10 June 2026", "SUBMITTED"},
+            {"REQ010", "Electrical", "Alex Johnson", "Jane Smith", "11 June 2026", "COMPLETED"},
+            {"REQ011", "Plumbing", "Maria Chen", "John Doe", "11 June 2026", "CANCELLED"},
+            {"REQ012", "Furniture", "Sam Patel", "Jane Smith", "11 June 2026", "IN PROGRESS"},
+            {"REQ013", "Electrical", "Alex Johnson", "John Doe", "12 June 2026", "SUBMITTED"},
+            {"REQ014", "Plumbing", "Maria Chen", "Jane Smith", "12 June 2026", "COMPLETED"},
+            {"REQ015", "Furniture", "Sam Patel", "John Doe", "12 June 2026", "IN PROGRESS"},
+            {"REQ016", "Electrical", "Alex Johnson", "Jane Smith", "13 June 2026", "SUBMITTED"},
+            {"REQ017", "Plumbing", "Maria Chen", "John Doe", "13 June 2026", "COMPLETED"},
+            {"REQ018", "Furniture", "Sam Patel", "Jane Smith", "13 June 2026", "CANCELLED"},
+            {"REQ019", "Electrical", "Alex Johnson", "John Doe", "14 June 2026", "IN PROGRESS"},
+            {"REQ020", "Plumbing", "Maria Chen", "Jane Smith", "14 June 2026", "SUBMITTED"},
+            {"REQ021", "Furniture", "Sam Patel", "John Doe", "14 June 2026", "COMPLETED"}
+        };
+        return seed;
+    }
 
+    public static final class ManagerManageRequestTableModel extends AbstractTableModel {
+
+        private final java.util.List<Object[]> allRows = new java.util.ArrayList<>();
+        private final String[] columnNames;
+        private int currentPage;
         private boolean statusColumnEditable;
 
         public ManagerManageRequestTableModel(Object[][] data, Object[] columns) {
-            super(data, columns);
+            this.columnNames = new String[columns.length];
+            for (int i = 0; i < columns.length; i++) {
+                this.columnNames[i] = String.valueOf(columns[i]);
+            }
+            for (Object[] row : data) {
+                allRows.add(row.clone());
+            }
+        }
+
+        @Override
+        public int getColumnCount() {
+            return columnNames.length;
+        }
+
+        @Override
+        public String getColumnName(int column) {
+            return columnNames[column];
         }
 
         public void setStatusColumnEditable(boolean editable) {
             this.statusColumnEditable = editable;
         }
 
-        public boolean isStatusColumnEditable() {
-            return statusColumnEditable;
+        public int getTotalRowCount() {
+            return allRows.size();
+        }
+
+        public int getPageSize() {
+            return MANAGE_REQUEST_PAGE_SIZE;
+        }
+
+        public int getCurrentPage() {
+            return currentPage;
+        }
+
+        public int getShowingFrom() {
+            return currentPage * MANAGE_REQUEST_PAGE_SIZE + 1;
+        }
+
+        public int getShowingTo() {
+            return Math.min((currentPage + 1) * MANAGE_REQUEST_PAGE_SIZE, allRows.size());
+        }
+
+        public boolean canGoPrevious() {
+            return currentPage > 0;
+        }
+
+        public boolean canGoNext() {
+            return (currentPage + 1) * MANAGE_REQUEST_PAGE_SIZE < allRows.size();
+        }
+
+        public void previousPage() {
+            if (!canGoPrevious()) {
+                return;
+            }
+            currentPage--;
+            fireTableDataChanged();
+        }
+
+        public void nextPage() {
+            if (!canGoNext()) {
+                return;
+            }
+            currentPage++;
+            fireTableDataChanged();
+        }
+
+        private int toDataIndex(int viewRow) {
+            return currentPage * MANAGE_REQUEST_PAGE_SIZE + viewRow;
+        }
+
+        @Override
+        public int getRowCount() {
+            int remaining = allRows.size() - (currentPage * MANAGE_REQUEST_PAGE_SIZE);
+            return Math.min(MANAGE_REQUEST_PAGE_SIZE, Math.max(remaining, 0));
+        }
+
+        @Override
+        public Object getValueAt(int row, int column) {
+            return allRows.get(toDataIndex(row))[column];
+        }
+
+        @Override
+        public void setValueAt(Object value, int row, int column) {
+            allRows.get(toDataIndex(row))[column] = value;
+            fireTableCellUpdated(row, column);
         }
 
         @Override
@@ -1117,22 +1220,14 @@ public final class UIHelper {
         });
 
         table.getColumnModel().getColumn(MANAGE_REQUEST_COL_STATUS).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
-            StatusBadgeLabel badge = new StatusBadgeLabel(String.valueOf(value));
-
-            JPanel badgeRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 4, 0));
-            badgeRow.setOpaque(false);
-            badgeRow.add(badge);
+            JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 6));
+            wrapper.setBackground(AppColors.SURFACE);
 
             if (statusEditMode.getAsBoolean()) {
-                JLabel arrow = new JLabel("\u25BE");
-                arrow.setFont(AppFonts.body());
-                arrow.setForeground(AppColors.MUTED);
-                badgeRow.add(arrow);
+                wrapper.add(new StatusDropdownPanel(String.valueOf(value)));
+            } else {
+                wrapper.add(new StatusBadgeLabel(String.valueOf(value)));
             }
-
-            JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
-            wrapper.setBackground(AppColors.SURFACE);
-            wrapper.add(badgeRow);
             return wrapper;
         });
     }
@@ -1155,7 +1250,78 @@ public final class UIHelper {
     }
 
     public static void sizeManagerManageRequestTable(JTable table, JScrollPane scroll) {
-        sizeManagerOverviewTable(table, scroll);
+        int headerHeight = table.getTableHeader().getPreferredSize().height;
+        int bodyHeight = table.getRowHeight() * MANAGE_REQUEST_PAGE_SIZE;
+        int height = headerHeight + bodyHeight + 2;
+        Dimension size = new Dimension(scroll.getPreferredSize().width, height);
+        scroll.setPreferredSize(size);
+        scroll.setMinimumSize(size);
+        scroll.setMaximumSize(new Dimension(Integer.MAX_VALUE, height));
+    }
+
+    public static void styleManagerPaginationButton(JButton button) {
+        button.setFont(AppFonts.bodyBold());
+        button.setForeground(AppColors.LABEL);
+        button.setBackground(AppColors.SURFACE);
+        button.setBorder(new CompoundBorder(
+                new LineBorder(AppColors.BORDER, 1, true),
+                new EmptyBorder(4, 10, 4, 10)));
+        button.setFocusPainted(false);
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        Dimension size = new Dimension(36, 36);
+        button.setPreferredSize(size);
+        button.setMinimumSize(size);
+        button.setMaximumSize(size);
+    }
+
+    public static void layoutManagerTableSectionWithPagination(
+            JPanel tableSection,
+            JLabel sectionTitle,
+            JScrollPane scroll,
+            JLabel lblShowing,
+            JButton btnPrevious,
+            JButton btnNext) {
+
+        tableSection.removeAll();
+        tableSection.setLayout(new BorderLayout());
+        tableSection.add(sectionTitle, BorderLayout.NORTH);
+        tableSection.add(scroll, BorderLayout.CENTER);
+
+        lblShowing.setFont(AppFonts.body());
+        lblShowing.setForeground(AppColors.LABEL);
+        lblShowing.setBorder(new EmptyBorder(0, 14, 0, 0));
+
+        styleManagerPaginationButton(btnPrevious);
+        styleManagerPaginationButton(btnNext);
+
+        JPanel nav = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
+        nav.setOpaque(false);
+        nav.add(btnPrevious);
+        nav.add(btnNext);
+
+        JPanel footer = new JPanel(new BorderLayout());
+        footer.setOpaque(true);
+        footer.setBackground(AppColors.SURFACE);
+        footer.setBorder(new CompoundBorder(
+                BorderFactory.createMatteBorder(0, 1, 1, 1, AppColors.GRID_LINE),
+                new EmptyBorder(12, 0, 12, 14)));
+        footer.add(lblShowing, BorderLayout.WEST);
+        footer.add(nav, BorderLayout.EAST);
+
+        tableSection.add(footer, BorderLayout.SOUTH);
+    }
+
+    public static void updateManagerPaginationFooter(
+            JLabel lblShowing, JButton btnPrevious, JButton btnNext,
+            ManagerManageRequestTableModel model) {
+
+        lblShowing.setText(String.format(
+                "Showing %d to %d of %d results",
+                model.getShowingFrom(),
+                model.getShowingTo(),
+                model.getTotalRowCount()));
+        btnPrevious.setEnabled(model.canGoPrevious());
+        btnNext.setEnabled(model.canGoNext());
     }
 
     private static JPanel createRequirementItem(String text) {

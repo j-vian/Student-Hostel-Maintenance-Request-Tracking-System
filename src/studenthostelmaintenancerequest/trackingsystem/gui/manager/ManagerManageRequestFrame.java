@@ -24,6 +24,9 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
     private ManagerManageRequestTableModel requestTableModel;
     private TableCellEditor statusCellEditor;
     private boolean statusEditMode;
+    private javax.swing.JLabel lblPagination;
+    private javax.swing.JButton btnPagePrevious;
+    private javax.swing.JButton btnPageNext;
 
     public ManagerManageRequestFrame() {
         initComponents();
@@ -60,6 +63,17 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
         UIHelper.styleManagerTableSection(lblTableSection, tblRequests, scrTable);
         UIHelper.applyManagerManageRequestTableRenderers(tblRequests, () -> statusEditMode);
 
+        lblPagination = new javax.swing.JLabel();
+        btnPagePrevious = new javax.swing.JButton("<");
+        btnPageNext = new javax.swing.JButton(">");
+        UIHelper.layoutManagerTableSectionWithPagination(
+                pnlTableSection, lblTableSection, scrTable,
+                lblPagination, btnPagePrevious, btnPageNext);
+        refreshPaginationFooter();
+
+        btnPagePrevious.addActionListener(e -> changePage(-1));
+        btnPageNext.addActionListener(e -> changePage(1));
+
         btnConfirmChanges.addActionListener(e -> {
             if (statusEditMode) {
                 exitStatusEditMode();
@@ -73,6 +87,24 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
             UIHelper.sizeManagerManageRequestTable(tblRequests, scrTable);
             pnlTableSection.revalidate();
         });
+    }
+
+    private void changePage(int direction) {
+        if (tblRequests.isEditing()) {
+            tblRequests.getCellEditor().stopCellEditing();
+        }
+        if (direction < 0) {
+            requestTableModel.previousPage();
+        } else {
+            requestTableModel.nextPage();
+        }
+        refreshPaginationFooter();
+        tblRequests.repaint();
+    }
+
+    private void refreshPaginationFooter() {
+        UIHelper.updateManagerPaginationFooter(
+                lblPagination, btnPagePrevious, btnPageNext, requestTableModel);
     }
 
     private void wireNavigation() {
@@ -289,6 +321,10 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
 
         tblRequests.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
                 {null, null, null, null, null, null},
                 {null, null, null, null, null, null},
                 {null, null, null, null, null, null}
