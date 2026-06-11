@@ -827,10 +827,27 @@ public final class UIHelper {
             table.getColumnModel().getColumn(column).setHeaderRenderer(headerRenderer);
         }
 
-        scroll.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, AppColors.GRID_LINE));
+        scroll.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, AppColors.GRID_LINE));
         scroll.getViewport().setBackground(AppColors.SURFACE);
         scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+    }
+
+    public static void layoutManagerTableSectionFooter(
+            JPanel tableSection, JLabel sectionTitle, JScrollPane scroll, JLabel footerLink) {
+
+        tableSection.removeAll();
+        tableSection.setLayout(new BorderLayout());
+        tableSection.add(sectionTitle, BorderLayout.NORTH);
+        tableSection.add(scroll, BorderLayout.CENTER);
+        tableSection.add(footerLink, BorderLayout.SOUTH);
+
+        footerLink.setHorizontalAlignment(JLabel.CENTER);
+        footerLink.setOpaque(true);
+        footerLink.setBackground(AppColors.SURFACE);
+        footerLink.setBorder(new CompoundBorder(
+                BorderFactory.createMatteBorder(0, 1, 1, 1, AppColors.GRID_LINE),
+                new EmptyBorder(12, 14, 12, 14)));
     }
 
     public static void sizeManagerOverviewTable(JTable table, JScrollPane scroll) {
@@ -843,12 +860,19 @@ public final class UIHelper {
         scroll.setMaximumSize(new Dimension(Integer.MAX_VALUE, height));
     }
 
+    private static final int MANAGER_TABLE_COL_ASSIGNED_STAFF = 3;
+    private static final int MANAGER_TABLE_COL_STATUS = 4;
+
     public static DefaultTableModel createManagerRequestTableModel() {
         return new DefaultTableModel(
                 new Object[][]{
                     {"REQ001", "Electrical", "Alex Johnson", "John Doe", "IN PROGRESS"},
-                    {"REQ002", "Plumbing", "Alex Johnson", "John Doe", "SUBMITTED"},
-                    {"REQ003", "Furniture", "Alex Johnson", "John Doe", "COMPLETED"}
+                    {"REQ002", "Plumbing", "Maria Chen", null, "SUBMITTED"},
+                    {"REQ003", "Furniture", "Alex Johnson", "John Doe", "COMPLETED"},
+                    {"REQ004", "Electrical", "Sam Patel", null, "SUBMITTED"},
+                    {"REQ005", "Plumbing", "Maria Chen", "Jane Smith", "IN PROGRESS"},
+                    {"REQ006", "Furniture", "Sam Patel", "John Doe", "COMPLETED"},
+                    {"REQ007", "Electrical", "Alex Johnson", "John Doe", "CANCELLED"}
                 },
                 new String[]{"Request ID", "Request Type", "Student Name", "Assigned Staff", "Status"}) {
 
@@ -859,6 +883,10 @@ public final class UIHelper {
         };
     }
 
+    private static boolean isSubmittedStatus(Object status) {
+        return "SUBMITTED".equals(StatusBadgeLabel.formatStatus(String.valueOf(status)));
+    }
+
     public static void applyManagerRequestTableRenderers(JTable table) {
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
@@ -866,11 +894,27 @@ public final class UIHelper {
         centerRenderer.setForeground(AppColors.LABEL);
         centerRenderer.setBackground(AppColors.SURFACE);
 
-        for (int column = 0; column < table.getColumnCount() - 1; column++) {
+        for (int column = 0; column < MANAGER_TABLE_COL_ASSIGNED_STAFF; column++) {
             table.getColumnModel().getColumn(column).setCellRenderer(centerRenderer);
         }
 
-        table.getColumnModel().getColumn(table.getColumnCount() - 1).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
+        table.getColumnModel().getColumn(MANAGER_TABLE_COL_ASSIGNED_STAFF).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
+            Object status = tbl.getValueAt(row, MANAGER_TABLE_COL_STATUS);
+            JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
+            wrapper.setBackground(AppColors.SURFACE);
+
+            if (isSubmittedStatus(status)) {
+                wrapper.add(new NotAssignedBadgeLabel());
+            } else {
+                JLabel staffLabel = new JLabel(String.valueOf(value), JLabel.CENTER);
+                staffLabel.setFont(AppFonts.bodyBold());
+                staffLabel.setForeground(AppColors.LABEL);
+                wrapper.add(staffLabel);
+            }
+            return wrapper;
+        });
+
+        table.getColumnModel().getColumn(MANAGER_TABLE_COL_STATUS).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
             StatusBadgeLabel badge = new StatusBadgeLabel(String.valueOf(value));
             JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
             wrapper.setBackground(AppColors.SURFACE);

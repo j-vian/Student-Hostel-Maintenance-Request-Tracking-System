@@ -11,6 +11,7 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButto
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerUserMenu;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.StatCardPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
+import javax.swing.JLabel;
 
 /**
  *
@@ -52,9 +53,16 @@ public class ManagerDashboardFrame extends javax.swing.JFrame {
         cardCompleted.setCount("10");
         cardCancelled.setCount("2");
 
+        lblTableSection.setText("Recent Requests");
+
         tblRequests.setModel(UIHelper.createManagerRequestTableModel());
         UIHelper.styleManagerTableSection(lblTableSection, tblRequests, scrTable);
         UIHelper.applyManagerRequestTableRenderers(tblRequests);
+
+        JLabel lblViewAllRequests = UIHelper.createHyperlink("View All Requests");
+        UIHelper.addHyperlinkAction(lblViewAllRequests,
+                () -> UIHelper.navigateTo(this, new RequestHistoryFrame()));
+        UIHelper.layoutManagerTableSectionFooter(pnlTableSection, lblTableSection, scrTable, lblViewAllRequests);
 
         UIHelper.showManagerFrame(this);
         javax.swing.SwingUtilities.invokeLater(() -> {
@@ -229,7 +237,7 @@ public class ManagerDashboardFrame extends javax.swing.JFrame {
         pnlStatCards.add(cardCompleted);
         pnlStatCards.add(cardCancelled);
 
-        lblTableSection.setText("All Requests");
+        lblTableSection.setText("Recent Requests");
 
         tblRequests.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
