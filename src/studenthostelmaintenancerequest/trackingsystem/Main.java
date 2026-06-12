@@ -44,13 +44,13 @@ public class Main {
         while (running) {
             //Display main menu
             System.out.println("\n=================== MAIN MENU ===================");
-            System.out.println("  1. Submit a Maintenance Request");
-            System.out.println("  2. View All Requests");
-            System.out.println("  3. Search Request by ID");
-            System.out.println("  4. Update Request Status");
-            System.out.println("  5. Assign Staff to Request");
-            System.out.println("  6. View Room Details");
-            System.out.println("  7. View Request History");
+            System.out.println("  1. Submit a Maintenance Request     (User: Student)");
+            System.out.println("  2. View All Requests                (User: Manager)");
+            System.out.println("  3. Search Request by ID             (User: Manager, Student, Staff)");
+            System.out.println("  4. Update Request Status            (User: Manager, Staff)");
+            System.out.println("  5. Assign Staff to Request          (User: Manager)");
+            System.out.println("  6. View Room Details                (User: Manager, Student, Staff)");
+            System.out.println("  7. View Request History             (User: Student, Staff)");
             System.out.println("  0. Exit");
             System.out.println("=================================================");
             System.out.print("  Enter your choice: ");
