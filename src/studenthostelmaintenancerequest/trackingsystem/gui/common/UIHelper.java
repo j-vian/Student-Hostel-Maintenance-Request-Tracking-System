@@ -1341,13 +1341,242 @@ public final class UIHelper {
             JLabel lblShowing, JButton btnPrevious, JButton btnNext,
             ManagerManageRequestTableModel model) {
 
-        lblShowing.setText(String.format(
-                "Showing %d to %d of %d results",
-                model.getShowingFrom(),
-                model.getShowingTo(),
-                model.getTotalRowCount()));
-        btnPrevious.setEnabled(model.canGoPrevious());
-        btnNext.setEnabled(model.canGoNext());
+        setManagerPaginationFooter(lblShowing, btnPrevious, btnNext,
+                model.getShowingFrom(), model.getShowingTo(), model.getTotalRowCount(),
+                model.canGoPrevious(), model.canGoNext());
+    }
+
+    public static void layoutManagerAssignStaffToolbar(
+            JPanel toolbar, JPanel searchField, JButton btnAction) {
+
+        toolbar.removeAll();
+        toolbar.setLayout(new javax.swing.BoxLayout(toolbar, javax.swing.BoxLayout.Y_AXIS));
+        toolbar.setOpaque(false);
+
+        JPanel topRow = new JPanel(new BorderLayout(12, 0));
+        topRow.setOpaque(false);
+        topRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+        topRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, MANAGER_SEARCH_HEIGHT));
+        topRow.add(searchField, BorderLayout.CENTER);
+
+        JPanel bottomRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        bottomRow.setOpaque(false);
+        bottomRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+        bottomRow.add(btnAction);
+
+        toolbar.add(topRow);
+        toolbar.add(javax.swing.Box.createVerticalStrut(10));
+        toolbar.add(bottomRow);
+    }
+
+    public static final int ASSIGN_STAFF_COL_STATUS = 3;
+    public static final int ASSIGN_STAFF_COL_ASSIGNED_STAFF = 4;
+
+    public static ManagerAssignStaffTableModel createManagerAssignStaffTableModel() {
+        return new ManagerAssignStaffTableModel(buildAssignStaffSampleData(), new String[]{
+            "Request ID", "Request Type", "Student Name", "Status", "Assigned Staff"});
+    }
+
+    private static Object[][] buildAssignStaffSampleData() {
+        String[] types = {"Electrical", "Plumbing", "Furniture"};
+        String[] students = {"Alex Johnson", "Maria Chen", "Sam Patel"};
+        String[] staff = {"John Doe", "Jane Smith"};
+
+        Object[][] rows = new Object[21][5];
+        for (int i = 0; i < rows.length; i++) {
+            rows[i] = new Object[]{
+                String.format("REQ%03d", i + 1),
+                types[i % types.length],
+                students[i % students.length],
+                "IN PROGRESS",
+                staff[i % staff.length]
+            };
+        }
+        return rows;
+    }
+
+    public static final class ManagerAssignStaffTableModel extends AbstractTableModel {
+
+        private final java.util.List<Object[]> allRows = new java.util.ArrayList<>();
+        private final String[] columnNames;
+        private int currentPage;
+        private boolean staffColumnEditable;
+
+        public ManagerAssignStaffTableModel(Object[][] data, Object[] columns) {
+            this.columnNames = new String[columns.length];
+            for (int i = 0; i < columns.length; i++) {
+                this.columnNames[i] = String.valueOf(columns[i]);
+            }
+            for (Object[] row : data) {
+                allRows.add(row.clone());
+            }
+        }
+
+        @Override
+        public int getColumnCount() {
+            return columnNames.length;
+        }
+
+        @Override
+        public String getColumnName(int column) {
+            return columnNames[column];
+        }
+
+        public void setStaffColumnEditable(boolean editable) {
+            this.staffColumnEditable = editable;
+        }
+
+        public int getTotalRowCount() {
+            return allRows.size();
+        }
+
+        public int getPageSize() {
+            return MANAGE_REQUEST_PAGE_SIZE;
+        }
+
+        public int getCurrentPage() {
+            return currentPage;
+        }
+
+        public int getShowingFrom() {
+            return currentPage * MANAGE_REQUEST_PAGE_SIZE + 1;
+        }
+
+        public int getShowingTo() {
+            return Math.min((currentPage + 1) * MANAGE_REQUEST_PAGE_SIZE, allRows.size());
+        }
+
+        public boolean canGoPrevious() {
+            return currentPage > 0;
+        }
+
+        public boolean canGoNext() {
+            return (currentPage + 1) * MANAGE_REQUEST_PAGE_SIZE < allRows.size();
+        }
+
+        public void previousPage() {
+            if (!canGoPrevious()) {
+                return;
+            }
+            currentPage--;
+            fireTableDataChanged();
+        }
+
+        public void nextPage() {
+            if (!canGoNext()) {
+                return;
+            }
+            currentPage++;
+            fireTableDataChanged();
+        }
+
+        private int toDataIndex(int viewRow) {
+            return currentPage * MANAGE_REQUEST_PAGE_SIZE + viewRow;
+        }
+
+        @Override
+        public int getRowCount() {
+            int remaining = allRows.size() - (currentPage * MANAGE_REQUEST_PAGE_SIZE);
+            return Math.min(MANAGE_REQUEST_PAGE_SIZE, Math.max(remaining, 0));
+        }
+
+        @Override
+        public Object getValueAt(int row, int column) {
+            return allRows.get(toDataIndex(row))[column];
+        }
+
+        @Override
+        public void setValueAt(Object value, int row, int column) {
+            allRows.get(toDataIndex(row))[column] = value;
+            fireTableCellUpdated(row, column);
+            if (column == ASSIGN_STAFF_COL_ASSIGNED_STAFF) {
+                fireTableCellUpdated(row, ASSIGN_STAFF_COL_STATUS);
+            }
+        }
+
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return staffColumnEditable && column == ASSIGN_STAFF_COL_ASSIGNED_STAFF;
+        }
+    }
+
+    public static void applyManagerAssignStaffTableRenderers(
+            JTable table, java.util.function.BooleanSupplier staffEditMode) {
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        centerRenderer.setFont(AppFonts.body());
+        centerRenderer.setForeground(AppColors.LABEL);
+        centerRenderer.setBackground(AppColors.SURFACE);
+
+        for (int column = 0; column < ASSIGN_STAFF_COL_STATUS; column++) {
+            table.getColumnModel().getColumn(column).setCellRenderer(centerRenderer);
+        }
+
+        table.getColumnModel().getColumn(ASSIGN_STAFF_COL_STATUS).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
+            JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
+            wrapper.setBackground(AppColors.SURFACE);
+            wrapper.add(new StatusBadgeLabel(String.valueOf(value)));
+            return wrapper;
+        });
+
+        table.getColumnModel().getColumn(ASSIGN_STAFF_COL_ASSIGNED_STAFF).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
+            Object status = tbl.getValueAt(row, ASSIGN_STAFF_COL_STATUS);
+            boolean notAssigned = isSubmittedStatus(status) || value == null;
+            JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
+            wrapper.setBackground(AppColors.SURFACE);
+
+            if (staffEditMode.getAsBoolean()) {
+                String staffName = value == null ? "" : StaffAssignmentComboBox.displayName(String.valueOf(value));
+                wrapper.add(new StaffDropdownPanel(staffName, notAssigned));
+            } else if (notAssigned) {
+                wrapper.add(new NotAssignedBadgeLabel());
+            } else {
+                JLabel staffLabel = new JLabel(String.valueOf(value), JLabel.CENTER);
+                staffLabel.setFont(AppFonts.bodyBold());
+                staffLabel.setForeground(AppColors.LABEL);
+                wrapper.add(staffLabel);
+            }
+            return wrapper;
+        });
+    }
+
+    public static TableCellEditor createManagerAssignStaffEditor(JTable table) {
+        return new DefaultCellEditor(new StaffAssignmentComboBox()) {
+            @Override
+            public Component getTableCellEditorComponent(
+                    JTable tbl, Object value, boolean isSelected, int row, int column) {
+                StaffAssignmentComboBox combo = (StaffAssignmentComboBox) getComponent();
+                combo.setSelectedStaff(value == null ? null : String.valueOf(value));
+                return combo;
+            }
+
+            @Override
+            public Object getCellEditorValue() {
+                return ((StaffAssignmentComboBox) getComponent()).getSelectedItem();
+            }
+        };
+    }
+
+    public static void sizeManagerAssignStaffTable(JTable table, JScrollPane scroll) {
+        sizeManagerManageRequestTable(table, scroll);
+    }
+
+    public static void updateManagerPaginationFooter(
+            JLabel lblShowing, JButton btnPrevious, JButton btnNext,
+            ManagerAssignStaffTableModel model) {
+
+        setManagerPaginationFooter(lblShowing, btnPrevious, btnNext,
+                model.getShowingFrom(), model.getShowingTo(), model.getTotalRowCount(),
+                model.canGoPrevious(), model.canGoNext());
+    }
+
+    private static void setManagerPaginationFooter(
+            JLabel lblShowing, JButton btnPrevious, JButton btnNext,
+            int from, int to, int total, boolean canPrevious, boolean canNext) {
+
+        lblShowing.setText(String.format("Showing %d to %d of %d results", from, to, total));
+        btnPrevious.setEnabled(canPrevious);
+        btnNext.setEnabled(canNext);
     }
 
     private static JPanel createRequirementItem(String text) {

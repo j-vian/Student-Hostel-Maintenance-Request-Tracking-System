@@ -10,25 +10,25 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButto
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerUserMenu;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
-import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.ManagerManageRequestTableModel;
+import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.ManagerAssignStaffTableModel;
 import javax.swing.table.TableCellEditor;
 
 /**
  *
  * @author vian
  */
-public class ManagerManageRequestFrame extends javax.swing.JFrame {
+public class ManagerAssignStaffFrame extends javax.swing.JFrame {
 
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ManagerManageRequestFrame.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ManagerAssignStaffFrame.class.getName());
 
-    private ManagerManageRequestTableModel requestTableModel;
-    private TableCellEditor statusCellEditor;
-    private boolean statusEditMode;
+    private ManagerAssignStaffTableModel requestTableModel;
+    private TableCellEditor staffCellEditor;
+    private boolean staffEditMode;
     private javax.swing.JLabel lblPagination;
     private javax.swing.JButton btnPagePrevious;
     private javax.swing.JButton btnPageNext;
 
-    public ManagerManageRequestFrame() {
+    public ManagerAssignStaffFrame() {
         initComponents();
         customizeForm();
     }
@@ -42,8 +42,8 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
                 btnNavDashboard, btnNavManageRequests, btnNavAssignStaff,
                 btnNavRoomDetails, btnNavRequestHistory);
         UIHelper.styleManagerNavButton(btnNavDashboard, false);
-        UIHelper.styleManagerNavButton(btnNavManageRequests, true);
-        UIHelper.styleManagerNavButton(btnNavAssignStaff, false);
+        UIHelper.styleManagerNavButton(btnNavManageRequests, false);
+        UIHelper.styleManagerNavButton(btnNavAssignStaff, true);
         UIHelper.styleManagerNavButton(btnNavRoomDetails, false);
         UIHelper.styleManagerNavButton(btnNavRequestHistory, false);
 
@@ -51,17 +51,16 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
 
         PlaceholderTextField txtSearch = new PlaceholderTextField("Search Request by ID");
         javax.swing.JPanel pnlSearchField = UIHelper.createSearchField(txtSearch);
-        UIHelper.layoutManagerManageRequestToolbar(pnlToolbar, pnlSearchField, btnFilter, btnConfirmChanges);
-        UIHelper.styleManagerFilterButton(btnFilter);
-        UIHelper.styleManagerUpdateButton(btnConfirmChanges);
+        UIHelper.layoutManagerAssignStaffToolbar(pnlToolbar, pnlSearchField, btnAssignStaff);
+        UIHelper.styleManagerUpdateButton(btnAssignStaff);
 
-        lblTableSection.setText("Active Requests");
+        lblTableSection.setText("Unassigned Requests");
 
-        requestTableModel = UIHelper.createManagerManageRequestTableModel();
+        requestTableModel = UIHelper.createManagerAssignStaffTableModel();
         tblRequests.setModel(requestTableModel);
-        statusCellEditor = UIHelper.createManagerManageRequestStatusEditor(tblRequests);
+        staffCellEditor = UIHelper.createManagerAssignStaffEditor(tblRequests);
         UIHelper.styleManagerTableSection(lblTableSection, tblRequests, scrTable);
-        UIHelper.applyManagerManageRequestTableRenderers(tblRequests, () -> statusEditMode);
+        UIHelper.applyManagerAssignStaffTableRenderers(tblRequests, () -> staffEditMode);
 
         lblPagination = new javax.swing.JLabel();
         btnPagePrevious = new javax.swing.JButton("<");
@@ -74,17 +73,17 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
         btnPagePrevious.addActionListener(e -> changePage(-1));
         btnPageNext.addActionListener(e -> changePage(1));
 
-        btnConfirmChanges.addActionListener(e -> {
-            if (statusEditMode) {
-                exitStatusEditMode();
+        btnAssignStaff.addActionListener(e -> {
+            if (staffEditMode) {
+                exitStaffEditMode();
             } else {
-                enterStatusEditMode();
+                enterStaffEditMode();
             }
         });
 
         UIHelper.showManagerFrame(this);
         javax.swing.SwingUtilities.invokeLater(() -> {
-            UIHelper.sizeManagerManageRequestTable(tblRequests, scrTable);
+            UIHelper.sizeManagerAssignStaffTable(tblRequests, scrTable);
             pnlTableSection.revalidate();
         });
     }
@@ -109,34 +108,34 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
 
     private void wireNavigation() {
         btnNavDashboard.addActionListener(e -> UIHelper.navigateTo(this, new ManagerDashboardFrame()));
-        btnNavManageRequests.addActionListener(e -> { /* already on this page */ });
-        btnNavAssignStaff.addActionListener(e -> UIHelper.navigateTo(this, new ManagerAssignStaffFrame()));
+        btnNavManageRequests.addActionListener(e -> UIHelper.navigateTo(this, new ManagerManageRequestFrame()));
+        btnNavAssignStaff.addActionListener(e -> { /* already on this page */ });
         btnNavRoomDetails.addActionListener(e -> { /* placeholder */ });
         btnNavRequestHistory.addActionListener(e -> UIHelper.navigateTo(this, new RequestHistoryFrame()));
     }
 
-    private void enterStatusEditMode() {
-        statusEditMode = true;
-        requestTableModel.setStatusColumnEditable(true);
-        tblRequests.getColumnModel().getColumn(5).setCellEditor(statusCellEditor);
-        btnConfirmChanges.setText("Confirm Changes");
-        UIHelper.styleManagerConfirmButton(btnConfirmChanges);
+    private void enterStaffEditMode() {
+        staffEditMode = true;
+        requestTableModel.setStaffColumnEditable(true);
+        tblRequests.getColumnModel().getColumn(UIHelper.ASSIGN_STAFF_COL_ASSIGNED_STAFF).setCellEditor(staffCellEditor);
+        btnAssignStaff.setText("Confirm Assignment");
+        UIHelper.styleManagerConfirmButton(btnAssignStaff);
         tblRequests.repaint();
     }
 
-    private void exitStatusEditMode() {
+    private void exitStaffEditMode() {
         if (tblRequests.isEditing()) {
             tblRequests.getCellEditor().stopCellEditing();
         }
-        statusEditMode = false;
-        requestTableModel.setStatusColumnEditable(false);
-        tblRequests.getColumnModel().getColumn(5).setCellEditor(null);
-        btnConfirmChanges.setText("Update");
-        UIHelper.styleManagerUpdateButton(btnConfirmChanges);
+        staffEditMode = false;
+        requestTableModel.setStaffColumnEditable(false);
+        tblRequests.getColumnModel().getColumn(UIHelper.ASSIGN_STAFF_COL_ASSIGNED_STAFF).setCellEditor(null);
+        btnAssignStaff.setText("Assign Staff");
+        UIHelper.styleManagerUpdateButton(btnAssignStaff);
         refreshPaginationFooter();
         tblRequests.repaint();
         javax.swing.SwingUtilities.invokeLater(() -> {
-            UIHelper.sizeManagerManageRequestTable(tblRequests, scrTable);
+            UIHelper.sizeManagerAssignStaffTable(tblRequests, scrTable);
             pnlTableSection.revalidate();
         });
     }
@@ -172,15 +171,14 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
         btnNavRequestHistory = new ManagerNavButton("View Request History");
         pnlMain = new javax.swing.JPanel();
         pnlToolbar = new javax.swing.JPanel();
-        btnFilter = new javax.swing.JButton();
-        btnConfirmChanges = new javax.swing.JButton();
+        btnAssignStaff = new javax.swing.JButton();
         pnlTableSection = new javax.swing.JPanel();
         lblTableSection = new javax.swing.JLabel();
         scrTable = new javax.swing.JScrollPane();
         tblRequests = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Manage Active Requests");
+        setTitle("Assign Staff");
 
         pnlRoot.setLayout(new java.awt.BorderLayout());
 
@@ -277,7 +275,7 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
 
         pnlContent.setLayout(new java.awt.BorderLayout());
 
-        lblPageTitle.setText("Manage Active Requests");
+        lblPageTitle.setText("Assign Staff");
 
         javax.swing.GroupLayout pnlPageHeaderLayout = new javax.swing.GroupLayout(pnlPageHeader);
         pnlPageHeader.setLayout(pnlPageHeaderLayout);
@@ -300,9 +298,7 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
 
         pnlToolbar.setOpaque(false);
 
-        btnFilter.setText("Filter");
-
-        btnConfirmChanges.setText("Update");
+        btnAssignStaff.setText("Assign Staff");
 
         javax.swing.GroupLayout pnlToolbarLayout = new javax.swing.GroupLayout(pnlToolbar);
         pnlToolbar.setLayout(pnlToolbarLayout);
@@ -310,32 +306,29 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
             pnlToolbarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlToolbarLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(btnFilter)
-                .addGap(8, 8, 8)
-                .addComponent(btnConfirmChanges))
+                .addComponent(btnAssignStaff))
         );
         pnlToolbarLayout.setVerticalGroup(
             pnlToolbarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlToolbarLayout.createSequentialGroup()
-                .addComponent(btnFilter)
-                .addGap(8, 8, 8)
-                .addComponent(btnConfirmChanges))
+                .addComponent(btnAssignStaff)
+                .addGap(8, 8, 8))
         );
 
-        lblTableSection.setText("Active Requests");
+        lblTableSection.setText("Unassigned Requests");
 
         tblRequests.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Request ID", "Request Type", "Student Name", "Assigned Staff", "Date Raised", "Status"
+                "Request ID", "Request Type", "Student Name", "Status", "Assigned Staff"
             }
         ));
         scrTable.setViewportView(tblRequests);
@@ -417,12 +410,11 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
         }
 
         UIHelper.initApplicationLook();
-        java.awt.EventQueue.invokeLater(() -> new ManagerManageRequestFrame());
+        java.awt.EventQueue.invokeLater(() -> new ManagerAssignStaffFrame());
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnConfirmChanges;
-    private javax.swing.JButton btnFilter;
+    private javax.swing.JButton btnAssignStaff;
     private javax.swing.JButton btnUserMenu;
     private ManagerNavButton btnNavAssignStaff;
     private ManagerNavButton btnNavDashboard;
