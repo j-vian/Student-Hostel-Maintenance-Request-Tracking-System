@@ -4,10 +4,10 @@
  */
 package studenthostelmaintenancerequest.trackingsystem.gui.manager;
 
-import studenthostelmaintenancerequest.trackingsystem.gui.auth.LoginFrame;
+import studenthostelmaintenancerequest.trackingsystem.DatabaseException;
+import studenthostelmaintenancerequest.trackingsystem.ManagerService;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton;
-import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerUserMenu;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.ManagerAssignStaffTableModel;
@@ -24,6 +24,8 @@ public class ManagerAssignStaffFrame extends javax.swing.JFrame {
     private ManagerAssignStaffTableModel requestTableModel;
     private TableCellEditor staffCellEditor;
     private boolean staffEditMode;
+    private PlaceholderTextField txtSearch;
+    private String[] staffOptions = new String[0];
     private javax.swing.JLabel lblPagination;
     private javax.swing.JButton btnPagePrevious;
     private javax.swing.JButton btnPageNext;
@@ -36,8 +38,7 @@ public class ManagerAssignStaffFrame extends javax.swing.JFrame {
     private void customizeForm() {
         UIHelper.styleManagerShell(pnlHeader, pnlSidebar, pnlMain, lblAppTitle, pnlHeaderLogo);
         UIHelper.styleManagerPageHeader(pnlPageHeader, lblPageTitle);
-        ManagerUserMenu.install(pnlUserProfile, lblUserName, lblUserRole, btnUserMenu,
-                () -> UIHelper.navigateTo(this, new LoginFrame()));
+        UIHelper.installManagerSession(this, pnlUserProfile, lblUserName, lblUserRole, btnUserMenu);
         UIHelper.layoutManagerSidebar(pnlSidebar,
                 btnNavDashboard, btnNavManageRequests, btnNavAssignStaff,
                 btnNavRoomDetails, btnNavRequestHistory);
@@ -50,6 +51,7 @@ public class ManagerAssignStaffFrame extends javax.swing.JFrame {
         wireNavigation();
 
         PlaceholderTextField txtSearch = new PlaceholderTextField("Search Request by ID");
+        this.txtSearch = txtSearch;
         javax.swing.JPanel pnlSearchField = UIHelper.createSearchField(txtSearch);
         UIHelper.layoutManagerAssignStaffToolbar(pnlToolbar, pnlSearchField, btnAssignStaff);
         UIHelper.styleManagerUpdateButton(btnAssignStaff);
@@ -58,7 +60,8 @@ public class ManagerAssignStaffFrame extends javax.swing.JFrame {
 
         requestTableModel = UIHelper.createManagerAssignStaffTableModel();
         tblRequests.setModel(requestTableModel);
-        staffCellEditor = UIHelper.createManagerAssignStaffEditor(tblRequests);
+        loadStaffOptions();
+        staffCellEditor = UIHelper.createManagerAssignStaffEditor(tblRequests, staffOptions);
         UIHelper.styleManagerTableSection(lblTableSection, tblRequests, scrTable);
         UIHelper.applyManagerAssignStaffTableRenderers(tblRequests, () -> staffEditMode);
 
@@ -68,10 +71,13 @@ public class ManagerAssignStaffFrame extends javax.swing.JFrame {
         UIHelper.layoutManagerTableSectionWithPagination(
                 pnlTableSection, lblTableSection, scrTable,
                 lblPagination, btnPagePrevious, btnPageNext);
-        refreshPaginationFooter();
+
+        loadAssignStaffRows(null);
 
         btnPagePrevious.addActionListener(e -> changePage(-1));
         btnPageNext.addActionListener(e -> changePage(1));
+
+        txtSearch.addActionListener(e -> loadAssignStaffRows(txtSearch.getInputText()));
 
         btnAssignStaff.addActionListener(e -> {
             if (staffEditMode) {
@@ -86,6 +92,32 @@ public class ManagerAssignStaffFrame extends javax.swing.JFrame {
             UIHelper.sizeManagerAssignStaffTable(tblRequests, scrTable);
             pnlTableSection.revalidate();
         });
+    }
+
+    private void loadStaffOptions() {
+        try {
+            staffOptions = ManagerService.getStaffComboOptions();
+        } catch (DatabaseException ex) {
+            UIHelper.showDatabaseError(this, ex);
+            staffOptions = new String[0];
+        }
+    }
+
+    private void loadAssignStaffRows(String requestIdSearch) {
+        if (staffEditMode) {
+            return;
+        }
+        try {
+            Object[][] rows = ManagerService.getAssignStaffRows(requestIdSearch);
+            requestTableModel.replaceRows(rows);
+            refreshPaginationFooter();
+            javax.swing.SwingUtilities.invokeLater(() -> {
+                UIHelper.sizeManagerAssignStaffTable(tblRequests, scrTable);
+                pnlTableSection.revalidate();
+            });
+        } catch (DatabaseException ex) {
+            UIHelper.showDatabaseError(this, ex);
+        }
     }
 
     private void changePage(int direction) {
@@ -127,17 +159,19 @@ public class ManagerAssignStaffFrame extends javax.swing.JFrame {
         if (tblRequests.isEditing()) {
             tblRequests.getCellEditor().stopCellEditing();
         }
+        try {
+            ManagerService.saveStaffAssignments(requestTableModel.getAllRows());
+        } catch (DatabaseException ex) {
+            UIHelper.showDatabaseError(this, ex);
+            return;
+        }
         staffEditMode = false;
         requestTableModel.setStaffColumnEditable(false);
         tblRequests.getColumnModel().getColumn(UIHelper.ASSIGN_STAFF_COL_ASSIGNED_STAFF).setCellEditor(null);
         btnAssignStaff.setText("Assign Staff");
         UIHelper.styleManagerUpdateButton(btnAssignStaff);
-        refreshPaginationFooter();
+        loadAssignStaffRows(txtSearch.getInputText());
         tblRequests.repaint();
-        javax.swing.SwingUtilities.invokeLater(() -> {
-            UIHelper.sizeManagerAssignStaffTable(tblRequests, scrTable);
-            pnlTableSection.revalidate();
-        });
     }
 
     /**

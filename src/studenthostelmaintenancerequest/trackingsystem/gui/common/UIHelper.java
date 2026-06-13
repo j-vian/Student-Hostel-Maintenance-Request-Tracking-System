@@ -14,6 +14,7 @@ import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
@@ -35,6 +36,8 @@ import javax.swing.text.View;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
+import studenthostelmaintenancerequest.trackingsystem.SessionManager;
+import studenthostelmaintenancerequest.trackingsystem.gui.auth.LoginFrame;
 import javax.swing.border.LineBorder;
 
 public final class UIHelper {
@@ -868,17 +871,12 @@ public final class UIHelper {
     private static final int MANAGER_TABLE_COL_STATUS = 4;
 
     public static DefaultTableModel createManagerRequestTableModel() {
-        return new DefaultTableModel(
-                new Object[][]{
-                    {"REQ001", "Electrical", "Alex Johnson", "John Doe", "IN PROGRESS"},
-                    {"REQ002", "Plumbing", "Maria Chen", null, "SUBMITTED"},
-                    {"REQ003", "Furniture", "Alex Johnson", "John Doe", "COMPLETED"},
-                    {"REQ004", "Electrical", "Sam Patel", null, "SUBMITTED"},
-                    {"REQ005", "Plumbing", "Maria Chen", "Jane Smith", "IN PROGRESS"},
-                    {"REQ006", "Furniture", "Sam Patel", "John Doe", "COMPLETED"},
-                    {"REQ007", "Electrical", "Alex Johnson", "John Doe", "CANCELLED"}
-                },
-                new String[]{"Request ID", "Request Type", "Student Name", "Assigned Staff", "Status"}) {
+        return createManagerRequestTableModel(new Object[0][5]);
+    }
+
+    public static DefaultTableModel createManagerRequestTableModel(Object[][] data) {
+        return new DefaultTableModel(data, new String[]{
+            "Request ID", "Request Type", "Student Name", "Assigned Staff", "Status"}) {
 
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -931,6 +929,31 @@ public final class UIHelper {
         frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+
+    public static void installManagerSession(
+            javax.swing.JFrame frame,
+            javax.swing.JPanel pnlUserProfile,
+            javax.swing.JLabel lblUserName,
+            javax.swing.JLabel lblUserRole,
+            javax.swing.JButton btnUserMenu) {
+        ManagerUserMenu.install(pnlUserProfile, lblUserName, lblUserRole, btnUserMenu,
+                () -> {
+                    SessionManager.clear();
+                    navigateTo(frame, new LoginFrame());
+                });
+        if (SessionManager.isLoggedIn()) {
+            lblUserName.setText(SessionManager.getDisplayUsername());
+            lblUserRole.setText("ADMIN");
+        }
+    }
+
+    public static void showDatabaseError(java.awt.Component parent, Exception ex) {
+        javax.swing.JOptionPane.showMessageDialog(
+                parent,
+                ex.getMessage(),
+                "Database Error",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
     }
 
     public static JPanel createSearchField(PlaceholderTextField field) {
@@ -1060,7 +1083,11 @@ public final class UIHelper {
     public static final int MANAGE_REQUEST_COL_STATUS = 5;
 
     public static ManagerManageRequestTableModel createManagerManageRequestTableModel() {
-        return new ManagerManageRequestTableModel(buildManageRequestSampleData(), new String[]{
+        return createManagerManageRequestTableModel(new Object[0][6]);
+    }
+
+    public static ManagerManageRequestTableModel createManagerManageRequestTableModel(Object[][] data) {
+        return new ManagerManageRequestTableModel(data, new String[]{
             "Request ID", "Request Type", "Student Name",
             "Assigned Staff", "Date Raised", "Status"});
     }
@@ -1212,6 +1239,25 @@ public final class UIHelper {
         @Override
         public boolean isCellEditable(int row, int column) {
             return statusColumnEditable && column == MANAGE_REQUEST_COL_STATUS;
+        }
+
+        public void replaceRows(Object[][] data) {
+            allRows.clear();
+            for (Object[] row : data) {
+                if (isActiveRequestStatus(row[MANAGE_REQUEST_COL_STATUS])) {
+                    allRows.add(row.clone());
+                }
+            }
+            currentPage = 0;
+            fireTableDataChanged();
+        }
+
+        public List<Object[]> getAllRows() {
+            List<Object[]> copy = new java.util.ArrayList<>();
+            for (Object[] row : allRows) {
+                copy.add(row.clone());
+            }
+            return copy;
         }
     }
 
@@ -1373,7 +1419,11 @@ public final class UIHelper {
     public static final int ASSIGN_STAFF_COL_ASSIGNED_STAFF = 4;
 
     public static ManagerAssignStaffTableModel createManagerAssignStaffTableModel() {
-        return new ManagerAssignStaffTableModel(buildAssignStaffSampleData(), new String[]{
+        return createManagerAssignStaffTableModel(new Object[0][5]);
+    }
+
+    public static ManagerAssignStaffTableModel createManagerAssignStaffTableModel(Object[][] data) {
+        return new ManagerAssignStaffTableModel(data, new String[]{
             "Request ID", "Request Type", "Student Name", "Status", "Assigned Staff"});
     }
 
@@ -1510,6 +1560,25 @@ public final class UIHelper {
         public boolean isCellEditable(int row, int column) {
             return staffColumnEditable && column == ASSIGN_STAFF_COL_ASSIGNED_STAFF;
         }
+
+        public void replaceRows(Object[][] data) {
+            allRows.clear();
+            for (Object[] row : data) {
+                if (isAssignableRequestStatus(row[ASSIGN_STAFF_COL_STATUS])) {
+                    allRows.add(row.clone());
+                }
+            }
+            currentPage = 0;
+            fireTableDataChanged();
+        }
+
+        public List<Object[]> getAllRows() {
+            List<Object[]> copy = new java.util.ArrayList<>();
+            for (Object[] row : allRows) {
+                copy.add(row.clone());
+            }
+            return copy;
+        }
     }
 
     public static void applyManagerAssignStaffTableRenderers(
@@ -1552,8 +1621,8 @@ public final class UIHelper {
         });
     }
 
-    public static TableCellEditor createManagerAssignStaffEditor(JTable table) {
-        return new DefaultCellEditor(new StaffAssignmentComboBox()) {
+    public static TableCellEditor createManagerAssignStaffEditor(JTable table, String[] staffOptions) {
+        return new DefaultCellEditor(new StaffAssignmentComboBox(staffOptions)) {
             @Override
             public Component getTableCellEditorComponent(
                     JTable tbl, Object value, boolean isSelected, int row, int column) {
@@ -1586,6 +1655,9 @@ public final class UIHelper {
             JLabel lblShowing, JButton btnPrevious, JButton btnNext,
             int from, int to, int total, boolean canPrevious, boolean canNext) {
 
+        if (lblShowing == null || btnPrevious == null || btnNext == null) {
+            return;
+        }
         lblShowing.setText(String.format("Showing %d to %d of %d results", from, to, total));
         btnPrevious.setEnabled(canPrevious);
         btnNext.setEnabled(canNext);
@@ -1745,7 +1817,11 @@ public final class UIHelper {
     public static final int VIEW_HISTORY_COL_STATUS = 6;
 
     public static ManagerViewHistoryTableModel createManagerViewHistoryTableModel() {
-        return new ManagerViewHistoryTableModel(buildViewHistorySampleData(), new String[]{
+        return createManagerViewHistoryTableModel(new Object[0][7]);
+    }
+
+    public static ManagerViewHistoryTableModel createManagerViewHistoryTableModel(Object[][] data) {
+        return new ManagerViewHistoryTableModel(data, new String[]{
             "Request ID", "Request Type", "Student Name",
             "Assigned Staff", "Description", "Priority", "Status"});
     }
@@ -1869,6 +1945,15 @@ public final class UIHelper {
         @Override
         public boolean isCellEditable(int row, int column) {
             return false;
+        }
+
+        public void replaceRows(Object[][] data) {
+            allRows.clear();
+            for (Object[] row : data) {
+                allRows.add(row.clone());
+            }
+            currentPage = 0;
+            fireTableDataChanged();
         }
     }
 

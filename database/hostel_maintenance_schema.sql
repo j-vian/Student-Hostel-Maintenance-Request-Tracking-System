@@ -98,3 +98,19 @@ INSERT INTO users (user_id, username, first_name, last_name, email, password, ro
 VALUES
     ('ST001', 'kfarouq', 'Ku', 'Farouq', 'farouq001@gmail.com', 'staff123', 'STAFF', 'Electrician'),
     ('ST002', 'wfaiz', 'Wazif', 'Faiz', 'faiz002@gmail.com', 'staff123', 'STAFF', 'Plumber');
+
+INSERT INTO maintenance_requests
+    (request_id, student_id, room_id, request_type, description, priority, status, assigned_staff_id, date_raised)
+VALUES
+    ('REQ001', 'CB25174', 1, 'electrical', 'Power socket not working near study desk.', 'High', 'SUBMITTED', NULL, NOW()),
+    ('REQ002', 'CB25174', 1, 'plumbing', 'Sink is draining very slowly.', 'Medium', 'IN_PROGRESS', 'ST002', NOW()),
+    ('REQ003', 'CB25174', 1, 'furniture', 'Wardrobe door hinge is loose.', 'Low', 'COMPLETED', 'ST001', NOW());
+
+INSERT INTO request_status_history (request_id, status, changed_at, changed_by)
+VALUES
+    ('REQ001', 'SUBMITTED', NOW(), 'CB25174'),
+    ('REQ002', 'SUBMITTED', NOW(), 'CB25174'),
+    ('REQ002', 'IN_PROGRESS', NOW(), 'ADM001'),
+    ('REQ003', 'SUBMITTED', NOW(), 'CB25174'),
+    ('REQ003', 'IN_PROGRESS', NOW(), 'ADM001'),
+    ('REQ003', 'COMPLETED', NOW(), 'ST001');

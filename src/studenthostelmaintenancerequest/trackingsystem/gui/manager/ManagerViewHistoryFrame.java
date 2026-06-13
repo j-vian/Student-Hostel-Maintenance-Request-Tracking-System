@@ -4,10 +4,10 @@
  */
 package studenthostelmaintenancerequest.trackingsystem.gui.manager;
 
-import studenthostelmaintenancerequest.trackingsystem.gui.auth.LoginFrame;
+import studenthostelmaintenancerequest.trackingsystem.DatabaseException;
+import studenthostelmaintenancerequest.trackingsystem.ManagerService;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton;
-import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerUserMenu;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.ManagerViewHistoryTableModel;
@@ -21,6 +21,7 @@ public class ManagerViewHistoryFrame extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ManagerViewHistoryFrame.class.getName());
 
     private ManagerViewHistoryTableModel requestTableModel;
+    private PlaceholderTextField txtSearch;
     private javax.swing.JLabel lblPagination;
     private javax.swing.JButton btnPagePrevious;
     private javax.swing.JButton btnPageNext;
@@ -33,8 +34,7 @@ public class ManagerViewHistoryFrame extends javax.swing.JFrame {
     private void customizeForm() {
         UIHelper.styleManagerShell(pnlHeader, pnlSidebar, pnlMain, lblAppTitle, pnlHeaderLogo);
         UIHelper.styleManagerPageHeader(pnlPageHeader, lblPageTitle);
-        ManagerUserMenu.install(pnlUserProfile, lblUserName, lblUserRole, btnUserMenu,
-                () -> UIHelper.navigateTo(this, new LoginFrame()));
+        UIHelper.installManagerSession(this, pnlUserProfile, lblUserName, lblUserRole, btnUserMenu);
         UIHelper.layoutManagerSidebar(pnlSidebar,
                 btnNavDashboard, btnNavManageRequests, btnNavAssignStaff,
                 btnNavRoomDetails, btnNavRequestHistory);
@@ -47,6 +47,7 @@ public class ManagerViewHistoryFrame extends javax.swing.JFrame {
         wireNavigation();
 
         PlaceholderTextField txtSearch = new PlaceholderTextField("Search Request by ID");
+        this.txtSearch = txtSearch;
         javax.swing.JPanel pnlSearchField = UIHelper.createSearchField(txtSearch);
         UIHelper.layoutManagerViewHistoryToolbar(pnlToolbar, pnlSearchField, btnFilter);
         UIHelper.styleManagerFilterButton(btnFilter);
@@ -64,16 +65,34 @@ public class ManagerViewHistoryFrame extends javax.swing.JFrame {
         UIHelper.layoutManagerTableSectionWithPagination(
                 pnlTableSection, lblTableSection, scrTable,
                 lblPagination, btnPagePrevious, btnPageNext);
-        refreshPaginationFooter();
+
+        loadHistoryRows(null);
 
         btnPagePrevious.addActionListener(e -> changePage(-1));
         btnPageNext.addActionListener(e -> changePage(1));
+
+        btnFilter.addActionListener(e -> loadHistoryRows(txtSearch.getInputText()));
+        txtSearch.addActionListener(e -> loadHistoryRows(txtSearch.getInputText()));
 
         UIHelper.showManagerFrame(this);
         javax.swing.SwingUtilities.invokeLater(() -> {
             UIHelper.sizeManagerViewHistoryTable(tblRequests, scrTable);
             pnlTableSection.revalidate();
         });
+    }
+
+    private void loadHistoryRows(String requestIdSearch) {
+        try {
+            Object[][] rows = ManagerService.getHistoryRows(requestIdSearch);
+            requestTableModel.replaceRows(rows);
+            refreshPaginationFooter();
+            javax.swing.SwingUtilities.invokeLater(() -> {
+                UIHelper.sizeManagerViewHistoryTable(tblRequests, scrTable);
+                pnlTableSection.revalidate();
+            });
+        } catch (DatabaseException ex) {
+            UIHelper.showDatabaseError(this, ex);
+        }
     }
 
     private void changePage(int direction) {

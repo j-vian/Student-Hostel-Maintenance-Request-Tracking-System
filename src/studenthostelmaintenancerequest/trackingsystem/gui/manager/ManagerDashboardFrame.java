@@ -4,12 +4,11 @@
  */
 package studenthostelmaintenancerequest.trackingsystem.gui.manager;
 
-import studenthostelmaintenancerequest.trackingsystem.SessionManager;
-import studenthostelmaintenancerequest.trackingsystem.gui.auth.LoginFrame;
+import studenthostelmaintenancerequest.trackingsystem.DatabaseException;
+import studenthostelmaintenancerequest.trackingsystem.ManagerService;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.AppColors;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton;
-import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerUserMenu;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.StatCardPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
 import javax.swing.JLabel;
@@ -33,15 +32,7 @@ public class ManagerDashboardFrame extends javax.swing.JFrame {
     private void customizeForm() {
         UIHelper.styleManagerShell(pnlHeader, pnlSidebar, pnlMain, lblAppTitle, pnlHeaderLogo);
         UIHelper.styleManagerPageHeader(pnlPageHeader, lblPageTitle);
-        ManagerUserMenu.install(pnlUserProfile, lblUserName, lblUserRole, btnUserMenu,
-                () -> {
-                    SessionManager.clear();
-                    UIHelper.navigateTo(this, new LoginFrame());
-                });
-        if (SessionManager.isLoggedIn()) {
-            lblUserName.setText(SessionManager.getDisplayUsername());
-            lblUserRole.setText("ADMIN");
-        }
+        UIHelper.installManagerSession(this, pnlUserProfile, lblUserName, lblUserRole, btnUserMenu);
         UIHelper.layoutManagerSidebar(pnlSidebar,
                 btnNavDashboard, btnNavManageRequests, btnNavAssignStaff,
                 btnNavRoomDetails, btnNavRequestHistory);
@@ -58,14 +49,9 @@ public class ManagerDashboardFrame extends javax.swing.JFrame {
         UIHelper.styleStatCard(cardCompleted, AppColors.SURFACE, AppColors.SUCCESS);
         UIHelper.styleStatCard(cardCancelled, AppColors.SURFACE, AppColors.DANGER);
 
-        cardTotal.setCount("24");
-        cardActive.setCount("12");
-        cardCompleted.setCount("10");
-        cardCancelled.setCount("2");
+        loadDashboardData();
 
         lblTableSection.setText("Recent Requests");
-
-        tblRequests.setModel(UIHelper.createManagerRequestTableModel());
         UIHelper.styleManagerTableSection(lblTableSection, tblRequests, scrTable);
         UIHelper.applyManagerRequestTableRenderers(tblRequests);
 
@@ -79,6 +65,21 @@ public class ManagerDashboardFrame extends javax.swing.JFrame {
             UIHelper.sizeManagerOverviewTable(tblRequests, scrTable);
             pnlTableSection.revalidate();
         });
+    }
+
+    private void loadDashboardData() {
+        try {
+            int[] counts = ManagerService.getDashboardCounts();
+            cardTotal.setCount(String.valueOf(counts[0]));
+            cardActive.setCount(String.valueOf(counts[1]));
+            cardCompleted.setCount(String.valueOf(counts[2]));
+            cardCancelled.setCount(String.valueOf(counts[3]));
+            Object[][] rows = ManagerService.getDashboardRecentRows(5);
+            tblRequests.setModel(UIHelper.createManagerRequestTableModel(rows));
+        } catch (DatabaseException ex) {
+            UIHelper.showDatabaseError(this, ex);
+            tblRequests.setModel(UIHelper.createManagerRequestTableModel());
+        }
     }
 
     private void wireNavigation() {

@@ -4,10 +4,10 @@
  */
 package studenthostelmaintenancerequest.trackingsystem.gui.manager;
 
-import studenthostelmaintenancerequest.trackingsystem.gui.auth.LoginFrame;
+import studenthostelmaintenancerequest.trackingsystem.DatabaseException;
+import studenthostelmaintenancerequest.trackingsystem.ManagerService;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton;
-import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerUserMenu;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.ManagerManageRequestTableModel;
@@ -24,6 +24,7 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
     private ManagerManageRequestTableModel requestTableModel;
     private TableCellEditor statusCellEditor;
     private boolean statusEditMode;
+    private PlaceholderTextField txtSearch;
     private javax.swing.JLabel lblPagination;
     private javax.swing.JButton btnPagePrevious;
     private javax.swing.JButton btnPageNext;
@@ -36,8 +37,7 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
     private void customizeForm() {
         UIHelper.styleManagerShell(pnlHeader, pnlSidebar, pnlMain, lblAppTitle, pnlHeaderLogo);
         UIHelper.styleManagerPageHeader(pnlPageHeader, lblPageTitle);
-        ManagerUserMenu.install(pnlUserProfile, lblUserName, lblUserRole, btnUserMenu,
-                () -> UIHelper.navigateTo(this, new LoginFrame()));
+        UIHelper.installManagerSession(this, pnlUserProfile, lblUserName, lblUserRole, btnUserMenu);
         UIHelper.layoutManagerSidebar(pnlSidebar,
                 btnNavDashboard, btnNavManageRequests, btnNavAssignStaff,
                 btnNavRoomDetails, btnNavRequestHistory);
@@ -50,6 +50,7 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
         wireNavigation();
 
         PlaceholderTextField txtSearch = new PlaceholderTextField("Search Request by ID");
+        this.txtSearch = txtSearch;
         javax.swing.JPanel pnlSearchField = UIHelper.createSearchField(txtSearch);
         UIHelper.layoutManagerManageRequestToolbar(pnlToolbar, pnlSearchField, btnFilter, btnConfirmChanges);
         UIHelper.styleManagerFilterButton(btnFilter);
@@ -69,10 +70,14 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
         UIHelper.layoutManagerTableSectionWithPagination(
                 pnlTableSection, lblTableSection, scrTable,
                 lblPagination, btnPagePrevious, btnPageNext);
-        refreshPaginationFooter();
+
+        loadActiveRequests(null);
 
         btnPagePrevious.addActionListener(e -> changePage(-1));
         btnPageNext.addActionListener(e -> changePage(1));
+
+        btnFilter.addActionListener(e -> loadActiveRequests(txtSearch.getInputText()));
+        txtSearch.addActionListener(e -> loadActiveRequests(txtSearch.getInputText()));
 
         btnConfirmChanges.addActionListener(e -> {
             if (statusEditMode) {
@@ -87,6 +92,23 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
             UIHelper.sizeManagerManageRequestTable(tblRequests, scrTable);
             pnlTableSection.revalidate();
         });
+    }
+
+    private void loadActiveRequests(String requestIdSearch) {
+        if (statusEditMode) {
+            return;
+        }
+        try {
+            Object[][] rows = ManagerService.getManageActiveRows(requestIdSearch);
+            requestTableModel.replaceRows(rows);
+            refreshPaginationFooter();
+            javax.swing.SwingUtilities.invokeLater(() -> {
+                UIHelper.sizeManagerManageRequestTable(tblRequests, scrTable);
+                pnlTableSection.revalidate();
+            });
+        } catch (DatabaseException ex) {
+            UIHelper.showDatabaseError(this, ex);
+        }
     }
 
     private void changePage(int direction) {
@@ -128,17 +150,19 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
         if (tblRequests.isEditing()) {
             tblRequests.getCellEditor().stopCellEditing();
         }
+        try {
+            ManagerService.saveActiveRequestStatuses(requestTableModel.getAllRows());
+        } catch (DatabaseException ex) {
+            UIHelper.showDatabaseError(this, ex);
+            return;
+        }
         statusEditMode = false;
         requestTableModel.setStatusColumnEditable(false);
         tblRequests.getColumnModel().getColumn(5).setCellEditor(null);
         btnConfirmChanges.setText("Update");
         UIHelper.styleManagerUpdateButton(btnConfirmChanges);
-        refreshPaginationFooter();
+        loadActiveRequests(txtSearch.getInputText());
         tblRequests.repaint();
-        javax.swing.SwingUtilities.invokeLater(() -> {
-            UIHelper.sizeManagerManageRequestTable(tblRequests, scrTable);
-            pnlTableSection.revalidate();
-        });
     }
 
     /**

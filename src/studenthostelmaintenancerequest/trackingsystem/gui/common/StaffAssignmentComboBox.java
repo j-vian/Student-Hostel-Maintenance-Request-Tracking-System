@@ -11,14 +11,12 @@ import javax.swing.border.LineBorder;
 
 public class StaffAssignmentComboBox extends JComboBox<String> {
 
-    private static final String[] STAFF_OPTIONS = {
-        "Chris Brown (Electrician)",
-        "John Jones (Furniture Tech)",
-        "Jack Sparrow (Plumber)"
-    };
-
     public StaffAssignmentComboBox() {
-        super(STAFF_OPTIONS);
+        this(new String[0]);
+    }
+
+    public StaffAssignmentComboBox(String[] staffOptions) {
+        super(staffOptions == null ? new String[0] : staffOptions);
         setFont(AppFonts.body());
         setBackground(AppColors.SURFACE);
         setBorder(new LineBorder(AppColors.GRID_LINE, 1, true));
@@ -27,7 +25,9 @@ public class StaffAssignmentComboBox extends JComboBox<String> {
 
     public void setSelectedStaff(String staff) {
         if (staff == null || staff.isBlank()) {
-            setSelectedIndex(0);
+            if (getItemCount() > 0) {
+                setSelectedIndex(0);
+            }
             return;
         }
         for (int i = 0; i < getItemCount(); i++) {
@@ -37,7 +37,9 @@ public class StaffAssignmentComboBox extends JComboBox<String> {
                 return;
             }
         }
-        setSelectedIndex(0);
+        if (getItemCount() > 0) {
+            setSelectedIndex(0);
+        }
     }
 
     public String getSelectedStaffName() {

@@ -4,14 +4,14 @@
  */
 package studenthostelmaintenancerequest.trackingsystem.gui.manager;
 
-import studenthostelmaintenancerequest.trackingsystem.gui.auth.LoginFrame;
+import studenthostelmaintenancerequest.trackingsystem.DatabaseException;
+import studenthostelmaintenancerequest.trackingsystem.ManagerRoomDetails;
+import studenthostelmaintenancerequest.trackingsystem.ManagerService;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerRoomInformationPanel;
-import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerUserMenu;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
-import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.ManagerRoomDetails;
 
 /**
  *
@@ -32,8 +32,7 @@ public class ManagerViewRoomFrame extends javax.swing.JFrame {
     private void customizeForm() {
         UIHelper.styleManagerShell(pnlHeader, pnlSidebar, pnlMain, lblAppTitle, pnlHeaderLogo);
         UIHelper.styleManagerPageHeader(pnlPageHeader, lblPageTitle);
-        ManagerUserMenu.install(pnlUserProfile, lblUserName, lblUserRole, btnUserMenu,
-                () -> UIHelper.navigateTo(this, new LoginFrame()));
+        UIHelper.installManagerSession(this, pnlUserProfile, lblUserName, lblUserRole, btnUserMenu);
         UIHelper.layoutManagerSidebar(pnlSidebar,
                 btnNavDashboard, btnNavManageRequests, btnNavAssignStaff,
                 btnNavRoomDetails, btnNavRequestHistory);
@@ -63,18 +62,27 @@ public class ManagerViewRoomFrame extends javax.swing.JFrame {
     }
 
     private void performSearch() {
-        String requestId = txtSearch.getInputText().toUpperCase();
-        ManagerRoomDetails details = UIHelper.lookupManagerRoomDetails(requestId);
-        if (details == null) {
+        String requestId = txtSearch.getInputText().trim();
+        if (requestId.isEmpty()) {
             pnlRoomInformation.clearDetails();
             return;
         }
-        pnlRoomInformation.setDetails(
-                details.requestId,
-                details.roomNumber,
-                details.block,
-                details.studentName,
-                details.requestType);
+        try {
+            ManagerRoomDetails details = ManagerService.lookupRoomDetails(requestId);
+            if (details == null) {
+                pnlRoomInformation.clearDetails();
+                return;
+            }
+            pnlRoomInformation.setDetails(
+                    details.requestId,
+                    details.roomNumber,
+                    details.placeName,
+                    details.studentName,
+                    details.requestType);
+        } catch (DatabaseException ex) {
+            UIHelper.showDatabaseError(this, ex);
+            pnlRoomInformation.clearDetails();
+        }
         pnlMain.revalidate();
         pnlMain.repaint();
     }

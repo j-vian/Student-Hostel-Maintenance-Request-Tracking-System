@@ -408,6 +408,256 @@ public class DatabaseHandler implements DataAccess {
         return staffMembers.toArray(new User[0]);
     }
 
+    private static final String MANAGER_LIST_QUERY = """
+            SELECT mr.request_id, mr.request_type, mr.description, mr.priority, mr.status,
+                   mr.date_raised,
+                   s.first_name AS student_first_name, s.last_name AS student_last_name,
+                   st.first_name AS staff_first_name, st.last_name AS staff_last_name
+            FROM maintenance_requests mr
+            INNER JOIN users s ON mr.student_id = s.user_id
+            LEFT JOIN users st ON mr.assigned_staff_id = st.user_id
+            """;
+
+    public int[] fetchDashboardCounts() throws DatabaseException {
+        int[] counts = new int[4];
+        String sql = """
+                SELECT
+                    COUNT(*) AS total_count,
+                    SUM(CASE WHEN status = 'IN_PROGRESS' THEN 1 ELSE 0 END) AS active_count,
+                    SUM(CASE WHEN status = 'COMPLETED' THEN 1 ELSE 0 END) AS completed_count,
+                    SUM(CASE WHEN status = 'CANCELLED' THEN 1 ELSE 0 END) AS cancelled_count
+                FROM maintenance_requests
+                """;
+
+        try (Connection conn = openConnection();
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                counts[0] = rs.getInt("total_count");
+                counts[1] = rs.getInt("active_count");
+                counts[2] = rs.getInt("completed_count");
+                counts[3] = rs.getInt("cancelled_count");
+            }
+        } catch (SQLException ex) {
+            throw new DatabaseException("Unable to load dashboard statistics.", ex);
+        }
+        return counts;
+    }
+
+    public Object[][] fetchOverviewRequestRows(int limit) throws DatabaseException {
+        String sql = MANAGER_LIST_QUERY + " ORDER BY mr.date_raised DESC LIMIT ?";
+        List<Object[]> rows = queryManagerRows(sql, limit, null);
+        Object[][] data = new Object[rows.size()][5];
+        for (int i = 0; i < rows.size(); i++) {
+            Object[] row = rows.get(i);
+            data[i] = new Object[]{
+                row[0], row[1], row[2], row[3], row[4]
+            };
+        }
+        return data;
+    }
+
+    public Object[][] fetchManageActiveRows(String requestIdSearch) throws DatabaseException {
+        String sql = MANAGER_LIST_QUERY + " WHERE mr.status = 'IN_PROGRESS'";
+        if (!isBlank(requestIdSearch)) {
+            sql += " AND UPPER(mr.request_id) LIKE ?";
+        }
+        sql += " ORDER BY mr.date_raised DESC";
+
+        List<Object[]> rows = queryManagerRows(sql, 0, normalizeSearchId(requestIdSearch));
+        Object[][] data = new Object[rows.size()][6];
+        for (int i = 0; i < rows.size(); i++) {
+            Object[] row = rows.get(i);
+            data[i] = new Object[]{
+                row[0], row[1], row[2], row[3], row[5], row[4]
+            };
+        }
+        return data;
+    }
+
+    public Object[][] fetchAssignStaffRows(String requestIdSearch) throws DatabaseException {
+        String sql = MANAGER_LIST_QUERY
+                + " WHERE mr.status = 'SUBMITTED' AND mr.assigned_staff_id IS NULL";
+        if (!isBlank(requestIdSearch)) {
+            sql += " AND UPPER(mr.request_id) LIKE ?";
+        }
+        sql += " ORDER BY mr.date_raised DESC";
+
+        List<Object[]> rows = queryManagerRows(sql, 0, normalizeSearchId(requestIdSearch));
+        Object[][] data = new Object[rows.size()][5];
+        for (int i = 0; i < rows.size(); i++) {
+            Object[] row = rows.get(i);
+            data[i] = new Object[]{
+                row[0], row[1], row[2], row[4], row[3]
+            };
+        }
+        return data;
+    }
+
+    public Object[][] fetchHistoryRows(String requestIdSearch) throws DatabaseException {
+        String sql = MANAGER_LIST_QUERY;
+        if (!isBlank(requestIdSearch)) {
+            sql += " WHERE UPPER(mr.request_id) LIKE ?";
+        }
+        sql += " ORDER BY mr.date_raised DESC";
+
+        List<Object[]> rows = queryManagerRows(sql, 0, normalizeSearchId(requestIdSearch));
+        Object[][] data = new Object[rows.size()][7];
+        for (int i = 0; i < rows.size(); i++) {
+            Object[] row = rows.get(i);
+            data[i] = new Object[]{
+                row[0], row[1], row[2], row[3], row[6], row[7], row[4]
+            };
+        }
+        return data;
+    }
+
+    public ManagerRoomDetails fetchRoomDetailsByRequestId(String requestId) throws DatabaseException {
+        if (isBlank(requestId)) {
+            return null;
+        }
+
+        String sql = """
+                SELECT mr.request_id, mr.request_type,
+                       s.first_name AS student_first_name, s.last_name AS student_last_name,
+                       r.room_number, r.place_name
+                FROM maintenance_requests mr
+                INNER JOIN users s ON mr.student_id = s.user_id
+                INNER JOIN rooms r ON mr.room_id = r.room_id
+                WHERE UPPER(mr.request_id) = ?
+                """;
+
+        try (Connection conn = openConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, requestId.trim().toUpperCase());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    return null;
+                }
+                return new ManagerRoomDetails(
+                        rs.getString("request_id"),
+                        rs.getString("room_number"),
+                        rs.getString("place_name"),
+                        formatFullName(rs.getString("student_first_name"), rs.getString("student_last_name")),
+                        formatRequestType(rs.getString("request_type")));
+            }
+        } catch (SQLException ex) {
+            throw new DatabaseException("Unable to load room details.", ex);
+        }
+    }
+
+    public String findStaffIdByDisplayName(String displayName) throws DatabaseException {
+        if (isBlank(displayName)) {
+            return null;
+        }
+
+        String fullName = displayName;
+        int roleStart = displayName.indexOf(" (");
+        if (roleStart > 0) {
+            fullName = displayName.substring(0, roleStart).trim();
+        }
+
+        String sql = """
+                SELECT user_id FROM users
+                WHERE role = 'STAFF'
+                  AND CONCAT(first_name, ' ', last_name) = ?
+                """;
+
+        try (Connection conn = openConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, fullName);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("user_id");
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DatabaseException("Unable to match staff member.", ex);
+        }
+        return null;
+    }
+
+    private List<Object[]> queryManagerRows(String sql, int limit, String requestIdSearch)
+            throws DatabaseException {
+        List<Object[]> rows = new ArrayList<>();
+
+        try (Connection conn = openConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            int paramIndex = 1;
+            if (!isBlank(requestIdSearch)) {
+                ps.setString(paramIndex++, requestIdSearch);
+            }
+            if (limit > 0) {
+                ps.setInt(paramIndex, limit);
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String staffFirst = rs.getString("staff_first_name");
+                    String staffLast = rs.getString("staff_last_name");
+                    Object assignedStaff = (staffFirst == null || staffLast == null)
+                            ? null
+                            : formatFullName(staffFirst, staffLast);
+
+                    Timestamp timestamp = rs.getTimestamp("date_raised");
+                    LocalDateTime dateRaised = timestamp == null ? null : timestamp.toLocalDateTime();
+
+                    rows.add(new Object[]{
+                        rs.getString("request_id"),
+                        formatRequestType(rs.getString("request_type")),
+                        formatFullName(rs.getString("student_first_name"), rs.getString("student_last_name")),
+                        assignedStaff,
+                        formatDisplayStatus(rs.getString("status")),
+                        formatDate(dateRaised),
+                        rs.getString("description"),
+                        rs.getString("priority")
+                    });
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DatabaseException("Unable to load manager request data.", ex);
+        }
+        return rows;
+    }
+
+    private String normalizeSearchId(String requestIdSearch) {
+        if (isBlank(requestIdSearch)) {
+            return null;
+        }
+        return "%" + requestIdSearch.trim().toUpperCase() + "%";
+    }
+
+    private static String formatFullName(String firstName, String lastName) {
+        return ((firstName == null ? "" : firstName.trim()) + " "
+                + (lastName == null ? "" : lastName.trim())).trim();
+    }
+
+    private static String formatRequestType(String requestType) {
+        if (requestType == null || requestType.isBlank()) {
+            return "";
+        }
+        return switch (requestType.trim().toLowerCase()) {
+            case "electrical" -> "Electrical";
+            case "plumbing" -> "Plumbing";
+            case "furniture" -> "Furniture";
+            default -> requestType.substring(0, 1).toUpperCase() + requestType.substring(1);
+        };
+    }
+
+    private static String formatDisplayStatus(String dbStatus) {
+        if (dbStatus == null) {
+            return "";
+        }
+        return dbStatus.trim().replace('_', ' ').toUpperCase();
+    }
+
+    private static String formatDate(LocalDateTime dateTime) {
+        if (dateTime == null) {
+            return "";
+        }
+        return dateTime.format(java.time.format.DateTimeFormatter.ofPattern("d MMMM yyyy", java.util.Locale.ENGLISH));
+    }
+
     private static final String BASE_REQUEST_QUERY = """
             SELECT mr.request_id, mr.request_type, mr.description, mr.priority, mr.status,
                    mr.student_id, mr.assigned_staff_id, mr.date_raised,

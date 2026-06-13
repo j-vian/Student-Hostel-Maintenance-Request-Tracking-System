@@ -19,3 +19,6 @@ Demo staff login:
   Password: staff123
 
 If you changed the MySQL port from 3306, update DatabaseConfig.java to match.
+
+If you already ran the schema once and need the demo requests (REQ001-REQ003) again,
+run sample_requests.sql in phpMyAdmin.
