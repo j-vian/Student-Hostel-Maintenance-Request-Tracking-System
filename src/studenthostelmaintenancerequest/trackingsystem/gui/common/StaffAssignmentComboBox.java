@@ -40,9 +40,14 @@ public class StaffAssignmentComboBox extends JComboBox<String> {
         setSelectedIndex(0);
     }
 
+    public String getSelectedStaffName() {
+        Object selected = getSelectedItem();
+        return displayName(selected == null ? null : String.valueOf(selected));
+    }
+
     public static String displayName(String value) {
         if (value == null || value.isBlank()) {
-            return STAFF_OPTIONS[0];
+            return "";
         }
         int roleStart = value.indexOf(" (");
         return roleStart > 0 ? value.substring(0, roleStart) : value;

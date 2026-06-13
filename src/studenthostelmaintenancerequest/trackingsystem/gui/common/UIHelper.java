@@ -1384,15 +1384,22 @@ public final class UIHelper {
 
         Object[][] rows = new Object[21][5];
         for (int i = 0; i < rows.length; i++) {
+            String status = (i % 3 == 1) ? "SUBMITTED" : "IN PROGRESS";
+            Object assignedStaff = "SUBMITTED".equals(status) ? null : staff[i % staff.length];
             rows[i] = new Object[]{
                 String.format("REQ%03d", i + 1),
                 types[i % types.length],
                 students[i % students.length],
-                "IN PROGRESS",
-                staff[i % staff.length]
+                status,
+                assignedStaff
             };
         }
         return rows;
+    }
+
+    private static boolean isAssignableRequestStatus(Object status) {
+        String normalized = StatusBadgeLabel.formatStatus(String.valueOf(status));
+        return "IN PROGRESS".equals(normalized) || "SUBMITTED".equals(normalized);
     }
 
     public static final class ManagerAssignStaffTableModel extends AbstractTableModel {
@@ -1408,7 +1415,9 @@ public final class UIHelper {
                 this.columnNames[i] = String.valueOf(columns[i]);
             }
             for (Object[] row : data) {
-                allRows.add(row.clone());
+                if (isAssignableRequestStatus(row[ASSIGN_STAFF_COL_STATUS])) {
+                    allRows.add(row.clone());
+                }
             }
         }
 
@@ -1487,6 +1496,9 @@ public final class UIHelper {
 
         @Override
         public void setValueAt(Object value, int row, int column) {
+            if (column == ASSIGN_STAFF_COL_ASSIGNED_STAFF && value != null) {
+                value = StaffAssignmentComboBox.displayName(String.valueOf(value));
+            }
             allRows.get(toDataIndex(row))[column] = value;
             fireTableCellUpdated(row, column);
             if (column == ASSIGN_STAFF_COL_ASSIGNED_STAFF) {
@@ -1520,8 +1532,7 @@ public final class UIHelper {
         });
 
         table.getColumnModel().getColumn(ASSIGN_STAFF_COL_ASSIGNED_STAFF).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
-            Object status = tbl.getValueAt(row, ASSIGN_STAFF_COL_STATUS);
-            boolean notAssigned = isSubmittedStatus(status) || value == null;
+            boolean notAssigned = value == null || String.valueOf(value).isBlank();
             JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
             wrapper.setBackground(AppColors.SURFACE);
 
@@ -1531,7 +1542,8 @@ public final class UIHelper {
             } else if (notAssigned) {
                 wrapper.add(new NotAssignedBadgeLabel());
             } else {
-                JLabel staffLabel = new JLabel(String.valueOf(value), JLabel.CENTER);
+                String staffName = StaffAssignmentComboBox.displayName(String.valueOf(value));
+                JLabel staffLabel = new JLabel(staffName, JLabel.CENTER);
                 staffLabel.setFont(AppFonts.bodyBold());
                 staffLabel.setForeground(AppColors.LABEL);
                 wrapper.add(staffLabel);
@@ -1552,7 +1564,7 @@ public final class UIHelper {
 
             @Override
             public Object getCellEditorValue() {
-                return ((StaffAssignmentComboBox) getComponent()).getSelectedItem();
+                return ((StaffAssignmentComboBox) getComponent()).getSelectedStaffName();
             }
         };
     }
