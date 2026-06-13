@@ -1639,7 +1639,8 @@ public final class UIHelper {
 
         pnlMain.removeAll();
         pnlMain.setLayout(new BorderLayout());
-        pnlMain.setOpaque(false);
+        pnlMain.setOpaque(true);
+        pnlMain.setBackground(AppColors.BACKGROUND);
         pnlMain.setBorder(new EmptyBorder(28, 32, 32, 32));
 
         JPanel searchSection = new JPanel();
@@ -1654,7 +1655,8 @@ public final class UIHelper {
         searchSection.add(hint);
 
         JPanel resultsSection = new JPanel(new BorderLayout());
-        resultsSection.setOpaque(false);
+        resultsSection.setOpaque(true);
+        resultsSection.setBackground(AppColors.BACKGROUND);
         resultsSection.setBorder(new EmptyBorder(24, 0, 0, 0));
         resultsSection.add(roomCard, BorderLayout.NORTH);
 

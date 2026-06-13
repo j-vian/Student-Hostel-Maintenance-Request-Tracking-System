@@ -17,13 +17,14 @@ import javax.swing.border.LineBorder;
 
 public class ManagerRoomInformationPanel extends JPanel {
 
+    private static final int CARD_HEIGHT = 300;
+    private static final int ROW_HEIGHT = 118;
+
     private final JLabel lblRequestIdBadge;
     private final JLabel lblRoomNumber;
     private final JLabel lblBlock;
     private final JLabel lblStudentName;
     private final JLabel lblRequestType;
-
-    private static final int CARD_HEIGHT = 260;
 
     public ManagerRoomInformationPanel() {
         setLayout(new BorderLayout());
@@ -61,19 +62,20 @@ public class ManagerRoomInformationPanel extends JPanel {
         header.add(titleRow, BorderLayout.WEST);
         header.add(lblRequestIdBadge, BorderLayout.EAST);
 
-        JPanel grid = new JPanel(new GridLayout(2, 2));
+        JPanel grid = new JPanel(new GridLayout(2, 2, 0, 0));
         grid.setOpaque(true);
         grid.setBackground(AppColors.SURFACE);
+        grid.setPreferredSize(new Dimension(0, ROW_HEIGHT * 2));
 
         lblRoomNumber = createValueLabel();
         lblBlock = createValueLabel();
         lblStudentName = createValueLabel();
         lblRequestType = createValueLabel();
 
-        grid.add(createDetailCell("ROOM NUMBER", lblRoomNumber));
-        grid.add(createDetailCell("BLOCK", lblBlock));
-        grid.add(createDetailCell("STUDENT NAME", lblStudentName));
-        grid.add(createDetailCell("REQUEST TYPE", lblRequestType));
+        grid.add(createDetailCell("ROOM NUMBER", lblRoomNumber, true, false));
+        grid.add(createDetailCell("BLOCK", lblBlock, true, true));
+        grid.add(createDetailCell("STUDENT NAME", lblStudentName, false, false));
+        grid.add(createDetailCell("REQUEST TYPE", lblRequestType, false, true));
 
         add(header, BorderLayout.NORTH);
         add(grid, BorderLayout.CENTER);
@@ -86,7 +88,7 @@ public class ManagerRoomInformationPanel extends JPanel {
         lblBlock.setText(block);
         lblStudentName.setText(studentName);
         lblRequestType.setText(requestType);
-        setPreferredSize(null);
+        setPreferredSize(new Dimension(0, CARD_HEIGHT));
         setMaximumSize(new Dimension(Integer.MAX_VALUE, CARD_HEIGHT));
         setVisible(true);
     }
@@ -118,18 +120,22 @@ public class ManagerRoomInformationPanel extends JPanel {
 
     private static JLabel createValueLabel() {
         JLabel label = new JLabel("", JLabel.LEFT);
-        label.setFont(AppFonts.bodyBold());
+        label.setFont(AppFonts.bodyBold().deriveFont(20f));
         label.setForeground(AppColors.LABEL);
         return label;
     }
 
-    private static JPanel createDetailCell(String title, JLabel valueLabel) {
-        JPanel cell = new JPanel(new BorderLayout(0, 8));
+    private static JPanel createDetailCell(
+            String title, JLabel valueLabel, boolean topRow, boolean rightColumn) {
+
+        JPanel cell = new JPanel(new BorderLayout(0, 10));
         cell.setOpaque(true);
         cell.setBackground(AppColors.SURFACE);
         cell.setBorder(new CompoundBorder(
-                BorderFactory.createMatteBorder(0, 0, 1, 1, AppColors.GRID_LINE),
-                new EmptyBorder(18, 20, 18, 20)));
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createMatteBorder(0, 0, topRow ? 1 : 0, 0, AppColors.SURFACE),
+                        BorderFactory.createMatteBorder(0, 0, 0, rightColumn ? 0 : 1, AppColors.GRID_LINE)),
+                new EmptyBorder(22, 24, 22, 24)));
 
         JLabel lblTitle = new JLabel(title);
         lblTitle.setFont(AppFonts.statTitle());
