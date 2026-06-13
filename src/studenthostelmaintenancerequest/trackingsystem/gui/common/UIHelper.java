@@ -1591,6 +1591,110 @@ public final class UIHelper {
         btnNext.setEnabled(canNext);
     }
 
+    public static void layoutManagerViewRoomToolbar(JPanel toolbar, JPanel searchField) {
+        toolbar.removeAll();
+        toolbar.setLayout(new BorderLayout());
+        toolbar.setOpaque(false);
+        toolbar.add(searchField, BorderLayout.CENTER);
+    }
+
+    public static JPanel createManagerViewRoomHint() {
+        JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        row.setOpaque(false);
+        row.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel icon = new JLabel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(AppColors.MUTED);
+                g2.drawOval(2, 2, getWidth() - 4, getHeight() - 4);
+                g2.setFont(AppFonts.body().deriveFont(10f));
+                int x = (getWidth() - g2.getFontMetrics().stringWidth("i")) / 2;
+                int y = ((getHeight() - g2.getFontMetrics().getHeight()) / 2) + g2.getFontMetrics().getAscent();
+                g2.drawString("i", x, y);
+                g2.dispose();
+            }
+        };
+        icon.setPreferredSize(new Dimension(16, 16));
+
+        JLabel text = new JLabel(
+                "Enter a valid alphanumeric Request ID to fetch associated room and maintenance details.");
+        text.setFont(AppFonts.body());
+        text.setForeground(AppColors.MUTED);
+
+        row.add(icon);
+        row.add(text);
+        return row;
+    }
+
+    public static void layoutManagerViewRoomContent(
+            JPanel pnlMain, JPanel toolbar, JPanel hint, ManagerRoomInformationPanel roomCard) {
+
+        pnlMain.removeAll();
+        pnlMain.setLayout(new javax.swing.BoxLayout(pnlMain, javax.swing.BoxLayout.Y_AXIS));
+
+        toolbar.setAlignmentX(Component.LEFT_ALIGNMENT);
+        hint.setAlignmentX(Component.LEFT_ALIGNMENT);
+        roomCard.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        pnlMain.add(toolbar);
+        pnlMain.add(javax.swing.Box.createVerticalStrut(10));
+        pnlMain.add(hint);
+        pnlMain.add(javax.swing.Box.createVerticalStrut(24));
+        pnlMain.add(roomCard);
+        pnlMain.add(javax.swing.Box.createVerticalGlue());
+    }
+
+    public static final class ManagerRoomDetails {
+
+        public final String requestId;
+        public final String roomNumber;
+        public final String block;
+        public final String studentName;
+        public final String requestType;
+
+        public ManagerRoomDetails(String requestId, String roomNumber, String block,
+                String studentName, String requestType) {
+            this.requestId = requestId;
+            this.roomNumber = roomNumber;
+            this.block = block;
+            this.studentName = studentName;
+            this.requestType = requestType;
+        }
+    }
+
+    public static ManagerRoomDetails lookupManagerRoomDetails(String requestId) {
+        if (requestId == null || requestId.isBlank()) {
+            return null;
+        }
+        return MANAGER_ROOM_DETAILS.get(requestId.trim().toUpperCase());
+    }
+
+    private static final java.util.Map<String, ManagerRoomDetails> MANAGER_ROOM_DETAILS =
+            buildManagerRoomDetailsLookup();
+
+    private static java.util.Map<String, ManagerRoomDetails> buildManagerRoomDetailsLookup() {
+        String[] types = {"Electrical", "Plumbing", "Furniture"};
+        String[] students = {"Alex Johnson", "Maria Chen", "Sam Patel"};
+        String[] roomNumbers = {"402-B", "305-A", "118-C"};
+        String[] blocks = {"Tower B, DHUAM", "Tower A, DHUAM", "Tower C, DHUAM"};
+
+        java.util.Map<String, ManagerRoomDetails> lookup = new java.util.HashMap<>();
+        for (int i = 0; i < 21; i++) {
+            int index = i % 3;
+            String requestId = String.format("REQ%03d", i + 1);
+            lookup.put(requestId, new ManagerRoomDetails(
+                    requestId,
+                    roomNumbers[index],
+                    blocks[index],
+                    students[index],
+                    types[index]));
+        }
+        return lookup;
+    }
+
     private static JPanel createRequirementItem(String text) {
         JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         row.setOpaque(false);

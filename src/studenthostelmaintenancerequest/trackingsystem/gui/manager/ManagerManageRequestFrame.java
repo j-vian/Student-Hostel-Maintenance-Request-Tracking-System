@@ -111,7 +111,7 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
         btnNavDashboard.addActionListener(e -> UIHelper.navigateTo(this, new ManagerDashboardFrame()));
         btnNavManageRequests.addActionListener(e -> { /* already on this page */ });
         btnNavAssignStaff.addActionListener(e -> UIHelper.navigateTo(this, new ManagerAssignStaffFrame()));
-        btnNavRoomDetails.addActionListener(e -> { /* placeholder */ });
+        btnNavRoomDetails.addActionListener(e -> UIHelper.navigateTo(this, new ManagerViewRoomFrame()));
         btnNavRequestHistory.addActionListener(e -> UIHelper.navigateTo(this, new RequestHistoryFrame()));
     }
 
