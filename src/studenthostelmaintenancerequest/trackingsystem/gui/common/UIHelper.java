@@ -1723,6 +1723,199 @@ public final class UIHelper {
         return lookup;
     }
 
+    public static void layoutManagerViewHistoryToolbar(
+            JPanel toolbar, JPanel searchField, JButton btnFilter) {
+
+        toolbar.removeAll();
+        toolbar.setLayout(new BorderLayout(12, 0));
+        toolbar.setOpaque(false);
+        toolbar.add(searchField, BorderLayout.CENTER);
+        toolbar.add(btnFilter, BorderLayout.EAST);
+
+        Dimension size = new Dimension(Integer.MAX_VALUE, MANAGER_SEARCH_HEIGHT);
+        toolbar.setPreferredSize(new Dimension(0, MANAGER_SEARCH_HEIGHT));
+        toolbar.setMinimumSize(new Dimension(0, MANAGER_SEARCH_HEIGHT));
+        toolbar.setMaximumSize(size);
+    }
+
+    public static final int VIEW_HISTORY_PAGE_SIZE = 3;
+    public static final int VIEW_HISTORY_COL_ASSIGNED_STAFF = 3;
+    public static final int VIEW_HISTORY_COL_DESCRIPTION = 4;
+    public static final int VIEW_HISTORY_COL_PRIORITY = 5;
+    public static final int VIEW_HISTORY_COL_STATUS = 6;
+
+    public static ManagerViewHistoryTableModel createManagerViewHistoryTableModel() {
+        return new ManagerViewHistoryTableModel(buildViewHistorySampleData(), new String[]{
+            "Request ID", "Request Type", "Student Name",
+            "Assigned Staff", "Description", "Priority", "Status"});
+    }
+
+    private static Object[][] buildViewHistorySampleData() {
+        Object[][] rows = new Object[12][7];
+        rows[0] = new Object[]{"REQ001", "Electrical", "Alex Johnson", "John Doe", "8 June 2026", "High", "IN PROGRESS"};
+        rows[1] = new Object[]{"REQ001", "Plumbing", "Alex Johnson", "John Doe", "8 June 2026", "Medium", "SUBMITTED"};
+        rows[2] = new Object[]{"REQ001", "Furniture", "Alex Johnson", "John Doe", "8 June 2026", "Low", "COMPLETED"};
+
+        String[] types = {"Electrical", "Plumbing", "Furniture"};
+        String[] students = {"Alex Johnson", "Maria Chen", "Sam Patel"};
+        String[] staff = {"John Doe", "Jane Smith"};
+        String[] dates = {"8 June 2026", "9 June 2026", "10 June 2026", "11 June 2026"};
+        String[] priorities = {"High", "Medium", "Low"};
+        String[] statuses = {"IN PROGRESS", "SUBMITTED", "COMPLETED"};
+
+        for (int i = 3; i < rows.length; i++) {
+            rows[i] = new Object[]{
+                String.format("REQ%03d", i + 1),
+                types[i % types.length],
+                students[i % students.length],
+                staff[i % staff.length],
+                dates[i % dates.length],
+                priorities[i % priorities.length],
+                statuses[i % statuses.length]
+            };
+        }
+        return rows;
+    }
+
+    public static final class ManagerViewHistoryTableModel extends AbstractTableModel {
+
+        private final java.util.List<Object[]> allRows = new java.util.ArrayList<>();
+        private final String[] columnNames;
+        private int currentPage;
+
+        public ManagerViewHistoryTableModel(Object[][] data, Object[] columns) {
+            this.columnNames = new String[columns.length];
+            for (int i = 0; i < columns.length; i++) {
+                this.columnNames[i] = String.valueOf(columns[i]);
+            }
+            for (Object[] row : data) {
+                allRows.add(row.clone());
+            }
+        }
+
+        @Override
+        public int getColumnCount() {
+            return columnNames.length;
+        }
+
+        @Override
+        public String getColumnName(int column) {
+            return columnNames[column];
+        }
+
+        public int getTotalRowCount() {
+            return allRows.size();
+        }
+
+        public int getPageSize() {
+            return VIEW_HISTORY_PAGE_SIZE;
+        }
+
+        public int getCurrentPage() {
+            return currentPage;
+        }
+
+        public int getShowingFrom() {
+            if (allRows.isEmpty()) {
+                return 0;
+            }
+            return currentPage * VIEW_HISTORY_PAGE_SIZE + 1;
+        }
+
+        public int getShowingTo() {
+            return Math.min((currentPage + 1) * VIEW_HISTORY_PAGE_SIZE, allRows.size());
+        }
+
+        public boolean canGoPrevious() {
+            return currentPage > 0;
+        }
+
+        public boolean canGoNext() {
+            return (currentPage + 1) * VIEW_HISTORY_PAGE_SIZE < allRows.size();
+        }
+
+        public void previousPage() {
+            if (!canGoPrevious()) {
+                return;
+            }
+            currentPage--;
+            fireTableDataChanged();
+        }
+
+        public void nextPage() {
+            if (!canGoNext()) {
+                return;
+            }
+            currentPage++;
+            fireTableDataChanged();
+        }
+
+        private int toDataIndex(int viewRow) {
+            return currentPage * VIEW_HISTORY_PAGE_SIZE + viewRow;
+        }
+
+        @Override
+        public int getRowCount() {
+            int remaining = allRows.size() - (currentPage * VIEW_HISTORY_PAGE_SIZE);
+            return Math.min(VIEW_HISTORY_PAGE_SIZE, Math.max(remaining, 0));
+        }
+
+        @Override
+        public Object getValueAt(int row, int column) {
+            return allRows.get(toDataIndex(row))[column];
+        }
+
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    }
+
+    public static void applyManagerViewHistoryTableRenderers(JTable table) {
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        centerRenderer.setFont(AppFonts.body());
+        centerRenderer.setForeground(AppColors.LABEL);
+        centerRenderer.setBackground(AppColors.SURFACE);
+
+        for (int column = 0; column < VIEW_HISTORY_COL_PRIORITY; column++) {
+            table.getColumnModel().getColumn(column).setCellRenderer(centerRenderer);
+        }
+
+        table.getColumnModel().getColumn(VIEW_HISTORY_COL_PRIORITY).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
+            JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
+            wrapper.setBackground(AppColors.SURFACE);
+            wrapper.add(new PriorityBadgeLabel(String.valueOf(value)));
+            return wrapper;
+        });
+
+        table.getColumnModel().getColumn(VIEW_HISTORY_COL_STATUS).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
+            JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
+            wrapper.setBackground(AppColors.SURFACE);
+            wrapper.add(new StatusBadgeLabel(String.valueOf(value)));
+            return wrapper;
+        });
+    }
+
+    public static void sizeManagerViewHistoryTable(JTable table, JScrollPane scroll) {
+        int headerHeight = table.getTableHeader().getPreferredSize().height;
+        int bodyHeight = table.getRowHeight() * VIEW_HISTORY_PAGE_SIZE;
+        int height = headerHeight + bodyHeight + 2;
+        Dimension size = new Dimension(scroll.getPreferredSize().width, height);
+        scroll.setPreferredSize(size);
+        scroll.setMinimumSize(size);
+        scroll.setMaximumSize(new Dimension(Integer.MAX_VALUE, height));
+    }
+
+    public static void updateManagerPaginationFooter(
+            JLabel lblShowing, JButton btnPrevious, JButton btnNext,
+            ManagerViewHistoryTableModel model) {
+
+        setManagerPaginationFooter(lblShowing, btnPrevious, btnNext,
+                model.getShowingFrom(), model.getShowingTo(), model.getTotalRowCount(),
+                model.canGoPrevious(), model.canGoNext());
+    }
+
     private static JPanel createRequirementItem(String text) {
         JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         row.setOpaque(false);

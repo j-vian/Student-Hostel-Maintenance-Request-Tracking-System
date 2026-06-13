@@ -111,7 +111,7 @@ public class ManagerAssignStaffFrame extends javax.swing.JFrame {
         btnNavManageRequests.addActionListener(e -> UIHelper.navigateTo(this, new ManagerManageRequestFrame()));
         btnNavAssignStaff.addActionListener(e -> { /* already on this page */ });
         btnNavRoomDetails.addActionListener(e -> UIHelper.navigateTo(this, new ManagerViewRoomFrame()));
-        btnNavRequestHistory.addActionListener(e -> UIHelper.navigateTo(this, new RequestHistoryFrame()));
+        btnNavRequestHistory.addActionListener(e -> UIHelper.navigateTo(this, new ManagerViewHistoryFrame()));
     }
 
     private void enterStaffEditMode() {

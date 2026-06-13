@@ -112,7 +112,7 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
         btnNavManageRequests.addActionListener(e -> { /* already on this page */ });
         btnNavAssignStaff.addActionListener(e -> UIHelper.navigateTo(this, new ManagerAssignStaffFrame()));
         btnNavRoomDetails.addActionListener(e -> UIHelper.navigateTo(this, new ManagerViewRoomFrame()));
-        btnNavRequestHistory.addActionListener(e -> UIHelper.navigateTo(this, new RequestHistoryFrame()));
+        btnNavRequestHistory.addActionListener(e -> UIHelper.navigateTo(this, new ManagerViewHistoryFrame()));
     }
 
     private void enterStatusEditMode() {

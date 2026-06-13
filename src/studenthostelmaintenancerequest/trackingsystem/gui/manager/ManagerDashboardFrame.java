@@ -63,7 +63,7 @@ public class ManagerDashboardFrame extends javax.swing.JFrame {
 
         JLabel lblViewAllRequests = UIHelper.createHyperlink("View All Requests");
         UIHelper.addHyperlinkAction(lblViewAllRequests,
-                () -> UIHelper.navigateTo(this, new RequestHistoryFrame()));
+                () -> UIHelper.navigateTo(this, new ManagerViewHistoryFrame()));
         UIHelper.layoutManagerTableSectionFooter(pnlTableSection, lblTableSection, scrTable, lblViewAllRequests);
 
         UIHelper.showManagerFrame(this);
@@ -78,7 +78,7 @@ public class ManagerDashboardFrame extends javax.swing.JFrame {
         btnNavManageRequests.addActionListener(e -> UIHelper.navigateTo(this, new ManagerManageRequestFrame()));
         btnNavAssignStaff.addActionListener(e -> UIHelper.navigateTo(this, new ManagerAssignStaffFrame()));
         btnNavRoomDetails.addActionListener(e -> UIHelper.navigateTo(this, new ManagerViewRoomFrame()));
-        btnNavRequestHistory.addActionListener(e -> UIHelper.navigateTo(this, new RequestHistoryFrame()));
+        btnNavRequestHistory.addActionListener(e -> UIHelper.navigateTo(this, new ManagerViewHistoryFrame()));
     }
 
     /**

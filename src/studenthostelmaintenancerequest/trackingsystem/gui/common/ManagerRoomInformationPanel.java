@@ -1,5 +1,6 @@
 package studenthostelmaintenancerequest.trackingsystem.gui.common;
 
+import java.awt.Color;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -72,10 +73,10 @@ public class ManagerRoomInformationPanel extends JPanel {
         lblStudentName = createValueLabel();
         lblRequestType = createValueLabel();
 
-        grid.add(createDetailCell("ROOM NUMBER", lblRoomNumber, true, false));
-        grid.add(createDetailCell("BLOCK", lblBlock, true, true));
-        grid.add(createDetailCell("STUDENT NAME", lblStudentName, false, false));
-        grid.add(createDetailCell("REQUEST TYPE", lblRequestType, false, true));
+        grid.add(createDetailCell("ROOM NUMBER", lblRoomNumber, CellPosition.TOP_LEFT));
+        grid.add(createDetailCell("BLOCK", lblBlock, CellPosition.TOP_RIGHT));
+        grid.add(createDetailCell("STUDENT NAME", lblStudentName, CellPosition.BOTTOM_LEFT));
+        grid.add(createDetailCell("REQUEST TYPE", lblRequestType, CellPosition.BOTTOM_RIGHT));
 
         add(header, BorderLayout.NORTH);
         add(grid, BorderLayout.CENTER);
@@ -125,16 +126,30 @@ public class ManagerRoomInformationPanel extends JPanel {
         return label;
     }
 
+    private enum CellPosition {
+        TOP_LEFT,
+        TOP_RIGHT,
+        BOTTOM_LEFT,
+        BOTTOM_RIGHT
+    }
+
     private static JPanel createDetailCell(
-            String title, JLabel valueLabel, boolean topRow, boolean rightColumn) {
+            String title, JLabel valueLabel, CellPosition position) {
 
         JPanel cell = new JPanel(new BorderLayout(0, 10));
         cell.setOpaque(true);
         cell.setBackground(AppColors.SURFACE);
+
+        int bottomWidth = position == CellPosition.TOP_LEFT || position == CellPosition.TOP_RIGHT ? 1 : 0;
+        Color bottomColor = position == CellPosition.TOP_LEFT
+                ? AppColors.SURFACE
+                : AppColors.GRID_LINE;
+        int rightWidth = position == CellPosition.TOP_LEFT || position == CellPosition.BOTTOM_LEFT ? 1 : 0;
+
         cell.setBorder(new CompoundBorder(
                 BorderFactory.createCompoundBorder(
-                        BorderFactory.createMatteBorder(0, 0, topRow ? 1 : 0, 0, AppColors.SURFACE),
-                        BorderFactory.createMatteBorder(0, 0, 0, rightColumn ? 0 : 1, AppColors.GRID_LINE)),
+                        BorderFactory.createMatteBorder(0, 0, bottomWidth, 0, bottomColor),
+                        BorderFactory.createMatteBorder(0, 0, 0, rightWidth, AppColors.GRID_LINE)),
                 new EmptyBorder(22, 24, 22, 24)));
 
         JLabel lblTitle = new JLabel(title);
