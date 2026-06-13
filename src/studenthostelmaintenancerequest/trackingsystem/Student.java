@@ -5,37 +5,39 @@
 package studenthostelmaintenancerequest.trackingsystem;
 
 /**
+ * Represents a student who submits maintenance requests.
+ * Composition: each student owns a Room and their submitted request references.
  *
  * @author farouq
  */
 public class Student extends User {
 
-    private String roomNumber;
+    private Room room;
     private MaintenanceRequest[] requests;
-    private int count = 0;
+    private int count;
 
-    public Student(String userId, String name, String email, String roomNumber) {
+    public Student(String userId, String name, String email, Room room) {
         super(userId, name, email);
-        this.roomNumber = roomNumber;
+        this.room = room;
         this.requests = new MaintenanceRequest[100];
+        this.count = 0;
     }
 
     @Override
     public void login() {
-        System.out.println("Student " + getName() + " logged in.");
+        System.out.println("Student " + getName() + " (ID: " + getUserId() + ") logged in.");
     }
 
     @Override
     public void logout() {
-        System.out.println("Student " + getName() + " logged out.");
+        System.out.println("Student " + getName() + " (ID: " + getUserId() + ") logged out.");
     }
 
     public void submitRequest(MaintenanceRequest request) {
-        if (count < getRequests().length) {
-            getRequests()[count] = request;
+        if (count < requests.length) {
+            requests[count] = request;
             count++;
-
-            System.out.println("Request " + request.getRequestId() 
+            System.out.println("Request " + request.getRequestId()
                     + " submitted by " + getName() + ".");
         } else {
             System.out.println("Cannot submit request. Request list is full.");
@@ -49,26 +51,32 @@ public class Student extends User {
         }
 
         System.out.println("Requests submitted by " + getName() + ":");
-
         for (int i = 0; i < count; i++) {
-            getRequests()[i].displayDetails();
+            requests[i].displayDetails();
             System.out.println();
         }
     }
 
     public String getRoomNumber() {
-        return roomNumber;
+        return room.getRoomNumber();
     }
 
-    public MaintenanceRequest[] getRequests() {
-        return requests;
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
     }
 
     public int getCount() {
         return count;
     }
 
-    public void setRoomNumber(String roomNumber) {
-        this.roomNumber = roomNumber;
+    public MaintenanceRequest getRequestAt(int index) {
+        if (index < 0 || index >= count) {
+            return null;
+        }
+        return requests[index];
     }
 }

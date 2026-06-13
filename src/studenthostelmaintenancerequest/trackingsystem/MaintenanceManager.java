@@ -5,21 +5,21 @@
 package studenthostelmaintenancerequest.trackingsystem;
 
 /**
+ * Central controller for managing maintenance requests.
+ * Aggregation: the manager references requests stored elsewhere in the system.
  *
  * @author vian
  */
 public class MaintenanceManager {
-    //data variable
+
     private MaintenanceRequest[] requests;
-    private int count; 
-    
-    //constructor
+    private int count;
+
     public MaintenanceManager() {
         this.requests = new MaintenanceRequest[100];
         this.count = 0;
     }
-    
-    //addRequest method
+
     public void addRequest(MaintenanceRequest request) {
         if (count < requests.length) {
             requests[count] = request;
@@ -27,45 +27,71 @@ public class MaintenanceManager {
             System.out.println("Request [" + request.getRequestId() + "] added successfully.");
         }
     }
-    
-    //assignStaff method
+
     public void assignStaff(String requestId, Staff staff) {
-        for (int i = 0; i < count; i++) {
-            if (requests[i].getRequestId().equals(requestId)) {
-                requests[i].setStatus(Status.IN_PROGRESS);
-                staff.addAssignedRequest(requests[i]);
-                System.out.println("Staff [" + staff.getName() + "] assigned to Request [" + requestId + "]. Status updated to IN_PROGRESS.");
-                return;
-            }
+        MaintenanceRequest request = findRequestById(requestId);
+        if (request == null) {
+            System.out.println("Request [" + requestId + "] not found. Cannot assign staff.");
+            return;
         }
-        System.out.println("Request [" + requestId + "] not founc. Cannot assign staff.");
+
+        request.recordStatusChange(Status.IN_PROGRESS);
+        staff.addAssignedRequest(request);
+        System.out.println("Staff [" + staff.getName() + "] assigned to Request [" + requestId
+                + "]. Status updated to IN_PROGRESS.");
     }
-    
-    //updateRequestStatus method
+
     public void updateRequestStatus(String requestId, Status newStatus) {
-        for (int i = 0; i < count; i++) {
-            if (requests[i].getRequestId().equals(requestId)) {
-                requests[i].setStatus(newStatus);
-                System.out.println("Request [" + requestId + "] status updated to: " + newStatus);
-                return;
-            }
+        MaintenanceRequest request = findRequestById(requestId);
+        if (request == null) {
+            System.out.println("Request [" + requestId + "] not found. Status not updated.");
+            return;
         }
-        System.out.println("Request [" + requestId + "] not found. Status not updated.");
+
+        request.recordStatusChange(newStatus);
+        System.out.println("Request [" + requestId + "] status updated to: " + newStatus);
     }
-    
-    //searchRequest method
+
     public void searchRequest(String requestId) {
+        MaintenanceRequest request = findRequestById(requestId);
+        if (request == null) {
+            System.out.println("Request [" + requestId + "] not found in the system.");
+            return;
+        }
+
+        System.out.println("Request found:");
+        request.displayDetails();
+    }
+
+    public void displayAllRequests() {
+        if (count == 0) {
+            System.out.println("No requests have been submitted yet.");
+            return;
+        }
+
+        for (int i = 0; i < count; i++) {
+            requests[i].displayDetails();
+            System.out.println();
+        }
+    }
+
+    public MaintenanceRequest findRequestById(String requestId) {
         for (int i = 0; i < count; i++) {
             if (requests[i].getRequestId().equals(requestId)) {
-                System.out.println("Request found:");
-                requests[i].displayDetails();
-                return;
+                return requests[i];
             }
         }
-        System.out.println("Request [" + requestId + "] not found in the system.");
+        return null;
     }
-    
-    //getter
-    public MaintenanceRequest[] getRequests() { return requests; }
-    public int getCount() { return count; }
+
+    public int getCount() {
+        return count;
+    }
+
+    public MaintenanceRequest getRequestAt(int index) {
+        if (index < 0 || index >= count) {
+            return null;
+        }
+        return requests[index];
+    }
 }
