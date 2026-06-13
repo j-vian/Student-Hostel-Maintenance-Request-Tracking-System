@@ -18,8 +18,8 @@ public class Main {
         MaintenanceFactory factory = new MaintenanceFactory();
         MaintenanceManager manager = new MaintenanceManager();
 
-        Room room1 = new Room("A-10-05", "Block A");
-        Room room2 = new Room("B-10-05", "Block B");
+        Room room1 = new Room("A-10-05", "DHUAM");
+        Room room2 = new Room("B-10-05", "KK5");
 
         Student student1 = new Student("CB25174", "John Vianney Albert", "john123@gmail.com", room1);
         Student student2 = new Student("CB25153", "Chai Chuan Yi", "chai456@gmail.com", room2);

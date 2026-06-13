@@ -4,6 +4,7 @@
  */
 package studenthostelmaintenancerequest.trackingsystem.gui.manager;
 
+import studenthostelmaintenancerequest.trackingsystem.SessionManager;
 import studenthostelmaintenancerequest.trackingsystem.gui.auth.LoginFrame;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.AppColors;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
@@ -33,7 +34,14 @@ public class ManagerDashboardFrame extends javax.swing.JFrame {
         UIHelper.styleManagerShell(pnlHeader, pnlSidebar, pnlMain, lblAppTitle, pnlHeaderLogo);
         UIHelper.styleManagerPageHeader(pnlPageHeader, lblPageTitle);
         ManagerUserMenu.install(pnlUserProfile, lblUserName, lblUserRole, btnUserMenu,
-                () -> UIHelper.navigateTo(this, new LoginFrame()));
+                () -> {
+                    SessionManager.clear();
+                    UIHelper.navigateTo(this, new LoginFrame());
+                });
+        if (SessionManager.isLoggedIn()) {
+            lblUserName.setText(SessionManager.getDisplayUsername());
+            lblUserRole.setText("ADMIN");
+        }
         UIHelper.layoutManagerSidebar(pnlSidebar,
                 btnNavDashboard, btnNavManageRequests, btnNavAssignStaff,
                 btnNavRoomDetails, btnNavRequestHistory);

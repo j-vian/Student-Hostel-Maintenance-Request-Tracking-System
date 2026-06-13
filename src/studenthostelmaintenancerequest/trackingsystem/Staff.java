@@ -6,7 +6,6 @@ package studenthostelmaintenancerequest.trackingsystem;
 
 /**
  * Concrete class representing a maintenance staff member.
- * Aggregation: staff references assigned requests without owning them.
  *
  * @author chaic
  */
@@ -16,22 +15,31 @@ public class Staff extends User {
     private MaintenanceRequest[] assignedRequests;
     private int count;
 
-    public Staff(String userId, String name, String email, String staffRole) {
-        super(userId, name, email);
+    public Staff(String userId, String username, String firstName, String lastName,
+            String email, String password, String staffRole) {
+        super(userId, username, firstName, lastName, email, password, UserRole.STAFF);
         this.staffRole = staffRole;
         this.assignedRequests = new MaintenanceRequest[100];
         this.count = 0;
     }
 
+    /**
+     * Legacy constructor for the Phase II console application.
+     */
+    public Staff(String userId, String fullName, String email, String staffRole) {
+        this(userId, fullName.toLowerCase().replace(" ", ""), fullName, "",
+                email, "", staffRole);
+    }
+
     @Override
     public void login() {
-        System.out.println("Staff " + getName() + " (ID: " + getUserId() + ", Role: "
+        System.out.println("Staff " + getFullName() + " (ID: " + getUserId() + ", Role: "
                 + staffRole + ") logged in.");
     }
 
     @Override
     public void logout() {
-        System.out.println("Staff " + getName() + " (ID: " + getUserId() + ") logged out.");
+        System.out.println("Staff " + getFullName() + " (ID: " + getUserId() + ") logged out.");
     }
 
     public void updateRequestStatus(String requestId, Status status) {
@@ -42,16 +50,16 @@ public class Staff extends User {
                 return;
             }
         }
-        System.out.println("Request " + requestId + " not found in " + getName() + "'s assigned list.");
+        System.out.println("Request " + requestId + " not found in " + getFullName() + "'s assigned list.");
     }
 
     public void viewAssignedRequests() {
         if (count == 0) {
-            System.out.println("No requests assigned to " + getName() + ".");
+            System.out.println("No requests assigned to " + getFullName() + ".");
             return;
         }
 
-        System.out.println("Requests assigned to " + getName() + ":");
+        System.out.println("Requests assigned to " + getFullName() + ":");
         for (int i = 0; i < count; i++) {
             assignedRequests[i].displayDetails();
             System.out.println();
@@ -82,5 +90,17 @@ public class Staff extends User {
             return null;
         }
         return assignedRequests[index];
+    }
+
+    public void loadAssignedRequests(MaintenanceRequest[] loadedRequests) {
+        count = 0;
+        if (loadedRequests == null) {
+            return;
+        }
+        for (MaintenanceRequest request : loadedRequests) {
+            if (request != null && count < assignedRequests.length) {
+                assignedRequests[count++] = request;
+            }
+        }
     }
 }

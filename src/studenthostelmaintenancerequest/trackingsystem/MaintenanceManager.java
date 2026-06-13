@@ -94,4 +94,19 @@ public class MaintenanceManager {
         }
         return requests[index];
     }
+
+    /**
+     * Loads database results into the in-memory array (Phase II + Phase III bridge).
+     */
+    public void loadRequests(MaintenanceRequest[] loadedRequests) {
+        count = 0;
+        if (loadedRequests == null) {
+            return;
+        }
+        for (MaintenanceRequest request : loadedRequests) {
+            if (request != null && count < requests.length) {
+                requests[count++] = request;
+            }
+        }
+    }
 }

@@ -4,6 +4,7 @@
  */
 package studenthostelmaintenancerequest.trackingsystem.gui.auth;
 
+import studenthostelmaintenancerequest.trackingsystem.AuthService;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.GradientBackgroundPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.PasswordFieldPanel;
@@ -42,7 +43,9 @@ public class LoginFrame extends javax.swing.JFrame {
     }
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {
-        // Backend login logic will be added later.
+        String email = txtEmail.getText().trim();
+        String password = new String(pnlPassword.getPasswordField().getPassword());
+        AuthService.login(this, email, password);
     }
 
     /**

@@ -6,7 +6,6 @@ package studenthostelmaintenancerequest.trackingsystem;
 
 /**
  * Represents a student who submits maintenance requests.
- * Composition: each student owns a Room and their submitted request references.
  *
  * @author farouq
  */
@@ -16,21 +15,30 @@ public class Student extends User {
     private MaintenanceRequest[] requests;
     private int count;
 
-    public Student(String userId, String name, String email, Room room) {
-        super(userId, name, email);
+    public Student(String userId, String username, String firstName, String lastName,
+            String email, String password, Room room) {
+        super(userId, username, firstName, lastName, email, password, UserRole.STUDENT);
         this.room = room;
         this.requests = new MaintenanceRequest[100];
         this.count = 0;
     }
 
+    /**
+     * Legacy constructor for the Phase II console application.
+     */
+    public Student(String userId, String fullName, String email, Room room) {
+        this(userId, fullName.toLowerCase().replace(" ", ""), fullName, "",
+                email, "", room);
+    }
+
     @Override
     public void login() {
-        System.out.println("Student " + getName() + " (ID: " + getUserId() + ") logged in.");
+        System.out.println("Student " + getFullName() + " (ID: " + getUserId() + ") logged in.");
     }
 
     @Override
     public void logout() {
-        System.out.println("Student " + getName() + " (ID: " + getUserId() + ") logged out.");
+        System.out.println("Student " + getFullName() + " (ID: " + getUserId() + ") logged out.");
     }
 
     public void submitRequest(MaintenanceRequest request) {
@@ -38,7 +46,7 @@ public class Student extends User {
             requests[count] = request;
             count++;
             System.out.println("Request " + request.getRequestId()
-                    + " submitted by " + getName() + ".");
+                    + " submitted by " + getFullName() + ".");
         } else {
             System.out.println("Cannot submit request. Request list is full.");
         }
@@ -46,11 +54,11 @@ public class Student extends User {
 
     public void viewRequests() {
         if (count == 0) {
-            System.out.println("No requests submitted by " + getName() + ".");
+            System.out.println("No requests submitted by " + getFullName() + ".");
             return;
         }
 
-        System.out.println("Requests submitted by " + getName() + ":");
+        System.out.println("Requests submitted by " + getFullName() + ":");
         for (int i = 0; i < count; i++) {
             requests[i].displayDetails();
             System.out.println();
@@ -59,6 +67,10 @@ public class Student extends User {
 
     public String getRoomNumber() {
         return room.getRoomNumber();
+    }
+
+    public String getPlaceName() {
+        return room.getPlaceName();
     }
 
     public Room getRoom() {
@@ -78,5 +90,17 @@ public class Student extends User {
             return null;
         }
         return requests[index];
+    }
+
+    public void loadRequests(MaintenanceRequest[] loadedRequests) {
+        count = 0;
+        if (loadedRequests == null) {
+            return;
+        }
+        for (MaintenanceRequest request : loadedRequests) {
+            if (request != null && count < requests.length) {
+                requests[count++] = request;
+            }
+        }
     }
 }

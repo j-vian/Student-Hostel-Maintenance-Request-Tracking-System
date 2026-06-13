@@ -11,25 +11,28 @@ package studenthostelmaintenancerequest.trackingsystem;
  */
 public class Room {
 
+    private int roomId;
     private String roomNumber;
-    private String block;
+    private String placeName;
     private MaintenanceRequest[] linkedRequests;
     private int requestCount;
 
-    public Room(String roomNumber, String block) {
+    public Room(String roomNumber, String placeName) {
+        this(0, roomNumber, placeName);
+    }
+
+    public Room(int roomId, String roomNumber, String placeName) {
+        this.roomId = roomId;
         this.roomNumber = roomNumber;
-        this.block = block;
+        this.placeName = placeName;
         this.linkedRequests = new MaintenanceRequest[100];
         this.requestCount = 0;
     }
 
     public String getRoomDetails() {
-        return "Room Number: " + roomNumber + ", Block: " + block;
+        return "Room Number: " + roomNumber + ", Place: " + placeName;
     }
 
-    /**
-     * Aggregation: a room references requests without owning their lifecycle.
-     */
     public void linkMaintenanceRequest(MaintenanceRequest request) {
         if (requestCount < linkedRequests.length) {
             linkedRequests[requestCount] = request;
@@ -50,6 +53,10 @@ public class Room {
         }
     }
 
+    public int getRoomId() {
+        return roomId;
+    }
+
     public String getRoomNumber() {
         return roomNumber;
     }
@@ -58,12 +65,23 @@ public class Room {
         this.roomNumber = roomNumber;
     }
 
-    public String getBlock() {
-        return block;
+    public String getPlaceName() {
+        return placeName;
     }
 
-    public void setBlock(String block) {
-        this.block = block;
+    public void setPlaceName(String placeName) {
+        this.placeName = placeName;
+    }
+
+    /**
+     * Backward-compatible alias for older code that used block.
+     */
+    public String getBlock() {
+        return placeName;
+    }
+
+    public void setBlock(String placeName) {
+        this.placeName = placeName;
     }
 
     public int getRequestCount() {
