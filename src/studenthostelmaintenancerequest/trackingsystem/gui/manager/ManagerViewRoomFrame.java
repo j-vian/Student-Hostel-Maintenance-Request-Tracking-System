@@ -56,6 +56,10 @@ public class ManagerViewRoomFrame extends javax.swing.JFrame {
         txtSearch.addActionListener(e -> performSearch());
 
         UIHelper.showManagerFrame(this);
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            pnlMain.revalidate();
+            pnlMain.repaint();
+        });
     }
 
     private void performSearch() {

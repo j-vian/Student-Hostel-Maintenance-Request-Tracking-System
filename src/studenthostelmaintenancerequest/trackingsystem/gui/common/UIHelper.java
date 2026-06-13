@@ -1596,10 +1596,15 @@ public final class UIHelper {
         toolbar.setLayout(new BorderLayout());
         toolbar.setOpaque(false);
         toolbar.add(searchField, BorderLayout.CENTER);
+
+        Dimension size = new Dimension(Integer.MAX_VALUE, MANAGER_SEARCH_HEIGHT);
+        toolbar.setPreferredSize(new Dimension(0, MANAGER_SEARCH_HEIGHT));
+        toolbar.setMinimumSize(new Dimension(0, MANAGER_SEARCH_HEIGHT));
+        toolbar.setMaximumSize(size);
     }
 
     public static JPanel createManagerViewRoomHint() {
-        JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        JPanel row = new JPanel(new BorderLayout(8, 0));
         row.setOpaque(false);
         row.setAlignmentX(Component.LEFT_ALIGNMENT);
 
@@ -1624,8 +1629,8 @@ public final class UIHelper {
         text.setFont(AppFonts.body());
         text.setForeground(AppColors.MUTED);
 
-        row.add(icon);
-        row.add(text);
+        row.add(icon, BorderLayout.WEST);
+        row.add(text, BorderLayout.CENTER);
         return row;
     }
 
@@ -1633,18 +1638,39 @@ public final class UIHelper {
             JPanel pnlMain, JPanel toolbar, JPanel hint, ManagerRoomInformationPanel roomCard) {
 
         pnlMain.removeAll();
-        pnlMain.setLayout(new javax.swing.BoxLayout(pnlMain, javax.swing.BoxLayout.Y_AXIS));
+        pnlMain.setLayout(new BorderLayout());
+        pnlMain.setOpaque(false);
+        pnlMain.setBorder(new EmptyBorder(28, 32, 32, 32));
 
-        toolbar.setAlignmentX(Component.LEFT_ALIGNMENT);
-        hint.setAlignmentX(Component.LEFT_ALIGNMENT);
-        roomCard.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JPanel searchSection = new JPanel();
+        searchSection.setLayout(new javax.swing.BoxLayout(searchSection, javax.swing.BoxLayout.Y_AXIS));
+        searchSection.setOpaque(false);
 
-        pnlMain.add(toolbar);
-        pnlMain.add(javax.swing.Box.createVerticalStrut(10));
-        pnlMain.add(hint);
-        pnlMain.add(javax.swing.Box.createVerticalStrut(24));
-        pnlMain.add(roomCard);
-        pnlMain.add(javax.swing.Box.createVerticalGlue());
+        constrainManagerViewRoomWidth(toolbar, MANAGER_SEARCH_HEIGHT);
+        constrainManagerViewRoomWidth(hint);
+
+        searchSection.add(toolbar);
+        searchSection.add(javax.swing.Box.createVerticalStrut(10));
+        searchSection.add(hint);
+
+        JPanel resultsSection = new JPanel(new BorderLayout());
+        resultsSection.setOpaque(false);
+        resultsSection.setBorder(new EmptyBorder(24, 0, 0, 0));
+        resultsSection.add(roomCard, BorderLayout.NORTH);
+
+        pnlMain.add(searchSection, BorderLayout.NORTH);
+        pnlMain.add(resultsSection, BorderLayout.CENTER);
+    }
+
+    private static void constrainManagerViewRoomWidth(JComponent component, int height) {
+        Dimension size = new Dimension(Integer.MAX_VALUE, height);
+        component.setAlignmentX(Component.LEFT_ALIGNMENT);
+        component.setMaximumSize(size);
+    }
+
+    private static void constrainManagerViewRoomWidth(JComponent component) {
+        component.setAlignmentX(Component.LEFT_ALIGNMENT);
+        component.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
     }
 
     public static final class ManagerRoomDetails {

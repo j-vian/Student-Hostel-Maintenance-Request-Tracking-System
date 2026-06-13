@@ -23,12 +23,15 @@ public class ManagerRoomInformationPanel extends JPanel {
     private final JLabel lblStudentName;
     private final JLabel lblRequestType;
 
+    private static final int CARD_HEIGHT = 260;
+
     public ManagerRoomInformationPanel() {
         setLayout(new BorderLayout());
         setOpaque(false);
         setBorder(BorderFactory.createLineBorder(AppColors.GRID_LINE, 1));
         setAlignmentX(Component.LEFT_ALIGNMENT);
-        setMaximumSize(new Dimension(Integer.MAX_VALUE, 260));
+        setMaximumSize(new Dimension(Integer.MAX_VALUE, 0));
+        setPreferredSize(new Dimension(0, 0));
         setVisible(false);
 
         JPanel header = new JPanel(new BorderLayout(12, 0));
@@ -83,11 +86,15 @@ public class ManagerRoomInformationPanel extends JPanel {
         lblBlock.setText(block);
         lblStudentName.setText(studentName);
         lblRequestType.setText(requestType);
+        setPreferredSize(null);
+        setMaximumSize(new Dimension(Integer.MAX_VALUE, CARD_HEIGHT));
         setVisible(true);
     }
 
     public void clearDetails() {
         setVisible(false);
+        setPreferredSize(new Dimension(0, 0));
+        setMaximumSize(new Dimension(Integer.MAX_VALUE, 0));
     }
 
     private static JLabel createInfoIcon() {
