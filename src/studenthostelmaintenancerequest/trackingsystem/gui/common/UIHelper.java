@@ -1738,7 +1738,7 @@ public final class UIHelper {
         toolbar.setMaximumSize(size);
     }
 
-    public static final int VIEW_HISTORY_PAGE_SIZE = 3;
+    public static final int VIEW_HISTORY_PAGE_SIZE = 7;
     public static final int VIEW_HISTORY_COL_ASSIGNED_STAFF = 3;
     public static final int VIEW_HISTORY_COL_DESCRIPTION = 4;
     public static final int VIEW_HISTORY_COL_PRIORITY = 5;
@@ -1751,7 +1751,7 @@ public final class UIHelper {
     }
 
     private static Object[][] buildViewHistorySampleData() {
-        Object[][] rows = new Object[12][7];
+        Object[][] rows = new Object[21][7];
         rows[0] = new Object[]{"REQ001", "Electrical", "Alex Johnson", "John Doe", "8 June 2026", "High", "IN PROGRESS"};
         rows[1] = new Object[]{"REQ001", "Plumbing", "Alex Johnson", "John Doe", "8 June 2026", "Medium", "SUBMITTED"};
         rows[2] = new Object[]{"REQ001", "Furniture", "Alex Johnson", "John Doe", "8 June 2026", "Low", "COMPLETED"};
@@ -1759,7 +1759,8 @@ public final class UIHelper {
         String[] types = {"Electrical", "Plumbing", "Furniture"};
         String[] students = {"Alex Johnson", "Maria Chen", "Sam Patel"};
         String[] staff = {"John Doe", "Jane Smith"};
-        String[] dates = {"8 June 2026", "9 June 2026", "10 June 2026", "11 June 2026"};
+        String[] dates = {"8 June 2026", "9 June 2026", "10 June 2026", "11 June 2026",
+            "12 June 2026", "13 June 2026", "14 June 2026"};
         String[] priorities = {"High", "Medium", "Low"};
         String[] statuses = {"IN PROGRESS", "SUBMITTED", "COMPLETED"};
 
