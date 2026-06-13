@@ -111,10 +111,7 @@ public class ManagerAssignStaffFrame extends javax.swing.JFrame {
             Object[][] rows = ManagerService.getAssignStaffRows(requestIdSearch);
             requestTableModel.replaceRows(rows);
             refreshPaginationFooter();
-            javax.swing.SwingUtilities.invokeLater(() -> {
-                UIHelper.sizeManagerAssignStaffTable(tblRequests, scrTable);
-                pnlTableSection.revalidate();
-            });
+            resizeTableSection();
         } catch (DatabaseException ex) {
             UIHelper.showDatabaseError(this, ex);
         }
@@ -131,6 +128,14 @@ public class ManagerAssignStaffFrame extends javax.swing.JFrame {
         }
         refreshPaginationFooter();
         tblRequests.repaint();
+        resizeTableSection();
+    }
+
+    private void resizeTableSection() {
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            UIHelper.sizeManagerAssignStaffTable(tblRequests, scrTable);
+            pnlTableSection.revalidate();
+        });
     }
 
     private void refreshPaginationFooter() {

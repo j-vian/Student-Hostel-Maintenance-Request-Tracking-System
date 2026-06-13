@@ -1224,12 +1224,6 @@ public final class UIHelper {
         public void setValueAt(Object value, int row, int column) {
             int dataIndex = toDataIndex(row);
             allRows.get(dataIndex)[column] = value;
-            if (column == MANAGE_REQUEST_COL_STATUS && !isActiveRequestStatus(value)) {
-                allRows.remove(dataIndex);
-                clampCurrentPage();
-                fireTableDataChanged();
-                return;
-            }
             fireTableCellUpdated(row, column);
             if (column == MANAGE_REQUEST_COL_STATUS) {
                 fireTableCellUpdated(row, MANAGE_REQUEST_COL_ASSIGNED_STAFF);
@@ -1322,8 +1316,12 @@ public final class UIHelper {
     }
 
     public static void sizeManagerManageRequestTable(JTable table, JScrollPane scroll) {
+        sizeManagerPaginatedTable(table, scroll);
+    }
+
+    private static void sizeManagerPaginatedTable(JTable table, JScrollPane scroll) {
         int headerHeight = table.getTableHeader().getPreferredSize().height;
-        int bodyHeight = table.getRowHeight() * MANAGE_REQUEST_PAGE_SIZE;
+        int bodyHeight = table.getRowHeight() * Math.max(table.getRowCount(), 0);
         int height = headerHeight + bodyHeight + 2;
         Dimension size = new Dimension(scroll.getPreferredSize().width, height);
         scroll.setPreferredSize(size);
@@ -1984,13 +1982,7 @@ public final class UIHelper {
     }
 
     public static void sizeManagerViewHistoryTable(JTable table, JScrollPane scroll) {
-        int headerHeight = table.getTableHeader().getPreferredSize().height;
-        int bodyHeight = table.getRowHeight() * VIEW_HISTORY_PAGE_SIZE;
-        int height = headerHeight + bodyHeight + 2;
-        Dimension size = new Dimension(scroll.getPreferredSize().width, height);
-        scroll.setPreferredSize(size);
-        scroll.setMinimumSize(size);
-        scroll.setMaximumSize(new Dimension(Integer.MAX_VALUE, height));
+        sizeManagerPaginatedTable(table, scroll);
     }
 
     public static void updateManagerPaginationFooter(

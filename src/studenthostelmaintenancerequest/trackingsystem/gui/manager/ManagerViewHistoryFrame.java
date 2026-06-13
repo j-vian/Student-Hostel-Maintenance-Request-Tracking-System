@@ -86,10 +86,7 @@ public class ManagerViewHistoryFrame extends javax.swing.JFrame {
             Object[][] rows = ManagerService.getHistoryRows(requestIdSearch);
             requestTableModel.replaceRows(rows);
             refreshPaginationFooter();
-            javax.swing.SwingUtilities.invokeLater(() -> {
-                UIHelper.sizeManagerViewHistoryTable(tblRequests, scrTable);
-                pnlTableSection.revalidate();
-            });
+            resizeTableSection();
         } catch (DatabaseException ex) {
             UIHelper.showDatabaseError(this, ex);
         }
@@ -103,6 +100,14 @@ public class ManagerViewHistoryFrame extends javax.swing.JFrame {
         }
         refreshPaginationFooter();
         tblRequests.repaint();
+        resizeTableSection();
+    }
+
+    private void resizeTableSection() {
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            UIHelper.sizeManagerViewHistoryTable(tblRequests, scrTable);
+            pnlTableSection.revalidate();
+        });
     }
 
     private void refreshPaginationFooter() {
