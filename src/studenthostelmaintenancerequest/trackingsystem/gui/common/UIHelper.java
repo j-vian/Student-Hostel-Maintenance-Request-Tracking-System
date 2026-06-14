@@ -1996,6 +1996,8 @@ public final class UIHelper {
 
     public static final int STUDENT_SIDEBAR_WIDTH = 285;
     public static final int STUDENT_TABLE_PAGE_SIZE = VIEW_HISTORY_PAGE_SIZE;
+    public static final int STUDENT_PROFILE_TABLE_WIDTH = 380;
+    public static final int STUDENT_PROFILE_LABEL_COL_WIDTH = 140;
     public static final int STUDENT_ACTIVE_COL_STATUS = 3;
     public static final int STUDENT_HISTORY_COL_PRIORITY = 3;
     public static final int STUDENT_HISTORY_COL_STATUS = 4;
@@ -2109,6 +2111,18 @@ public final class UIHelper {
         fixSize((JComponent) field, width, FIELD_HEIGHT);
     }
 
+    /** Form row field that grows horizontally; height matches other form inputs. */
+    public static void styleStudentFormFieldFlexible(javax.swing.JTextField field) {
+        field.setFont(AppFonts.body());
+        field.setBackground(AppColors.INPUT_FILL);
+        field.setForeground(AppColors.LABEL);
+        field.setBorder(inputBorder());
+        Dimension heightOnly = new Dimension(0, FIELD_HEIGHT);
+        field.setPreferredSize(heightOnly);
+        field.setMinimumSize(heightOnly);
+        field.setMaximumSize(new Dimension(Integer.MAX_VALUE, FIELD_HEIGHT));
+    }
+
     @SuppressWarnings("unchecked")
     public static void styleStudentFormCombo(JComboBox<?> combo, int width) {
         combo.setFont(AppFonts.body());
@@ -2173,7 +2187,7 @@ public final class UIHelper {
     public static void styleStudentProfileTable(JLabel sectionTitle, JTable table, JScrollPane scroll) {
         sectionTitle.setFont(AppFonts.tableSection());
         sectionTitle.setForeground(AppColors.LABEL);
-        sectionTitle.setHorizontalAlignment(JLabel.CENTER);
+        sectionTitle.setHorizontalAlignment(JLabel.LEFT);
         sectionTitle.setOpaque(true);
         sectionTitle.setBackground(AppColors.STAT_TOTAL_HEADER);
         sectionTitle.setBorder(new CompoundBorder(
@@ -2188,7 +2202,10 @@ public final class UIHelper {
         table.setFillsViewportHeight(false);
         table.setFocusable(false);
         table.setRowSelectionAllowed(false);
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+        table.getColumnModel().getColumn(0).setPreferredWidth(STUDENT_PROFILE_LABEL_COL_WIDTH);
+        table.getColumnModel().getColumn(0).setMinWidth(STUDENT_PROFILE_LABEL_COL_WIDTH);
+        table.getColumnModel().getColumn(0).setMaxWidth(STUDENT_PROFILE_LABEL_COL_WIDTH);
 
         table.getColumnModel().getColumn(0).setCellRenderer(createStudentProfileCellRenderer(true));
         table.getColumnModel().getColumn(1).setCellRenderer(createStudentProfileCellRenderer(false));
@@ -2218,18 +2235,18 @@ public final class UIHelper {
 
     private static Border createStudentTableCellBorder(int row, int column, int columnCount, int rowCount) {
         int bottom = row < rowCount - 1 ? 1 : 0;
-        int right = column < columnCount - 1 ? 1 : 0;
         return BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(0, 0, bottom, right, AppColors.GRID_LINE),
+                BorderFactory.createMatteBorder(0, 0, bottom, 1, AppColors.GRID_LINE),
                 new EmptyBorder(0, 12, 0, 12));
     }
 
     public static void sizeStudentProfileTable(JTable table, JScrollPane scroll) {
         int bodyHeight = table.getRowHeight() * Math.max(table.getRowCount(), 0);
-        Dimension size = new Dimension(scroll.getPreferredSize().width, bodyHeight + 2);
+        table.setPreferredScrollableViewportSize(new Dimension(STUDENT_PROFILE_TABLE_WIDTH, bodyHeight));
+        Dimension size = new Dimension(STUDENT_PROFILE_TABLE_WIDTH, bodyHeight + 2);
         scroll.setPreferredSize(size);
         scroll.setMinimumSize(size);
-        scroll.setMaximumSize(new Dimension(Integer.MAX_VALUE, bodyHeight + 2));
+        scroll.setMaximumSize(new Dimension(STUDENT_PROFILE_TABLE_WIDTH, bodyHeight + 2));
     }
 
     private static DefaultTableCellRenderer createStudentGridCellRenderer() {
@@ -2251,19 +2268,28 @@ public final class UIHelper {
     }
 
     private static JPanel wrapStudentTableBadge(JComponent badge, int row, int column, int columnCount, int rowCount) {
-        JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
+        JPanel wrapper = new JPanel(new BorderLayout());
         wrapper.setBackground(AppColors.SURFACE);
         wrapper.setOpaque(true);
         wrapper.setBorder(createStudentTableCellBorder(row, column, columnCount, rowCount));
-        wrapper.add(badge);
+
+        JPanel center = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
+        center.setOpaque(false);
+        center.add(badge);
+        wrapper.add(center, BorderLayout.CENTER);
         return wrapper;
     }
 
     public static DefaultTableModel createStudentProfileTableModel(Object[][] rows) {
-        return new DefaultTableModel(rows, new String[]{"Field", "Value"}) {
+        return new DefaultTableModel(rows, new String[]{"", ""}) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
+            }
+
+            @Override
+            public String getColumnName(int column) {
+                return "";
             }
         };
     }

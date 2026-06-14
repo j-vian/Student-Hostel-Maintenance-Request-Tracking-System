@@ -284,8 +284,8 @@ public class stdDarshboard extends javax.swing.JFrame {
         pnlProfileSection.setOpaque(false);
         pnlProfileSectionLayout.setHorizontalGroup(
             pnlProfileSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lblProfileSection, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(scrProfile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(lblProfileSection, javax.swing.GroupLayout.PREFERRED_SIZE, UIHelper.STUDENT_PROFILE_TABLE_WIDTH, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(scrProfile, javax.swing.GroupLayout.PREFERRED_SIZE, UIHelper.STUDENT_PROFILE_TABLE_WIDTH, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         pnlProfileSectionLayout.setVerticalGroup(
             pnlProfileSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -340,7 +340,7 @@ public class stdDarshboard extends javax.swing.JFrame {
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addGap(32, 32, 32)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlProfileSection, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnlProfileSection, javax.swing.GroupLayout.PREFERRED_SIZE, UIHelper.STUDENT_PROFILE_TABLE_WIDTH, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(pnlActiveSection, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(32, 32, 32))
         );

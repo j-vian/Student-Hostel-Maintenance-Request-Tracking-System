@@ -13,7 +13,6 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
 public class SubmitMRequest extends javax.swing.JFrame {
 
     private static final int FORM_FIELD_WIDTH = 544;
-    private static final int TOP_FIELD_WIDTH = 165;
 
     public SubmitMRequest() {
         initComponents();
@@ -38,11 +37,9 @@ public class SubmitMRequest extends javax.swing.JFrame {
         txtDate.setEditable(false);
         txtRoom.setText("402-B");
         txtRoom.setEditable(false);
-        txtPlace.setText("DHUAM");
-        txtPlace.setEditable(false);
-        UIHelper.styleStudentFormField(txtDate, TOP_FIELD_WIDTH);
-        UIHelper.styleStudentFormField(txtRoom, TOP_FIELD_WIDTH);
-        UIHelper.styleStudentFormField(txtPlace, TOP_FIELD_WIDTH);
+        UIHelper.styleStudentFormFieldFlexible(txtDate);
+        UIHelper.styleStudentFormFieldFlexible(txtRoom);
+        UIHelper.styleStudentFormFieldFlexible(txtPlace);
 
         cmbRequestType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{
             "Select the type of issue", "Electrical", "Plumbing", "Furniture"
@@ -69,6 +66,7 @@ public class SubmitMRequest extends javax.swing.JFrame {
     private void resetForm() {
         cmbRequestType.setSelectedIndex(0);
         txtDescription.setText("");
+        txtPlace.setText("");
         cmbPriority.setSelectedIndex(0);
     }
 
@@ -79,6 +77,10 @@ public class SubmitMRequest extends javax.swing.JFrame {
         }
         if (txtDescription.getText().trim().isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(this, "Please enter an Issue Description.", "Validation", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (txtPlace.getText().trim().isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Please enter a Place Name.", "Validation", javax.swing.JOptionPane.WARNING_MESSAGE);
             return;
         }
         if (cmbPriority.getSelectedIndex() == 0) {
@@ -299,18 +301,19 @@ public class SubmitMRequest extends javax.swing.JFrame {
                     .addComponent(lblDescription)
                     .addComponent(lblPriority)
                     .addComponent(lblPriorityHint)
-                    .addGroup(pnlFormCardLayout.createSequentialGroup()
-                        .addGroup(pnlFormCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlFormCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlFormCardLayout.createSequentialGroup()
                             .addComponent(lblDate)
-                            .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, TOP_FIELD_WIDTH, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(24, 24, 24)
-                        .addGroup(pnlFormCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGap(24, 24, 24)
                             .addComponent(lblRoom)
-                            .addComponent(txtRoom, javax.swing.GroupLayout.PREFERRED_SIZE, TOP_FIELD_WIDTH, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(24, 24, 24)
-                        .addGroup(pnlFormCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblPlace)
-                            .addComponent(txtPlace, javax.swing.GroupLayout.PREFERRED_SIZE, TOP_FIELD_WIDTH, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGap(24, 24, 24)
+                            .addComponent(lblPlace))
+                        .addGroup(pnlFormCardLayout.createSequentialGroup()
+                            .addComponent(txtDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGap(24, 24, 24)
+                            .addComponent(txtRoom, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGap(24, 24, 24)
+                            .addComponent(txtPlace, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlFormCardLayout.createSequentialGroup()
                         .addComponent(btnReset)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
