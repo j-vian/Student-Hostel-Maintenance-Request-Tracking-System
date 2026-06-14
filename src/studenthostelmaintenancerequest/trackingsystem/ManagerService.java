@@ -1,5 +1,6 @@
 package studenthostelmaintenancerequest.trackingsystem;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -24,31 +25,110 @@ public final class ManagerService {
     }
 
     public static Object[][] getDashboardRecentRows(int limit) throws DatabaseException {
-        return DatabaseHandler.getInstance().fetchOverviewRequestRows(limit);
+        return sortRowsByRecency(
+                DatabaseHandler.getInstance().fetchOverviewRequestRows(limit), 0, 4);
+    }
+
+    public static Object[][] sortRowsByRecency(Object[][] rows, int requestIdColumn, int dateRaisedColumn) {
+        if (rows == null || rows.length == 0) {
+            return rows;
+        }
+        java.util.List<Object[]> sorted = new java.util.ArrayList<>();
+        for (Object[] row : rows) {
+            sorted.add(row.clone());
+        }
+        sortRowsByRecency(sorted, requestIdColumn, dateRaisedColumn);
+        return sorted.toArray(new Object[0][]);
+    }
+
+    public static void sortRowsByRecency(java.util.List<Object[]> rows, int requestIdColumn, int dateRaisedColumn) {
+        if (rows == null || rows.size() < 2) {
+            return;
+        }
+        rows.sort((left, right) -> {
+            int byDate = compareDateValues(
+                    valueAt(left, dateRaisedColumn),
+                    valueAt(right, dateRaisedColumn));
+            if (byDate != 0) {
+                return byDate;
+            }
+            return compareRequestIds(
+                    valueAt(left, requestIdColumn),
+                    valueAt(right, requestIdColumn));
+        });
+    }
+
+    private static String valueAt(Object[] row, int column) {
+        if (row == null || column < 0 || column >= row.length || row[column] == null) {
+            return "";
+        }
+        return String.valueOf(row[column]);
+    }
+
+    private static int compareDateValues(String left, String right) {
+        LocalDate leftDate = parseDisplayDate(left);
+        LocalDate rightDate = parseDisplayDate(right);
+        return rightDate.compareTo(leftDate);
+    }
+
+    private static LocalDate parseDisplayDate(String value) {
+        if (value == null || value.isBlank()) {
+            return LocalDate.MIN;
+        }
+        try {
+            return LocalDate.parse(value.trim(), DATE_FORMAT);
+        } catch (java.time.format.DateTimeParseException ex) {
+            return LocalDate.MIN;
+        }
+    }
+
+    private static int compareRequestIds(String left, String right) {
+        return Integer.compare(parseRequestNumber(right), parseRequestNumber(left));
+    }
+
+    private static int parseRequestNumber(String requestId) {
+        if (requestId == null || requestId.isBlank()) {
+            return 0;
+        }
+        String digits = requestId.replaceAll("\\D+", "");
+        if (digits.isEmpty()) {
+            return 0;
+        }
+        try {
+            return Integer.parseInt(digits);
+        } catch (NumberFormatException ex) {
+            return 0;
+        }
     }
 
     public static Object[][] getManageActiveRows() throws DatabaseException {
-        return DatabaseHandler.getInstance().fetchManageActiveRows(null);
+        return sortRowsByRecency(
+                DatabaseHandler.getInstance().fetchManageActiveRows(null), 0, 4);
     }
 
     public static Object[][] getManageActiveRows(String requestIdSearch) throws DatabaseException {
-        return DatabaseHandler.getInstance().fetchManageActiveRows(requestIdSearch);
+        return sortRowsByRecency(
+                DatabaseHandler.getInstance().fetchManageActiveRows(requestIdSearch), 0, 4);
     }
 
     public static Object[][] getAssignStaffRows() throws DatabaseException {
-        return DatabaseHandler.getInstance().fetchAssignStaffRows(null);
+        return sortRowsByRecency(
+                DatabaseHandler.getInstance().fetchAssignStaffRows(null), 0, 3);
     }
 
     public static Object[][] getAssignStaffRows(String requestIdSearch) throws DatabaseException {
-        return DatabaseHandler.getInstance().fetchAssignStaffRows(requestIdSearch);
+        return sortRowsByRecency(
+                DatabaseHandler.getInstance().fetchAssignStaffRows(requestIdSearch), 0, 3);
     }
 
     public static Object[][] getHistoryRows() throws DatabaseException {
-        return DatabaseHandler.getInstance().fetchHistoryRows(null);
+        return sortRowsByRecency(
+                DatabaseHandler.getInstance().fetchHistoryRows(null), 0, 5);
     }
 
     public static Object[][] getHistoryRows(String requestIdSearch) throws DatabaseException {
-        return DatabaseHandler.getInstance().fetchHistoryRows(requestIdSearch);
+        return sortRowsByRecency(
+                DatabaseHandler.getInstance().fetchHistoryRows(requestIdSearch), 0, 5);
     }
 
     public static ManagerRoomDetails lookupRoomDetails(String requestId) throws DatabaseException {

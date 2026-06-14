@@ -64,6 +64,7 @@ public final class StudentService {
                 rows.add(toActiveRow(request));
             }
         }
+        ManagerService.sortRowsByRecency(rows, 0, 2);
         return rows.toArray(new Object[0][]);
     }
 
@@ -76,6 +77,7 @@ public final class StudentService {
                 rows.add(toHistoryRow(request));
             }
         }
+        ManagerService.sortRowsByRecency(rows, 0, 2);
         return rows.toArray(new Object[0][]);
     }
 

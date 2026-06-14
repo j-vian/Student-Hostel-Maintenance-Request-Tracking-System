@@ -66,6 +66,8 @@ public class ManagerViewHistoryFrame extends javax.swing.JFrame {
         tblRequests.setModel(requestTableModel);
         UIHelper.styleManagerTableSection(lblTableSection, tblRequests, scrTable);
         UIHelper.applyManagerViewHistoryTableRenderers(tblRequests);
+        UIHelper.installDescriptionRowClickHandler(
+                tblRequests, UIHelper.VIEW_HISTORY_COL_DESCRIPTION, 0, this);
 
         lblPagination = new javax.swing.JLabel();
         btnPagePrevious = new javax.swing.JButton("<");

@@ -22,9 +22,11 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -36,6 +38,7 @@ import javax.swing.text.View;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
+import studenthostelmaintenancerequest.trackingsystem.ManagerService;
 import studenthostelmaintenancerequest.trackingsystem.SessionManager;
 import studenthostelmaintenancerequest.trackingsystem.gui.auth.LoginFrame;
 import javax.swing.border.LineBorder;
@@ -62,8 +65,67 @@ public final class UIHelper {
     public static final int MANAGER_STAT_CARD_HEIGHT = 120;
     public static final int MANAGER_MAIN_PADDING = 32;
     public static final int MANAGER_SEARCH_HEIGHT = 36;
+    public static final int DESCRIPTION_PREVIEW_MAX_LENGTH = 40;
 
     private UIHelper() {
+    }
+
+    public static String truncateDescriptionForDisplay(String description) {
+        if (description == null) {
+            return "";
+        }
+        String value = description.trim();
+        if (value.length() <= DESCRIPTION_PREVIEW_MAX_LENGTH) {
+            return value;
+        }
+        return value.substring(0, DESCRIPTION_PREVIEW_MAX_LENGTH - 3).trim() + "...";
+    }
+
+    public static void showFullDescriptionDialog(java.awt.Component parent, String requestId, String description) {
+        if (description == null || description.isBlank()) {
+            return;
+        }
+        JTextArea area = new JTextArea(description.trim());
+        area.setEditable(false);
+        area.setLineWrap(true);
+        area.setWrapStyleWord(true);
+        area.setFont(AppFonts.body());
+        area.setBackground(AppColors.SURFACE);
+        area.setForeground(AppColors.LABEL);
+        area.setBorder(new EmptyBorder(8, 8, 8, 8));
+
+        JScrollPane scroll = new JScrollPane(area);
+        scroll.setPreferredSize(new Dimension(460, 180));
+        scroll.setBorder(new LineBorder(AppColors.BORDER, 1, true));
+
+        String title = requestId == null || requestId.isBlank()
+                ? "Issue Description"
+                : "Issue Description — " + requestId;
+        JOptionPane.showMessageDialog(parent, scroll, title, JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public static void installDescriptionRowClickHandler(
+            JTable table, int descriptionColumnIndex, int requestIdColumnIndex, java.awt.Component parent) {
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int viewRow = table.rowAtPoint(e.getPoint());
+                if (viewRow < 0) {
+                    return;
+                }
+                int modelRow = table.convertRowIndexToModel(viewRow);
+                Object description = table.getModel().getValueAt(modelRow, descriptionColumnIndex);
+                if (description == null || String.valueOf(description).isBlank()) {
+                    return;
+                }
+                Object requestId = table.getModel().getValueAt(modelRow, requestIdColumnIndex);
+                showFullDescriptionDialog(parent, String.valueOf(requestId), String.valueOf(description));
+            }
+        });
+    }
+
+    private static void sortRowsInPlace(java.util.List<Object[]> rows, int requestIdColumn, int dateRaisedColumn) {
+        ManagerService.sortRowsByRecency(rows, requestIdColumn, dateRaisedColumn);
     }
 
     public static Border inputBorder() {
@@ -868,16 +930,18 @@ public final class UIHelper {
     }
 
     private static final int MANAGER_TABLE_COL_ASSIGNED_STAFF = 3;
-    private static final int MANAGER_TABLE_COL_PRIORITY = 4;
-    private static final int MANAGER_TABLE_COL_STATUS = 5;
+    private static final int MANAGER_TABLE_COL_DATE_RAISED = 4;
+    private static final int MANAGER_TABLE_COL_PRIORITY = 5;
+    private static final int MANAGER_TABLE_COL_STATUS = 6;
 
     public static DefaultTableModel createManagerRequestTableModel() {
-        return createManagerRequestTableModel(new Object[0][6]);
+        return createManagerRequestTableModel(new Object[0][7]);
     }
 
     public static DefaultTableModel createManagerRequestTableModel(Object[][] data) {
         return new DefaultTableModel(data, new String[]{
-            "Request ID", "Request Type", "Student Name", "Assigned Staff", "Priority", "Status"}) {
+            "Request ID", "Request Type", "Student Name", "Assigned Staff",
+            "Date Raised", "Priority", "Status"}) {
 
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -897,9 +961,11 @@ public final class UIHelper {
         centerRenderer.setForeground(AppColors.LABEL);
         centerRenderer.setBackground(AppColors.SURFACE);
 
-        for (int column = 0; column < MANAGER_TABLE_COL_PRIORITY; column++) {
+        for (int column = 0; column < MANAGER_TABLE_COL_DATE_RAISED; column++) {
             table.getColumnModel().getColumn(column).setCellRenderer(centerRenderer);
         }
+
+        table.getColumnModel().getColumn(MANAGER_TABLE_COL_DATE_RAISED).setCellRenderer(centerRenderer);
 
         table.getColumnModel().getColumn(MANAGER_TABLE_COL_PRIORITY).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
             JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
@@ -1291,6 +1357,7 @@ public final class UIHelper {
                     allRows.add(row.clone());
                 }
             }
+            sortRowsInPlace(allRows, 0, MANAGE_REQUEST_COL_DATE_RAISED);
             currentPage = 0;
             fireTableDataChanged();
         }
@@ -1605,6 +1672,7 @@ public final class UIHelper {
                     allRows.add(row.clone());
                 }
             }
+            sortRowsInPlace(allRows, 0, ASSIGN_STAFF_COL_DATE_RAISED);
             currentPage = 0;
             fireTableDataChanged();
         }
@@ -1921,6 +1989,7 @@ public final class UIHelper {
             for (Object[] row : data) {
                 allRows.add(row.clone());
             }
+            sortRowsInPlace(allRows, 0, VIEW_HISTORY_COL_DATE_RAISED);
             currentPage = 0;
             fireTableDataChanged();
         }
@@ -1952,7 +2021,17 @@ public final class UIHelper {
             return wrapper;
         });
 
-        table.getColumnModel().getColumn(VIEW_HISTORY_COL_DESCRIPTION).setCellRenderer(centerRenderer);
+        table.getColumnModel().getColumn(VIEW_HISTORY_COL_DESCRIPTION).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
+            DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+            renderer.setHorizontalAlignment(JLabel.CENTER);
+            renderer.setFont(AppFonts.body());
+            renderer.setForeground(AppColors.LABEL);
+            renderer.setBackground(AppColors.SURFACE);
+            String fullText = value == null ? "" : String.valueOf(value);
+            renderer.setText(truncateDescriptionForDisplay(fullText));
+            renderer.setToolTipText(fullText.isBlank() ? null : "Click row to view full description");
+            return renderer;
+        });
         table.getColumnModel().getColumn(VIEW_HISTORY_COL_DATE_RAISED).setCellRenderer(centerRenderer);
 
         table.getColumnModel().getColumn(VIEW_HISTORY_COL_PRIORITY).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
@@ -2427,6 +2506,7 @@ public final class UIHelper {
                     allRows.add(row.clone());
                 }
             }
+            sortRowsInPlace(allRows, 0, 2);
             fireTableDataChanged();
         }
 
@@ -2518,6 +2598,7 @@ public final class UIHelper {
                     allRows.add(row.clone());
                 }
             }
+            sortRowsInPlace(allRows, 0, 2);
             fireTableDataChanged();
         }
 
@@ -2767,6 +2848,7 @@ public final class UIHelper {
                     allRows.add(row.clone());
                 }
             }
+            sortRowsInPlace(allRows, 0, 2);
             fireTableDataChanged();
         }
 
@@ -2946,6 +3028,7 @@ public final class UIHelper {
                     allRows.add(row.clone());
                 }
             }
+            sortRowsInPlace(allRows, 0, 2);
             currentPage = 0;
             fireTableDataChanged();
         }

@@ -413,7 +413,7 @@ public class DatabaseHandler implements DataAccess {
             """;
 
     private static final String RECENT_ACTIVITY_ORDER =
-            " ORDER BY COALESCE(rah.last_activity, mr.date_raised) DESC";
+            " ORDER BY COALESCE(rah.last_activity, mr.date_raised) DESC, mr.date_raised DESC, mr.request_id DESC";
 
     @Override
     public MaintenanceRequest[] fetchAllRequests() throws DatabaseException {
@@ -502,11 +502,11 @@ public class DatabaseHandler implements DataAccess {
                 + RECENT_ACTIVITY_ORDER
                 + " LIMIT ?";
         List<Object[]> rows = queryManagerRows(sql, limit, null);
-        Object[][] data = new Object[rows.size()][6];
+        Object[][] data = new Object[rows.size()][7];
         for (int i = 0; i < rows.size(); i++) {
             Object[] row = rows.get(i);
             data[i] = new Object[]{
-                row[0], row[1], row[2], row[3], row[7], row[4]
+                row[0], row[1], row[2], row[3], row[5], row[7], row[4]
             };
         }
         return data;
