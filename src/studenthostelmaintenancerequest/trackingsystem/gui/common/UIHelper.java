@@ -1996,7 +1996,6 @@ public final class UIHelper {
 
     public static final int STUDENT_SIDEBAR_WIDTH = 285;
     public static final int STUDENT_TABLE_PAGE_SIZE = VIEW_HISTORY_PAGE_SIZE;
-    public static final int STUDENT_PROFILE_TABLE_WIDTH = 380;
     public static final int STUDENT_PROFILE_LABEL_COL_WIDTH = 140;
     public static final int STUDENT_ACTIVE_COL_STATUS = 3;
     public static final int STUDENT_HISTORY_COL_PRIORITY = 3;
@@ -2234,19 +2233,48 @@ public final class UIHelper {
     }
 
     private static Border createStudentTableCellBorder(int row, int column, int columnCount, int rowCount) {
-        int bottom = row < rowCount - 1 ? 1 : 0;
         return BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(0, 0, bottom, 1, AppColors.GRID_LINE),
+                BorderFactory.createMatteBorder(0, 0, 1, 1, AppColors.GRID_LINE),
                 new EmptyBorder(0, 12, 0, 12));
     }
 
     public static void sizeStudentProfileTable(JTable table, JScrollPane scroll) {
         int bodyHeight = table.getRowHeight() * Math.max(table.getRowCount(), 0);
-        table.setPreferredScrollableViewportSize(new Dimension(STUDENT_PROFILE_TABLE_WIDTH, bodyHeight));
-        Dimension size = new Dimension(STUDENT_PROFILE_TABLE_WIDTH, bodyHeight + 2);
+        Dimension size = new Dimension(0, bodyHeight + 2);
         scroll.setPreferredSize(size);
         scroll.setMinimumSize(size);
-        scroll.setMaximumSize(new Dimension(STUDENT_PROFILE_TABLE_WIDTH, bodyHeight + 2));
+        scroll.setMaximumSize(new Dimension(Integer.MAX_VALUE, bodyHeight + 2));
+    }
+
+    private static void disableStudentTableGrid(JTable table) {
+        table.setShowGrid(false);
+        table.setShowVerticalLines(false);
+        table.setShowHorizontalLines(false);
+    }
+
+    private static final class StudentBadgeTableCellRenderer extends JPanel implements javax.swing.table.TableCellRenderer {
+
+        private final java.util.function.Function<String, JComponent> badgeFactory;
+        private final JPanel badgeHost;
+
+        private StudentBadgeTableCellRenderer(java.util.function.Function<String, JComponent> badgeFactory) {
+            super(new BorderLayout());
+            this.badgeFactory = badgeFactory;
+            this.badgeHost = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+            this.badgeHost.setOpaque(false);
+            add(this.badgeHost, BorderLayout.CENTER);
+            setOpaque(true);
+            setBackground(AppColors.SURFACE);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(
+                JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            badgeHost.removeAll();
+            badgeHost.add(badgeFactory.apply(String.valueOf(value)));
+            setBorder(createStudentTableCellBorder(row, column, table.getColumnCount(), table.getRowCount()));
+            return this;
+        }
     }
 
     private static DefaultTableCellRenderer createStudentGridCellRenderer() {
@@ -2267,19 +2295,6 @@ public final class UIHelper {
         };
     }
 
-    private static JPanel wrapStudentTableBadge(JComponent badge, int row, int column, int columnCount, int rowCount) {
-        JPanel wrapper = new JPanel(new BorderLayout());
-        wrapper.setBackground(AppColors.SURFACE);
-        wrapper.setOpaque(true);
-        wrapper.setBorder(createStudentTableCellBorder(row, column, columnCount, rowCount));
-
-        JPanel center = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
-        center.setOpaque(false);
-        center.add(badge);
-        wrapper.add(center, BorderLayout.CENTER);
-        return wrapper;
-    }
-
     public static DefaultTableModel createStudentProfileTableModel(Object[][] rows) {
         return new DefaultTableModel(rows, new String[]{"", ""}) {
             @Override
@@ -2294,6 +2309,33 @@ public final class UIHelper {
         };
     }
 
+    public static void applyStudentActiveRequestTableRenderers(JTable table) {
+        disableStudentTableGrid(table);
+        DefaultTableCellRenderer centerRenderer = createStudentGridCellRenderer();
+
+        for (int column = 0; column < STUDENT_ACTIVE_COL_STATUS; column++) {
+            table.getColumnModel().getColumn(column).setCellRenderer(centerRenderer);
+        }
+
+        table.getColumnModel().getColumn(STUDENT_ACTIVE_COL_STATUS).setCellRenderer(
+                new StudentBadgeTableCellRenderer(StatusBadgeLabel::new));
+    }
+
+    public static void applyStudentHistoryTableRenderers(JTable table) {
+        disableStudentTableGrid(table);
+        DefaultTableCellRenderer centerRenderer = createStudentGridCellRenderer();
+
+        for (int column = 0; column < STUDENT_HISTORY_COL_PRIORITY; column++) {
+            table.getColumnModel().getColumn(column).setCellRenderer(centerRenderer);
+        }
+
+        table.getColumnModel().getColumn(STUDENT_HISTORY_COL_PRIORITY).setCellRenderer(
+                new StudentBadgeTableCellRenderer(PriorityBadgeLabel::new));
+
+        table.getColumnModel().getColumn(STUDENT_HISTORY_COL_STATUS).setCellRenderer(
+                new StudentBadgeTableCellRenderer(StatusBadgeLabel::new));
+    }
+
     public static StudentActiveRequestTableModel createStudentActiveRequestTableModel() {
         return createStudentActiveRequestTableModel(new Object[0][4]);
     }
@@ -2301,37 +2343,6 @@ public final class UIHelper {
     public static StudentActiveRequestTableModel createStudentActiveRequestTableModel(Object[][] data) {
         return new StudentActiveRequestTableModel(data, new String[]{
             "Request ID", "Request Type", "Date Raised", "Status"});
-    }
-
-    public static void applyStudentActiveRequestTableRenderers(JTable table) {
-        DefaultTableCellRenderer centerRenderer = createStudentGridCellRenderer();
-
-        for (int column = 0; column < STUDENT_ACTIVE_COL_STATUS; column++) {
-            table.getColumnModel().getColumn(column).setCellRenderer(centerRenderer);
-        }
-
-        table.getColumnModel().getColumn(STUDENT_ACTIVE_COL_STATUS).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) ->
-                wrapStudentTableBadge(
-                        new StatusBadgeLabel(String.valueOf(value)),
-                        row, column, tbl.getColumnCount(), tbl.getRowCount()));
-    }
-
-    public static void applyStudentHistoryTableRenderers(JTable table) {
-        DefaultTableCellRenderer centerRenderer = createStudentGridCellRenderer();
-
-        for (int column = 0; column < STUDENT_HISTORY_COL_PRIORITY; column++) {
-            table.getColumnModel().getColumn(column).setCellRenderer(centerRenderer);
-        }
-
-        table.getColumnModel().getColumn(STUDENT_HISTORY_COL_PRIORITY).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) ->
-                wrapStudentTableBadge(
-                        new PriorityBadgeLabel(String.valueOf(value)),
-                        row, column, tbl.getColumnCount(), tbl.getRowCount()));
-
-        table.getColumnModel().getColumn(STUDENT_HISTORY_COL_STATUS).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) ->
-                wrapStudentTableBadge(
-                        new StatusBadgeLabel(String.valueOf(value)),
-                        row, column, tbl.getColumnCount(), tbl.getRowCount()));
     }
 
     public static StudentHistoryTableModel createStudentHistoryTableModel() {
