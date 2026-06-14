@@ -2,6 +2,7 @@ package studenthostelmaintenancerequest.trackingsystem.gui.staff;
 
 import studenthostelmaintenancerequest.trackingsystem.DatabaseException;
 import studenthostelmaintenancerequest.trackingsystem.ManagerRoomDetails;
+import studenthostelmaintenancerequest.trackingsystem.ManagerService;
 import studenthostelmaintenancerequest.trackingsystem.Staff;
 import studenthostelmaintenancerequest.trackingsystem.StaffService;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
@@ -70,7 +71,7 @@ public class ViewRoomDetails extends javax.swing.JFrame {
             pnlRoomInformation.setDetails(
                     details.requestId,
                     details.roomNumber,
-                    details.placeName,
+                    ManagerService.formatBlockDisplay(details.roomNumber, details.placeName),
                     details.studentName,
                     details.requestType);
         } catch (DatabaseException ex) {

@@ -71,7 +71,7 @@ public final class ManagerService {
 
         for (Object[] row : rows) {
             String requestId = String.valueOf(row[0]);
-            Status status = parseDisplayStatus(String.valueOf(row[5]));
+            Status status = parseDisplayStatus(String.valueOf(row[6]));
             if (status == Status.IN_PROGRESS) {
                 continue;
             }
@@ -88,7 +88,7 @@ public final class ManagerService {
         DatabaseHandler db = DatabaseHandler.getInstance();
 
         for (Object[] row : rows) {
-            Object assignedStaff = row[4];
+            Object assignedStaff = row[6];
             if (assignedStaff == null || String.valueOf(assignedStaff).isBlank()) {
                 continue;
             }
@@ -143,5 +143,41 @@ public final class ManagerService {
             return "";
         }
         return DATE_FORMAT.format(dateTime);
+    }
+
+    static String formatPriority(String priority) {
+        if (priority == null || priority.isBlank()) {
+            return "";
+        }
+        String value = priority.trim().toLowerCase();
+        return switch (value) {
+            case "high" -> "High";
+            case "medium" -> "Medium";
+            case "low" -> "Low";
+            default -> priority.substring(0, 1).toUpperCase() + priority.substring(1);
+        };
+    }
+
+    public static String formatBlockDisplay(String roomNumber, String placeName) {
+        String blockLabel = "Block";
+        if (roomNumber != null && !roomNumber.isBlank()) {
+            int dashIndex = roomNumber.indexOf('-');
+            if (dashIndex > 0) {
+                String blockLetter = roomNumber.substring(0, dashIndex).trim();
+                if (!blockLetter.isEmpty()) {
+                    blockLabel = "Block " + blockLetter.toUpperCase();
+                }
+            }
+        }
+        String formattedPlace = formatPlaceName(placeName);
+        return formattedPlace.isEmpty() ? blockLabel : blockLabel + ", " + formattedPlace;
+    }
+
+    private static String formatPlaceName(String placeName) {
+        if (placeName == null || placeName.isBlank()) {
+            return "";
+        }
+        String trimmed = placeName.trim().toLowerCase();
+        return trimmed.substring(0, 1).toUpperCase() + trimmed.substring(1);
     }
 }

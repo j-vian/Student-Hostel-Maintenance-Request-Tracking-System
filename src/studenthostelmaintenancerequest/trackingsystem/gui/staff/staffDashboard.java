@@ -7,14 +7,14 @@ import studenthostelmaintenancerequest.trackingsystem.StaffService;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
-import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.StudentActiveRequestTableModel;
+import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.StaffActiveRequestTableModel;
 
 /**
  * Staff dashboard — profile summary and in-progress assigned requests.
  */
 public class staffDashboard extends javax.swing.JFrame {
 
-    private StudentActiveRequestTableModel activeTableModel;
+    private StaffActiveRequestTableModel activeTableModel;
     private JLabel lblActivePagination;
     private javax.swing.JButton btnActivePrevious;
     private javax.swing.JButton btnActiveNext;
@@ -44,10 +44,10 @@ public class staffDashboard extends javax.swing.JFrame {
         UIHelper.layoutStudentProfileSection(pnlProfileSection, lblProfileSection, scrProfile);
         UIHelper.setStudentProfileTableRows(tblProfile, scrProfile, new Object[0][0]);
 
-        activeTableModel = UIHelper.createStudentActiveRequestTableModel(new Object[0][0]);
+        activeTableModel = UIHelper.createStaffActiveRequestTableModel(new Object[0][0]);
         tblActive.setModel(activeTableModel);
         UIHelper.styleManagerTableSection(lblActiveSection, tblActive, scrActive);
-        UIHelper.applyStudentActiveRequestTableRenderers(tblActive);
+        UIHelper.applyStaffActiveRequestTableRenderers(tblActive);
 
         lblActivePagination = new JLabel();
         btnActivePrevious = new javax.swing.JButton("<");
@@ -95,7 +95,7 @@ public class staffDashboard extends javax.swing.JFrame {
     }
 
     private void refreshActivePagination() {
-        UIHelper.updateStudentPaginationFooter(
+        UIHelper.updateStaffPaginationFooter(
                 lblActivePagination, btnActivePrevious, btnActiveNext, activeTableModel);
     }
 

@@ -4,12 +4,15 @@
  */
 package studenthostelmaintenancerequest.trackingsystem.gui.manager;
 
+import java.util.ArrayList;
+import java.util.List;
 import studenthostelmaintenancerequest.trackingsystem.DatabaseException;
 import studenthostelmaintenancerequest.trackingsystem.ManagerService;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
+import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.FilterOption;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.ManagerAssignStaffTableModel;
 import javax.swing.table.TableCellEditor;
 
@@ -29,6 +32,11 @@ public class ManagerAssignStaffFrame extends javax.swing.JFrame {
     private javax.swing.JLabel lblPagination;
     private javax.swing.JButton btnPagePrevious;
     private javax.swing.JButton btnPageNext;
+    private javax.swing.JButton btnFilter;
+
+    private Object[][] allAssignRows = new Object[0][0];
+    private String filterType = "All";
+    private String filterPriority = "All";
 
     public ManagerAssignStaffFrame() {
         initComponents();
@@ -52,8 +60,10 @@ public class ManagerAssignStaffFrame extends javax.swing.JFrame {
 
         PlaceholderTextField txtSearch = new PlaceholderTextField("Search Request by ID");
         this.txtSearch = txtSearch;
+        btnFilter = new javax.swing.JButton("Filter");
         javax.swing.JPanel pnlSearchField = UIHelper.createSearchField(txtSearch);
-        UIHelper.layoutManagerAssignStaffToolbar(pnlToolbar, pnlSearchField, btnAssignStaff);
+        UIHelper.layoutManagerAssignStaffToolbar(pnlToolbar, pnlSearchField, btnFilter, btnAssignStaff);
+        UIHelper.styleManagerFilterButton(btnFilter);
         UIHelper.styleManagerUpdateButton(btnAssignStaff);
 
         lblTableSection.setText("Unassigned Requests");
@@ -72,12 +82,17 @@ public class ManagerAssignStaffFrame extends javax.swing.JFrame {
                 pnlTableSection, lblTableSection, scrTable,
                 lblPagination, btnPagePrevious, btnPageNext);
 
-        loadAssignStaffRows(null);
+        loadAssignStaffRows();
 
         btnPagePrevious.addActionListener(e -> changePage(-1));
         btnPageNext.addActionListener(e -> changePage(1));
 
-        txtSearch.addActionListener(e -> loadAssignStaffRows(txtSearch.getInputText()));
+        btnFilter.addActionListener(e -> showFilterDialog());
+        txtSearch.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            public void insertUpdate(javax.swing.event.DocumentEvent e) { loadAssignStaffRows(); }
+            public void removeUpdate(javax.swing.event.DocumentEvent e) { loadAssignStaffRows(); }
+            public void changedUpdate(javax.swing.event.DocumentEvent e) { loadAssignStaffRows(); }
+        });
 
         btnAssignStaff.addActionListener(e -> {
             if (staffEditMode) {
@@ -103,17 +118,45 @@ public class ManagerAssignStaffFrame extends javax.swing.JFrame {
         }
     }
 
-    private void loadAssignStaffRows(String requestIdSearch) {
+    private void loadAssignStaffRows() {
         if (staffEditMode) {
             return;
         }
         try {
-            Object[][] rows = ManagerService.getAssignStaffRows(requestIdSearch);
-            requestTableModel.replaceRows(rows);
-            refreshPaginationFooter();
-            resizeTableSection();
+            allAssignRows = ManagerService.getAssignStaffRows(txtSearch.getInputText());
+            applyFilters();
         } catch (DatabaseException ex) {
             UIHelper.showDatabaseError(this, ex);
+        }
+    }
+
+    private void applyFilters() {
+        List<Object[]> filtered = new ArrayList<>();
+        for (Object[] row : allAssignRows) {
+            boolean typeMatch = filterType.equals("All")
+                    || row[1].toString().equalsIgnoreCase(filterType);
+            boolean priorityMatch = filterPriority.equals("All")
+                    || row[4].toString().equalsIgnoreCase(filterPriority);
+            if (typeMatch && priorityMatch) {
+                filtered.add(row);
+            }
+        }
+        requestTableModel.replaceRows(filtered.toArray(Object[][]::new));
+        refreshPaginationFooter();
+        resizeTableSection();
+    }
+
+    private void showFilterDialog() {
+        FilterOption typeOption = new FilterOption("Request Type",
+                new String[]{"All", "Electrical", "Plumbing", "Furniture"}, filterType);
+        FilterOption priorityOption = new FilterOption("Priority",
+                new String[]{"All", "Low", "Medium", "High"}, filterPriority);
+
+        if (UIHelper.showRequestFilterDialog(this, typeOption, priorityOption)) {
+            filterType = typeOption.value;
+            filterPriority = priorityOption.value;
+            UIHelper.updateFilterButtonState(btnFilter, typeOption, priorityOption);
+            applyFilters();
         }
     }
 
@@ -175,7 +218,7 @@ public class ManagerAssignStaffFrame extends javax.swing.JFrame {
         tblRequests.getColumnModel().getColumn(UIHelper.ASSIGN_STAFF_COL_ASSIGNED_STAFF).setCellEditor(null);
         btnAssignStaff.setText("Assign Staff");
         UIHelper.styleManagerUpdateButton(btnAssignStaff);
-        loadAssignStaffRows(txtSearch.getInputText());
+        loadAssignStaffRows();
         tblRequests.repaint();
     }
 

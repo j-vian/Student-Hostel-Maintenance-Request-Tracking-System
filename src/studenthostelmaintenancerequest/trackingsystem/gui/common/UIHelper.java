@@ -868,15 +868,16 @@ public final class UIHelper {
     }
 
     private static final int MANAGER_TABLE_COL_ASSIGNED_STAFF = 3;
-    private static final int MANAGER_TABLE_COL_STATUS = 4;
+    private static final int MANAGER_TABLE_COL_PRIORITY = 4;
+    private static final int MANAGER_TABLE_COL_STATUS = 5;
 
     public static DefaultTableModel createManagerRequestTableModel() {
-        return createManagerRequestTableModel(new Object[0][5]);
+        return createManagerRequestTableModel(new Object[0][6]);
     }
 
     public static DefaultTableModel createManagerRequestTableModel(Object[][] data) {
         return new DefaultTableModel(data, new String[]{
-            "Request ID", "Request Type", "Student Name", "Assigned Staff", "Status"}) {
+            "Request ID", "Request Type", "Student Name", "Assigned Staff", "Priority", "Status"}) {
 
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -896,9 +897,16 @@ public final class UIHelper {
         centerRenderer.setForeground(AppColors.LABEL);
         centerRenderer.setBackground(AppColors.SURFACE);
 
-        for (int column = 0; column < MANAGER_TABLE_COL_ASSIGNED_STAFF; column++) {
+        for (int column = 0; column < MANAGER_TABLE_COL_PRIORITY; column++) {
             table.getColumnModel().getColumn(column).setCellRenderer(centerRenderer);
         }
+
+        table.getColumnModel().getColumn(MANAGER_TABLE_COL_PRIORITY).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
+            JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
+            wrapper.setBackground(AppColors.SURFACE);
+            wrapper.add(new PriorityBadgeLabel(String.valueOf(value)));
+            return wrapper;
+        });
 
         table.getColumnModel().getColumn(MANAGER_TABLE_COL_ASSIGNED_STAFF).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
             Object status = tbl.getValueAt(row, MANAGER_TABLE_COL_STATUS);
@@ -946,6 +954,62 @@ public final class UIHelper {
             lblUserName.setText(SessionManager.getDisplayUsername());
             lblUserRole.setText("ADMIN");
         }
+    }
+
+    public static final class FilterOption {
+        public final String label;
+        public final String[] choices;
+        public String value;
+
+        public FilterOption(String label, String[] choices, String value) {
+            this.label = label;
+            this.choices = choices;
+            this.value = value;
+        }
+
+        public boolean isActive() {
+            return value != null && !"All".equals(value);
+        }
+    }
+
+    public static boolean showRequestFilterDialog(java.awt.Component parent, FilterOption... options) {
+        JPanel panel = new JPanel(new java.awt.GridLayout(options.length, 2, 8, 8));
+        @SuppressWarnings("unchecked")
+        javax.swing.JComboBox<String>[] combos = new javax.swing.JComboBox[options.length];
+        for (int i = 0; i < options.length; i++) {
+            panel.add(new JLabel(options[i].label + ":"));
+            combos[i] = new javax.swing.JComboBox<>(options[i].choices);
+            combos[i].setSelectedItem(options[i].value);
+            panel.add(combos[i]);
+        }
+
+        int result = javax.swing.JOptionPane.showConfirmDialog(
+                parent, panel, "Filter Requests",
+                javax.swing.JOptionPane.OK_CANCEL_OPTION,
+                javax.swing.JOptionPane.PLAIN_MESSAGE);
+
+        if (result == javax.swing.JOptionPane.OK_OPTION) {
+            for (int i = 0; i < options.length; i++) {
+                options[i].value = (String) combos[i].getSelectedItem();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isFilterActive(FilterOption... options) {
+        for (FilterOption option : options) {
+            if (option.isActive()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void updateFilterButtonState(javax.swing.JButton btnFilter, FilterOption... options) {
+        boolean active = isFilterActive(options);
+        btnFilter.setText(active ? "Filter ✓" : "Filter");
+        btnFilter.setForeground(active ? AppColors.PRIMARY : AppColors.LABEL);
     }
 
     public static void showDatabaseError(java.awt.Component parent, Exception ex) {
@@ -1085,16 +1149,17 @@ public final class UIHelper {
     public static final int MANAGE_REQUEST_PAGE_SIZE = 7;
     public static final int MANAGE_REQUEST_COL_ASSIGNED_STAFF = 3;
     public static final int MANAGE_REQUEST_COL_DATE_RAISED = 4;
-    public static final int MANAGE_REQUEST_COL_STATUS = 5;
+    public static final int MANAGE_REQUEST_COL_PRIORITY = 5;
+    public static final int MANAGE_REQUEST_COL_STATUS = 6;
 
     public static ManagerManageRequestTableModel createManagerManageRequestTableModel() {
-        return createManagerManageRequestTableModel(new Object[0][6]);
+        return createManagerManageRequestTableModel(new Object[0][7]);
     }
 
     public static ManagerManageRequestTableModel createManagerManageRequestTableModel(Object[][] data) {
         return new ManagerManageRequestTableModel(data, new String[]{
             "Request ID", "Request Type", "Student Name",
-            "Assigned Staff", "Date Raised", "Status"});
+            "Assigned Staff", "Date Raised", "Priority", "Status"});
     }
 
     private static Object[][] buildManageRequestSampleData() {
@@ -1274,6 +1339,13 @@ public final class UIHelper {
 
         table.getColumnModel().getColumn(MANAGE_REQUEST_COL_DATE_RAISED).setCellRenderer(centerRenderer);
 
+        table.getColumnModel().getColumn(MANAGE_REQUEST_COL_PRIORITY).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
+            JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
+            wrapper.setBackground(AppColors.SURFACE);
+            wrapper.add(new PriorityBadgeLabel(String.valueOf(value)));
+            return wrapper;
+        });
+
         table.getColumnModel().getColumn(MANAGE_REQUEST_COL_ASSIGNED_STAFF).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
             Object status = tbl.getValueAt(row, MANAGE_REQUEST_COL_STATUS);
             JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
@@ -1396,7 +1468,7 @@ public final class UIHelper {
     }
 
     public static void layoutManagerAssignStaffToolbar(
-            JPanel toolbar, JPanel searchField, JButton btnAction) {
+            JPanel toolbar, JPanel searchField, JButton btnFilter, JButton btnAction) {
 
         toolbar.removeAll();
         toolbar.setLayout(new javax.swing.BoxLayout(toolbar, javax.swing.BoxLayout.Y_AXIS));
@@ -1407,6 +1479,7 @@ public final class UIHelper {
         topRow.setAlignmentX(Component.LEFT_ALIGNMENT);
         topRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, MANAGER_SEARCH_HEIGHT));
         topRow.add(searchField, BorderLayout.CENTER);
+        topRow.add(btnFilter, BorderLayout.EAST);
 
         JPanel bottomRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
         bottomRow.setOpaque(false);
@@ -1418,16 +1491,19 @@ public final class UIHelper {
         toolbar.add(bottomRow);
     }
 
-    public static final int ASSIGN_STAFF_COL_STATUS = 3;
-    public static final int ASSIGN_STAFF_COL_ASSIGNED_STAFF = 4;
+    public static final int ASSIGN_STAFF_COL_DATE_RAISED = 3;
+    public static final int ASSIGN_STAFF_COL_PRIORITY = 4;
+    public static final int ASSIGN_STAFF_COL_STATUS = 5;
+    public static final int ASSIGN_STAFF_COL_ASSIGNED_STAFF = 6;
 
     public static ManagerAssignStaffTableModel createManagerAssignStaffTableModel() {
-        return createManagerAssignStaffTableModel(new Object[0][5]);
+        return createManagerAssignStaffTableModel(new Object[0][7]);
     }
 
     public static ManagerAssignStaffTableModel createManagerAssignStaffTableModel(Object[][] data) {
         return new ManagerAssignStaffTableModel(data, new String[]{
-            "Request ID", "Request Type", "Student Name", "Status", "Assigned Staff"});
+            "Request ID", "Request Type", "Student Name",
+            "Date Raised", "Priority", "Status", "Assigned Staff"});
     }
 
     private static Object[][] buildAssignStaffSampleData() {
@@ -1591,9 +1667,16 @@ public final class UIHelper {
         centerRenderer.setForeground(AppColors.LABEL);
         centerRenderer.setBackground(AppColors.SURFACE);
 
-        for (int column = 0; column < ASSIGN_STAFF_COL_STATUS; column++) {
+        for (int column = 0; column < ASSIGN_STAFF_COL_PRIORITY; column++) {
             table.getColumnModel().getColumn(column).setCellRenderer(centerRenderer);
         }
+
+        table.getColumnModel().getColumn(ASSIGN_STAFF_COL_PRIORITY).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
+            JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
+            wrapper.setBackground(AppColors.SURFACE);
+            wrapper.add(new PriorityBadgeLabel(String.valueOf(value)));
+            return wrapper;
+        });
 
         table.getColumnModel().getColumn(ASSIGN_STAFF_COL_STATUS).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
             JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
@@ -1815,17 +1898,18 @@ public final class UIHelper {
     public static final int VIEW_HISTORY_PAGE_SIZE = 7;
     public static final int VIEW_HISTORY_COL_ASSIGNED_STAFF = 3;
     public static final int VIEW_HISTORY_COL_DESCRIPTION = 4;
-    public static final int VIEW_HISTORY_COL_PRIORITY = 5;
-    public static final int VIEW_HISTORY_COL_STATUS = 6;
+    public static final int VIEW_HISTORY_COL_DATE_RAISED = 5;
+    public static final int VIEW_HISTORY_COL_PRIORITY = 6;
+    public static final int VIEW_HISTORY_COL_STATUS = 7;
 
     public static ManagerViewHistoryTableModel createManagerViewHistoryTableModel() {
-        return createManagerViewHistoryTableModel(new Object[0][7]);
+        return createManagerViewHistoryTableModel(new Object[0][8]);
     }
 
     public static ManagerViewHistoryTableModel createManagerViewHistoryTableModel(Object[][] data) {
         return new ManagerViewHistoryTableModel(data, new String[]{
             "Request ID", "Request Type", "Student Name",
-            "Assigned Staff", "Description", "Priority", "Status"});
+            "Assigned Staff", "Description", "Date Raised", "Priority", "Status"});
     }
 
     private static Object[][] buildViewHistorySampleData() {
@@ -1966,9 +2050,27 @@ public final class UIHelper {
         centerRenderer.setForeground(AppColors.LABEL);
         centerRenderer.setBackground(AppColors.SURFACE);
 
-        for (int column = 0; column < VIEW_HISTORY_COL_PRIORITY; column++) {
+        for (int column = 0; column < VIEW_HISTORY_COL_ASSIGNED_STAFF; column++) {
             table.getColumnModel().getColumn(column).setCellRenderer(centerRenderer);
         }
+
+        table.getColumnModel().getColumn(VIEW_HISTORY_COL_ASSIGNED_STAFF).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
+            Object status = tbl.getValueAt(row, VIEW_HISTORY_COL_STATUS);
+            JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
+            wrapper.setBackground(AppColors.SURFACE);
+            if (isSubmittedStatus(status)) {
+                wrapper.add(new NotAssignedBadgeLabel());
+            } else {
+                JLabel staffLabel = new JLabel(String.valueOf(value), JLabel.CENTER);
+                staffLabel.setFont(AppFonts.bodyBold());
+                staffLabel.setForeground(AppColors.LABEL);
+                wrapper.add(staffLabel);
+            }
+            return wrapper;
+        });
+
+        table.getColumnModel().getColumn(VIEW_HISTORY_COL_DESCRIPTION).setCellRenderer(centerRenderer);
+        table.getColumnModel().getColumn(VIEW_HISTORY_COL_DATE_RAISED).setCellRenderer(centerRenderer);
 
         table.getColumnModel().getColumn(VIEW_HISTORY_COL_PRIORITY).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
             JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
@@ -2607,7 +2709,10 @@ public final class UIHelper {
         }
     }
 
-    public static final int STAFF_MANAGE_COL_STATUS = 3;
+    public static final int STAFF_MANAGE_COL_PRIORITY = 3;
+    public static final int STAFF_MANAGE_COL_STATUS = 4;
+    public static final int STAFF_ACTIVE_COL_PRIORITY = 3;
+    public static final int STAFF_ACTIVE_COL_STATUS = 4;
     public static final int STAFF_TABLE_PAGE_SIZE = STUDENT_TABLE_PAGE_SIZE;
 
     public enum StaffNavPage {
@@ -2717,12 +2822,35 @@ public final class UIHelper {
     }
 
     public static StaffManageRequestTableModel createStaffManageRequestTableModel() {
-        return createStaffManageRequestTableModel(new Object[0][4]);
+        return createStaffManageRequestTableModel(new Object[0][5]);
     }
 
     public static StaffManageRequestTableModel createStaffManageRequestTableModel(Object[][] data) {
         return new StaffManageRequestTableModel(data, new String[]{
-            "Request ID", "Request Type", "Date Raised", "Status"});
+            "Request ID", "Request Type", "Date Raised", "Priority", "Status"});
+    }
+
+    public static StaffActiveRequestTableModel createStaffActiveRequestTableModel() {
+        return createStaffActiveRequestTableModel(new Object[0][5]);
+    }
+
+    public static StaffActiveRequestTableModel createStaffActiveRequestTableModel(Object[][] data) {
+        return new StaffActiveRequestTableModel(data, new String[]{
+            "Request ID", "Request Type", "Date Raised", "Priority", "Status"});
+    }
+
+    public static void applyStaffActiveRequestTableRenderers(JTable table) {
+        disableStudentTableGrid(table);
+        DefaultTableCellRenderer centerRenderer = createStudentGridCellRenderer();
+
+        for (int column = 0; column < STAFF_ACTIVE_COL_PRIORITY; column++) {
+            table.getColumnModel().getColumn(column).setCellRenderer(centerRenderer);
+        }
+
+        table.getColumnModel().getColumn(STAFF_ACTIVE_COL_PRIORITY).setCellRenderer(
+                new StudentBadgeTableCellRenderer(PriorityBadgeLabel::new));
+        table.getColumnModel().getColumn(STAFF_ACTIVE_COL_STATUS).setCellRenderer(
+                new StudentBadgeTableCellRenderer(StatusBadgeLabel::new));
     }
 
     public static void applyStaffManageRequestTableRenderers(
@@ -2730,9 +2858,18 @@ public final class UIHelper {
         disableStudentTableGrid(table);
         DefaultTableCellRenderer centerRenderer = createStudentGridCellRenderer();
 
-        for (int column = 0; column < STAFF_MANAGE_COL_STATUS; column++) {
+        for (int column = 0; column < STAFF_MANAGE_COL_PRIORITY; column++) {
             table.getColumnModel().getColumn(column).setCellRenderer(centerRenderer);
         }
+
+        table.getColumnModel().getColumn(STAFF_MANAGE_COL_PRIORITY).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
+            JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
+            wrapper.setOpaque(true);
+            wrapper.setBackground(AppColors.SURFACE);
+            wrapper.add(new PriorityBadgeLabel(String.valueOf(value)));
+            wrapper.setBorder(createStudentTableCellBorder(row, column, tbl.getColumnCount(), tbl.getRowCount()));
+            return wrapper;
+        });
 
         table.getColumnModel().getColumn(STAFF_MANAGE_COL_STATUS).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
             JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
@@ -2762,6 +2899,105 @@ public final class UIHelper {
         updateStudentPaginationFooter(lblShowing, btnPrevious, btnNext,
                 model.getShowingFrom(), model.getShowingTo(), model.getTotalRowCount(),
                 model.canGoPrevious(), model.canGoNext());
+    }
+
+    public static void updateStaffPaginationFooter(
+            JLabel lblShowing, JButton btnPrevious, JButton btnNext,
+            StaffActiveRequestTableModel model) {
+        updateStudentPaginationFooter(lblShowing, btnPrevious, btnNext,
+                model.getShowingFrom(), model.getShowingTo(), model.getTotalRowCount(),
+                model.canGoPrevious(), model.canGoNext());
+    }
+
+    public static final class StaffActiveRequestTableModel extends AbstractTableModel {
+
+        private final java.util.List<Object[]> allRows = new java.util.ArrayList<>();
+        private final String[] columnNames;
+        private int currentPage;
+
+        public StaffActiveRequestTableModel(Object[][] data, Object[] columns) {
+            this.columnNames = new String[columns.length];
+            for (int i = 0; i < columns.length; i++) {
+                this.columnNames[i] = String.valueOf(columns[i]);
+            }
+            replaceRows(data);
+        }
+
+        public void replaceRows(Object[][] data) {
+            allRows.clear();
+            currentPage = 0;
+            if (data != null) {
+                for (Object[] row : data) {
+                    allRows.add(row.clone());
+                }
+            }
+            fireTableDataChanged();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return columnNames.length;
+        }
+
+        @Override
+        public String getColumnName(int column) {
+            return columnNames[column];
+        }
+
+        @Override
+        public int getRowCount() {
+            if (allRows.isEmpty()) {
+                return 0;
+            }
+            int start = currentPage * STAFF_TABLE_PAGE_SIZE;
+            if (start >= allRows.size()) {
+                return 0;
+            }
+            return Math.min(STAFF_TABLE_PAGE_SIZE, allRows.size() - start);
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            int dataIndex = currentPage * STAFF_TABLE_PAGE_SIZE + rowIndex;
+            return allRows.get(dataIndex)[columnIndex];
+        }
+
+        public int getTotalRowCount() {
+            return allRows.size();
+        }
+
+        public int getShowingFrom() {
+            if (allRows.isEmpty()) {
+                return 0;
+            }
+            return currentPage * STAFF_TABLE_PAGE_SIZE + 1;
+        }
+
+        public int getShowingTo() {
+            return Math.min((currentPage + 1) * STAFF_TABLE_PAGE_SIZE, allRows.size());
+        }
+
+        public boolean canGoPrevious() {
+            return currentPage > 0;
+        }
+
+        public boolean canGoNext() {
+            return (currentPage + 1) * STAFF_TABLE_PAGE_SIZE < allRows.size();
+        }
+
+        public void previousPage() {
+            if (canGoPrevious()) {
+                currentPage--;
+                fireTableDataChanged();
+            }
+        }
+
+        public void nextPage() {
+            if (canGoNext()) {
+                currentPage++;
+                fireTableDataChanged();
+            }
+        }
     }
 
     public static final class StaffManageRequestTableModel extends AbstractTableModel {

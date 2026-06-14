@@ -104,7 +104,7 @@ public final class StaffService {
             throws DatabaseException {
         for (Object[] row : rows) {
             String requestId = String.valueOf(row[0]);
-            Status newStatus = parseDisplayStatus(String.valueOf(row[3]));
+            Status newStatus = parseDisplayStatus(String.valueOf(row[4]));
             if (newStatus == Status.IN_PROGRESS) {
                 continue;
             }
@@ -162,6 +162,7 @@ public final class StaffService {
             request.getRequestId(),
             request.getRequestTypeLabel(),
             ManagerService.formatDate(request.getDateRaised()),
+            ManagerService.formatPriority(request.getPriority()),
             ManagerService.formatDisplayStatus(request.getStatus().name())
         };
     }
@@ -171,6 +172,7 @@ public final class StaffService {
             request.getRequestId(),
             request.getRequestTypeLabel(),
             ManagerService.formatDate(request.getDateRaised()),
+            ManagerService.formatPriority(request.getPriority()),
             ManagerService.formatDisplayStatus(request.getStatus().name())
         };
     }
@@ -180,7 +182,7 @@ public final class StaffService {
             request.getRequestId(),
             request.getRequestTypeLabel(),
             ManagerService.formatDate(request.getDateRaised()),
-            request.getPriority(),
+            ManagerService.formatPriority(request.getPriority()),
             ManagerService.formatDisplayStatus(request.getStatus().name())
         };
     }

@@ -7,11 +7,11 @@ import javax.swing.table.TableCellEditor;
 import studenthostelmaintenancerequest.trackingsystem.DatabaseException;
 import studenthostelmaintenancerequest.trackingsystem.Staff;
 import studenthostelmaintenancerequest.trackingsystem.StaffService;
-import studenthostelmaintenancerequest.trackingsystem.gui.common.AppColors;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
+import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.FilterOption;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.StaffManageRequestTableModel;
 
 /**
@@ -29,7 +29,7 @@ public class ManageRequestPage extends javax.swing.JFrame {
     private javax.swing.JButton btnPageNext;
 
     private Object[][] allManageRows = new Object[0][0];
-    private String filterType = "All";
+    private String filterPriority = "All";
 
     public ManageRequestPage() {
         initComponents();
@@ -103,19 +103,19 @@ public class ManageRequestPage extends javax.swing.JFrame {
         }
         try {
             allManageRows = StaffService.getManageActiveRows(staff, txtSearch.getInputText());
-            applyTypeFilter();
+            applyPriorityFilter();
         } catch (DatabaseException ex) {
             UIHelper.showDatabaseError(this, ex);
         }
     }
 
-    private void applyTypeFilter() {
-        if (filterType.equals("All")) {
+    private void applyPriorityFilter() {
+        if (filterPriority.equals("All")) {
             requestTableModel.replaceRows(allManageRows);
         } else {
             List<Object[]> filtered = new ArrayList<>();
             for (Object[] row : allManageRows) {
-                if (row[1].toString().equalsIgnoreCase(filterType)) {
+                if (row[UIHelper.STAFF_MANAGE_COL_PRIORITY].toString().equalsIgnoreCase(filterPriority)) {
                     filtered.add(row);
                 }
             }
@@ -126,25 +126,13 @@ public class ManageRequestPage extends javax.swing.JFrame {
     }
 
     private void showFilterDialog() {
-        String[] typeOptions = {"All", "Electrical", "Plumbing", "Furniture"};
+        FilterOption priorityOption = new FilterOption("Priority",
+                new String[]{"All", "Low", "Medium", "High"}, filterPriority);
 
-        javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.GridLayout(1, 2, 8, 8));
-        javax.swing.JComboBox<String> typeCombo = new javax.swing.JComboBox<>(typeOptions);
-        typeCombo.setSelectedItem(filterType);
-        panel.add(new JLabel("Request Type:"));
-        panel.add(typeCombo);
-
-        int result = javax.swing.JOptionPane.showConfirmDialog(
-                this, panel, "Filter Requests",
-                javax.swing.JOptionPane.OK_CANCEL_OPTION,
-                javax.swing.JOptionPane.PLAIN_MESSAGE);
-
-        if (result == javax.swing.JOptionPane.OK_OPTION) {
-            filterType = (String) typeCombo.getSelectedItem();
-            boolean active = !filterType.equals("All");
-            btnFilter.setText(active ? "Filter ✓" : "Filter");
-            btnFilter.setForeground(active ? AppColors.PRIMARY : AppColors.LABEL);
-            applyTypeFilter();
+        if (UIHelper.showRequestFilterDialog(this, priorityOption)) {
+            filterPriority = priorityOption.value;
+            UIHelper.updateFilterButtonState(btnFilter, priorityOption);
+            applyPriorityFilter();
         }
     }
 

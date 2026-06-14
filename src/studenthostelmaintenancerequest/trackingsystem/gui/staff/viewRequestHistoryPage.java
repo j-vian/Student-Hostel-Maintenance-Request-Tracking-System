@@ -6,11 +6,11 @@ import javax.swing.JLabel;
 import studenthostelmaintenancerequest.trackingsystem.DatabaseException;
 import studenthostelmaintenancerequest.trackingsystem.Staff;
 import studenthostelmaintenancerequest.trackingsystem.StaffService;
-import studenthostelmaintenancerequest.trackingsystem.gui.common.AppColors;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
+import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.FilterOption;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.StudentHistoryTableModel;
 
 /**
@@ -25,8 +25,7 @@ public class viewRequestHistoryPage extends javax.swing.JFrame {
     private javax.swing.JButton btnPageNext;
 
     private Object[][] allHistoryRows = new Object[0][0];
-    private String filterStatus = "All";
-    private String filterType = "All";
+    private String filterPriority = "All";
 
     public viewRequestHistoryPage() {
         initComponents();
@@ -104,12 +103,10 @@ public class viewRequestHistoryPage extends javax.swing.JFrame {
                     }
                 }
             }
-            boolean statusMatch = filterStatus.equals("All")
-                    || row[4].toString().equalsIgnoreCase(filterStatus);
-            boolean typeMatch = filterType.equals("All")
-                    || row[1].toString().equalsIgnoreCase(filterType);
+            boolean priorityMatch = filterPriority.equals("All")
+                    || row[3].toString().equalsIgnoreCase(filterPriority);
 
-            if (keywordMatch && statusMatch && typeMatch) {
+            if (keywordMatch && priorityMatch) {
                 filtered.add(row);
             }
         }
@@ -120,30 +117,12 @@ public class viewRequestHistoryPage extends javax.swing.JFrame {
     }
 
     private void showFilterDialog() {
-        String[] statusOptions = {"All", "IN PROGRESS", "SUBMITTED", "COMPLETED", "CANCELLED"};
-        String[] typeOptions = {"All", "Electrical", "Plumbing", "Furniture"};
+        FilterOption priorityOption = new FilterOption("Priority",
+                new String[]{"All", "Low", "Medium", "High"}, filterPriority);
 
-        javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.GridLayout(2, 2, 8, 8));
-        javax.swing.JComboBox<String> statusCombo = new javax.swing.JComboBox<>(statusOptions);
-        javax.swing.JComboBox<String> typeCombo = new javax.swing.JComboBox<>(typeOptions);
-        statusCombo.setSelectedItem(filterStatus);
-        typeCombo.setSelectedItem(filterType);
-        panel.add(new JLabel("Status:"));
-        panel.add(statusCombo);
-        panel.add(new JLabel("Request Type:"));
-        panel.add(typeCombo);
-
-        int result = javax.swing.JOptionPane.showConfirmDialog(
-                this, panel, "Filter Requests",
-                javax.swing.JOptionPane.OK_CANCEL_OPTION,
-                javax.swing.JOptionPane.PLAIN_MESSAGE);
-
-        if (result == javax.swing.JOptionPane.OK_OPTION) {
-            filterStatus = (String) statusCombo.getSelectedItem();
-            filterType = (String) typeCombo.getSelectedItem();
-            boolean active = !filterStatus.equals("All") || !filterType.equals("All");
-            btnFilter.setText(active ? "Filter ✓" : "Filter");
-            btnFilter.setForeground(active ? AppColors.PRIMARY : AppColors.LABEL);
+        if (UIHelper.showRequestFilterDialog(this, priorityOption)) {
+            filterPriority = priorityOption.value;
+            UIHelper.updateFilterButtonState(btnFilter, priorityOption);
             applySearchAndFilter();
         }
     }

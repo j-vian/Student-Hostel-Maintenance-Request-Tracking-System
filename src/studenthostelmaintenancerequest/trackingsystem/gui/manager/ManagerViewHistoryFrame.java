@@ -4,12 +4,15 @@
  */
 package studenthostelmaintenancerequest.trackingsystem.gui.manager;
 
+import java.util.ArrayList;
+import java.util.List;
 import studenthostelmaintenancerequest.trackingsystem.DatabaseException;
 import studenthostelmaintenancerequest.trackingsystem.ManagerService;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
+import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.FilterOption;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.ManagerViewHistoryTableModel;
 
 /**
@@ -25,6 +28,11 @@ public class ManagerViewHistoryFrame extends javax.swing.JFrame {
     private javax.swing.JLabel lblPagination;
     private javax.swing.JButton btnPagePrevious;
     private javax.swing.JButton btnPageNext;
+
+    private Object[][] allHistoryRows = new Object[0][0];
+    private String filterStatus = "All";
+    private String filterPriority = "All";
+    private String filterType = "All";
 
     public ManagerViewHistoryFrame() {
         initComponents();
@@ -66,13 +74,17 @@ public class ManagerViewHistoryFrame extends javax.swing.JFrame {
                 pnlTableSection, lblTableSection, scrTable,
                 lblPagination, btnPagePrevious, btnPageNext);
 
-        loadHistoryRows(null);
+        loadHistoryData();
 
         btnPagePrevious.addActionListener(e -> changePage(-1));
         btnPageNext.addActionListener(e -> changePage(1));
 
-        btnFilter.addActionListener(e -> loadHistoryRows(txtSearch.getInputText()));
-        txtSearch.addActionListener(e -> loadHistoryRows(txtSearch.getInputText()));
+        btnFilter.addActionListener(e -> showFilterDialog());
+        txtSearch.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            public void insertUpdate(javax.swing.event.DocumentEvent e) { applySearchAndFilter(); }
+            public void removeUpdate(javax.swing.event.DocumentEvent e) { applySearchAndFilter(); }
+            public void changedUpdate(javax.swing.event.DocumentEvent e) { applySearchAndFilter(); }
+        });
 
         UIHelper.showManagerFrame(this);
         javax.swing.SwingUtilities.invokeLater(() -> {
@@ -81,14 +93,53 @@ public class ManagerViewHistoryFrame extends javax.swing.JFrame {
         });
     }
 
-    private void loadHistoryRows(String requestIdSearch) {
+    private void loadHistoryData() {
         try {
-            Object[][] rows = ManagerService.getHistoryRows(requestIdSearch);
-            requestTableModel.replaceRows(rows);
-            refreshPaginationFooter();
-            resizeTableSection();
+            allHistoryRows = ManagerService.getHistoryRows(null);
+            applySearchAndFilter();
         } catch (DatabaseException ex) {
             UIHelper.showDatabaseError(this, ex);
+        }
+    }
+
+    private void applySearchAndFilter() {
+        String keyword = txtSearch.getInputText().trim().toLowerCase();
+        List<Object[]> filtered = new ArrayList<>();
+
+        for (Object[] row : allHistoryRows) {
+            boolean keywordMatch = keyword.isEmpty()
+                    || row[0].toString().toLowerCase().contains(keyword);
+            boolean statusMatch = filterStatus.equals("All")
+                    || row[UIHelper.VIEW_HISTORY_COL_STATUS].toString().equalsIgnoreCase(filterStatus);
+            boolean priorityMatch = filterPriority.equals("All")
+                    || row[UIHelper.VIEW_HISTORY_COL_PRIORITY].toString().equalsIgnoreCase(filterPriority);
+            boolean typeMatch = filterType.equals("All")
+                    || row[1].toString().equalsIgnoreCase(filterType);
+
+            if (keywordMatch && statusMatch && priorityMatch && typeMatch) {
+                filtered.add(row);
+            }
+        }
+
+        requestTableModel.replaceRows(filtered.toArray(Object[][]::new));
+        refreshPaginationFooter();
+        resizeTableSection();
+    }
+
+    private void showFilterDialog() {
+        FilterOption statusOption = new FilterOption("Status",
+                new String[]{"All", "SUBMITTED", "IN PROGRESS", "COMPLETED", "CANCELLED"}, filterStatus);
+        FilterOption priorityOption = new FilterOption("Priority",
+                new String[]{"All", "Low", "Medium", "High"}, filterPriority);
+        FilterOption typeOption = new FilterOption("Request Type",
+                new String[]{"All", "Electrical", "Plumbing", "Furniture"}, filterType);
+
+        if (UIHelper.showRequestFilterDialog(this, statusOption, priorityOption, typeOption)) {
+            filterStatus = statusOption.value;
+            filterPriority = priorityOption.value;
+            filterType = typeOption.value;
+            UIHelper.updateFilterButtonState(btnFilter, statusOption, priorityOption, typeOption);
+            applySearchAndFilter();
         }
     }
 

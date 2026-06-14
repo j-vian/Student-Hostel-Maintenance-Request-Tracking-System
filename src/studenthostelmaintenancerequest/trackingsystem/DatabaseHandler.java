@@ -467,11 +467,11 @@ public class DatabaseHandler implements DataAccess {
                 + RECENT_ACTIVITY_ORDER
                 + " LIMIT ?";
         List<Object[]> rows = queryManagerRows(sql, limit, null);
-        Object[][] data = new Object[rows.size()][5];
+        Object[][] data = new Object[rows.size()][6];
         for (int i = 0; i < rows.size(); i++) {
             Object[] row = rows.get(i);
             data[i] = new Object[]{
-                row[0], row[1], row[2], row[3], row[4]
+                row[0], row[1], row[2], row[3], row[7], row[4]
             };
         }
         return data;
@@ -485,11 +485,11 @@ public class DatabaseHandler implements DataAccess {
         sql += RECENT_ACTIVITY_ORDER;
 
         List<Object[]> rows = queryManagerRows(sql, 0, normalizeSearchId(requestIdSearch));
-        Object[][] data = new Object[rows.size()][6];
+        Object[][] data = new Object[rows.size()][7];
         for (int i = 0; i < rows.size(); i++) {
             Object[] row = rows.get(i);
             data[i] = new Object[]{
-                row[0], row[1], row[2], row[3], row[5], row[4]
+                row[0], row[1], row[2], row[3], row[5], row[7], row[4]
             };
         }
         return data;
@@ -504,11 +504,11 @@ public class DatabaseHandler implements DataAccess {
         sql += RECENT_ACTIVITY_ORDER;
 
         List<Object[]> rows = queryManagerRows(sql, 0, normalizeSearchId(requestIdSearch));
-        Object[][] data = new Object[rows.size()][5];
+        Object[][] data = new Object[rows.size()][7];
         for (int i = 0; i < rows.size(); i++) {
             Object[] row = rows.get(i);
             data[i] = new Object[]{
-                row[0], row[1], row[2], row[4], row[3]
+                row[0], row[1], row[2], row[5], row[7], row[4], row[3]
             };
         }
         return data;
@@ -522,11 +522,11 @@ public class DatabaseHandler implements DataAccess {
         sql += RECENT_ACTIVITY_ORDER;
 
         List<Object[]> rows = queryManagerRows(sql, 0, normalizeSearchId(requestIdSearch));
-        Object[][] data = new Object[rows.size()][7];
+        Object[][] data = new Object[rows.size()][8];
         for (int i = 0; i < rows.size(); i++) {
             Object[] row = rows.get(i);
             data[i] = new Object[]{
-                row[0], row[1], row[2], row[3], row[6], row[7], row[4]
+                row[0], row[1], row[2], row[3], row[6], row[5], row[7], row[4]
             };
         }
         return data;
@@ -649,7 +649,7 @@ public class DatabaseHandler implements DataAccess {
                         formatDisplayStatus(rs.getString("status")),
                         formatDate(dateRaised),
                         rs.getString("description"),
-                        rs.getString("priority")
+                        ManagerService.formatPriority(rs.getString("priority"))
                     });
                 }
             }

@@ -4,12 +4,15 @@
  */
 package studenthostelmaintenancerequest.trackingsystem.gui.manager;
 
+import java.util.ArrayList;
+import java.util.List;
 import studenthostelmaintenancerequest.trackingsystem.DatabaseException;
 import studenthostelmaintenancerequest.trackingsystem.ManagerService;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
+import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.FilterOption;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.ManagerManageRequestTableModel;
 import javax.swing.table.TableCellEditor;
 
@@ -28,6 +31,12 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
     private javax.swing.JLabel lblPagination;
     private javax.swing.JButton btnPagePrevious;
     private javax.swing.JButton btnPageNext;
+
+    private Object[][] allManageRows = new Object[0][0];
+    private String filterType = "All";
+    private String filterStaff = "All";
+    private String filterPriority = "All";
+    private String[] staffFilterOptions = new String[]{"All"};
 
     public ManagerManageRequestFrame() {
         initComponents();
@@ -71,13 +80,18 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
                 pnlTableSection, lblTableSection, scrTable,
                 lblPagination, btnPagePrevious, btnPageNext);
 
-        loadActiveRequests(null);
+        loadStaffFilterOptions();
+        loadActiveRequests();
 
         btnPagePrevious.addActionListener(e -> changePage(-1));
         btnPageNext.addActionListener(e -> changePage(1));
 
-        btnFilter.addActionListener(e -> loadActiveRequests(txtSearch.getInputText()));
-        txtSearch.addActionListener(e -> loadActiveRequests(txtSearch.getInputText()));
+        btnFilter.addActionListener(e -> showFilterDialog());
+        txtSearch.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            public void insertUpdate(javax.swing.event.DocumentEvent e) { loadActiveRequests(); }
+            public void removeUpdate(javax.swing.event.DocumentEvent e) { loadActiveRequests(); }
+            public void changedUpdate(javax.swing.event.DocumentEvent e) { loadActiveRequests(); }
+        });
 
         btnConfirmChanges.addActionListener(e -> {
             if (statusEditMode) {
@@ -94,17 +108,61 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
         });
     }
 
-    private void loadActiveRequests(String requestIdSearch) {
+    private void loadStaffFilterOptions() {
+        try {
+            String[] staff = ManagerService.getStaffComboOptions();
+            staffFilterOptions = new String[staff.length + 1];
+            staffFilterOptions[0] = "All";
+            System.arraycopy(staff, 0, staffFilterOptions, 1, staff.length);
+        } catch (DatabaseException ex) {
+            UIHelper.showDatabaseError(this, ex);
+            staffFilterOptions = new String[]{"All"};
+        }
+    }
+
+    private void loadActiveRequests() {
         if (statusEditMode) {
             return;
         }
         try {
-            Object[][] rows = ManagerService.getManageActiveRows(requestIdSearch);
-            requestTableModel.replaceRows(rows);
-            refreshPaginationFooter();
-            resizeTableSection();
+            allManageRows = ManagerService.getManageActiveRows(txtSearch.getInputText());
+            applyFilters();
         } catch (DatabaseException ex) {
             UIHelper.showDatabaseError(this, ex);
+        }
+    }
+
+    private void applyFilters() {
+        List<Object[]> filtered = new ArrayList<>();
+        for (Object[] row : allManageRows) {
+            boolean typeMatch = filterType.equals("All")
+                    || row[1].toString().equalsIgnoreCase(filterType);
+            boolean staffMatch = filterStaff.equals("All")
+                    || (row[3] != null && row[3].toString().equalsIgnoreCase(filterStaff));
+            boolean priorityMatch = filterPriority.equals("All")
+                    || row[5].toString().equalsIgnoreCase(filterPriority);
+            if (typeMatch && staffMatch && priorityMatch) {
+                filtered.add(row);
+            }
+        }
+        requestTableModel.replaceRows(filtered.toArray(Object[][]::new));
+        refreshPaginationFooter();
+        resizeTableSection();
+    }
+
+    private void showFilterDialog() {
+        FilterOption typeOption = new FilterOption("Request Type",
+                new String[]{"All", "Electrical", "Plumbing", "Furniture"}, filterType);
+        FilterOption staffOption = new FilterOption("Assigned Staff", staffFilterOptions, filterStaff);
+        FilterOption priorityOption = new FilterOption("Priority",
+                new String[]{"All", "Low", "Medium", "High"}, filterPriority);
+
+        if (UIHelper.showRequestFilterDialog(this, typeOption, staffOption, priorityOption)) {
+            filterType = typeOption.value;
+            filterStaff = staffOption.value;
+            filterPriority = priorityOption.value;
+            UIHelper.updateFilterButtonState(btnFilter, typeOption, staffOption, priorityOption);
+            applyFilters();
         }
     }
 
@@ -145,7 +203,7 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
     private void enterStatusEditMode() {
         statusEditMode = true;
         requestTableModel.setStatusColumnEditable(true);
-        tblRequests.getColumnModel().getColumn(5).setCellEditor(statusCellEditor);
+        tblRequests.getColumnModel().getColumn(UIHelper.MANAGE_REQUEST_COL_STATUS).setCellEditor(statusCellEditor);
         btnConfirmChanges.setText("Confirm Changes");
         UIHelper.styleManagerConfirmButton(btnConfirmChanges);
         tblRequests.repaint();
@@ -163,10 +221,10 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
         }
         statusEditMode = false;
         requestTableModel.setStatusColumnEditable(false);
-        tblRequests.getColumnModel().getColumn(5).setCellEditor(null);
+        tblRequests.getColumnModel().getColumn(UIHelper.MANAGE_REQUEST_COL_STATUS).setCellEditor(null);
         btnConfirmChanges.setText("Update");
         UIHelper.styleManagerUpdateButton(btnConfirmChanges);
-        loadActiveRequests(txtSearch.getInputText());
+        loadActiveRequests();
         tblRequests.repaint();
     }
 

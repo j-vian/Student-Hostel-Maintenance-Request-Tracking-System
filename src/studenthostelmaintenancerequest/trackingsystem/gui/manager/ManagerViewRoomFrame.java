@@ -76,7 +76,7 @@ public class ManagerViewRoomFrame extends javax.swing.JFrame {
             pnlRoomInformation.setDetails(
                     details.requestId,
                     details.roomNumber,
-                    details.placeName,
+                    ManagerService.formatBlockDisplay(details.roomNumber, details.placeName),
                     details.studentName,
                     details.requestType);
         } catch (DatabaseException ex) {
