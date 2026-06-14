@@ -83,22 +83,24 @@ public class viewRequestHistoryPage extends javax.swing.JFrame {
         jSeparator3.setBackground(new java.awt.Color(204, 204, 204));
         jSeparator3.setForeground(new java.awt.Color(204, 204, 204));
 
+        jTable2.setBackground(new java.awt.Color(255, 255, 255));
         jTable2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jTable2.setForeground(new java.awt.Color(0, 0, 0));
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"REQ001", "Electrical", "8 June 2026", "IN PROGRESS"},
-                {"REQ002", "Electrical", "8 June 2026", "SUBMITTED"},
-                {"REQ003", "Plumbing", "8 June 2026", "SUBMITTED"}
+                {"REQ001", "Electrical", "8 June 2026", "High", "IN PROGRESS"},
+                {"REQ001", "Electrical", "8 June 2026", "Medium", "SUBMITTED"},
+                {"REQ001", "Furniture", "8 June 2026", "Low", "SUBMITTED"}
             },
             new String [] {
-                "Request ID", "Request Type", "Date Raised", "Status"
+                "Request ID", "Request Type", "Date Raised", "Priority", "Status"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, true, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -233,8 +235,8 @@ public class viewRequestHistoryPage extends javax.swing.JFrame {
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 398, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(btnDashboard6, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnDashboard6, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
@@ -346,7 +348,41 @@ public class viewRequestHistoryPage extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDashboard4ActionPerformed
 
     private void btnDashboard6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDashboard6ActionPerformed
-        // TODO add your handling code here:
+       // Make sure they searched for something first
+    if (jTable2.getRowCount() == 0 && currentFilterType.equals("All")) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Please search for a Request ID first.");
+        return;
+    }
+
+    // Set up Dropdown menus for the popup
+    javax.swing.JComboBox<String> typeCombo = new javax.swing.JComboBox<>(new String[]{"All", "Electrical", "Plumbing", "Furniture"});
+    typeCombo.setSelectedItem(currentFilterType); // Remember previous choice
+
+    javax.swing.JComboBox<String> priorityCombo = new javax.swing.JComboBox<>(new String[]{"All", "High", "Medium", "Low"});
+    priorityCombo.setSelectedItem(currentFilterPriority);
+
+    javax.swing.JComboBox<String> statusCombo = new javax.swing.JComboBox<>(new String[]{"All", "SUBMITTED", "IN PROGRESS", "RESOLVED"});
+    statusCombo.setSelectedItem(currentFilterStatus);
+
+    // Group them together for the popup box
+    Object[] filterMenu = {
+        "Filter by Type:", typeCombo,
+        "Filter by Priority:", priorityCombo,
+        "Filter by Status:", statusCombo
+    };
+
+    // Show the popup dialog
+    int option = javax.swing.JOptionPane.showConfirmDialog(this, filterMenu, "Filter Request History", javax.swing.JOptionPane.OK_CANCEL_OPTION, javax.swing.JOptionPane.PLAIN_MESSAGE);
+
+    // If they click "OK", apply the filters and update the table
+    if (option == javax.swing.JOptionPane.OK_OPTION) {
+        currentFilterType = (String) typeCombo.getSelectedItem();
+        currentFilterPriority = (String) priorityCombo.getSelectedItem();
+        currentFilterStatus = (String) statusCombo.getSelectedItem();
+        
+        // Refresh the table with the new filters applied!
+        updateHistoryTable(); 
+    }
     }//GEN-LAST:event_btnDashboard6ActionPerformed
 
     private void btnDashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDashboardActionPerformed
@@ -386,7 +422,13 @@ public class viewRequestHistoryPage extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDashboard3ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-
+// 1. Reset filters to "All" every time a brand new search is made
+    currentFilterType = "All";
+    currentFilterPriority = "All";
+    currentFilterStatus = "All";
+    
+    // 2. Trigger the table update
+    updateHistoryTable();
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jTextField1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField1FocusGained
@@ -442,6 +484,67 @@ public class viewRequestHistoryPage extends javax.swing.JFrame {
             }
         });
     }
+    
+    
+    // --- 1. FILTER MEMORY ---
+    // These remember what filters are currently active. "All" means no filter.
+    private String currentFilterType = "All";
+    private String currentFilterPriority = "All";
+    private String currentFilterStatus = "All";
+
+    // --- 2. MOCK DATABASE ---
+    // Returns a list of all fake request history records
+    private java.util.List<String[]> getMockRequestHistory() {
+        java.util.List<String[]> history = new java.util.ArrayList<>();
+        
+        // Data format: {Request ID, Request Type, Date Raised, Priority, Status}
+        history.add(new String[]{"REQ001", "Electrical", "8 June 2026", "High", "IN PROGRESS"});
+        history.add(new String[]{"REQ001", "Electrical", "8 June 2026", "Medium", "SUBMITTED"});
+        history.add(new String[]{"REQ001", "Furniture", "8 June 2026", "Low", "SUBMITTED"});
+        history.add(new String[]{"REQ002", "Plumbing", "9 June 2026", "High", "RESOLVED"});
+        history.add(new String[]{"REQ003", "Electrical", "10 June 2026", "Low", "SUBMITTED"});
+        
+        return history;
+    }
+    
+    // --- 3. MASTER TABLE UPDATER ---
+    private void updateHistoryTable() {
+        String searchId = jTextField1.getText().trim().toUpperCase();
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable2.getModel();
+        
+        // Always clear the table first
+        model.setRowCount(0);
+
+        // If search is empty or has placeholder, stop here (Table stays empty)
+        if (searchId.isEmpty() || searchId.equalsIgnoreCase("Search by Request ID")) {
+            return;
+        }
+
+        java.util.List<String[]> allData = getMockRequestHistory();
+        boolean foundMatch = false;
+
+        // Loop through the mock database
+        for (String[] row : allData) {
+            // Check if the row matches the Search ID
+            boolean matchesSearch = row[0].equals(searchId);
+            
+            // Check if the row matches the current filters (or if filter is "All")
+            boolean matchesType = currentFilterType.equals("All") || row[1].equals(currentFilterType);
+            boolean matchesPriority = currentFilterPriority.equals("All") || row[3].equals(currentFilterPriority);
+            boolean matchesStatus = currentFilterStatus.equals("All") || row[4].equals(currentFilterStatus);
+
+            // If it passes ALL checks, add it to the table!
+            if (matchesSearch && matchesType && matchesPriority && matchesStatus) {
+                model.addRow(row);
+                foundMatch = true;
+            }
+        }
+
+        // Optional: Alert if nothing is found based on search
+        if (!foundMatch && currentFilterType.equals("All")) {
+             javax.swing.JOptionPane.showMessageDialog(this, "No history found for ID: " + searchId);
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDashboard;
@@ -463,4 +566,8 @@ public class viewRequestHistoryPage extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextPane jTextPane2;
     // End of variables declaration//GEN-END:variables
+
+    
+
+
 }

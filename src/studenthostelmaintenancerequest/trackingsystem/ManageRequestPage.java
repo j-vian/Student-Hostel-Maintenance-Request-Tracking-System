@@ -16,8 +16,27 @@ public class ManageRequestPage extends javax.swing.JFrame {
     /**
      * Creates new form staffDashboard
      */
+    
+    private boolean isTableEditable = false;
+    
     public ManageRequestPage() {
     initComponents();
+    
+    
+// 1. Create the dropdown menu
+    String[] statusOptions = {"SUBMITTED", "IN PROGRESS", "COMPLETED", "CANCELLED"};
+    javax.swing.JComboBox<String> statusDropdown = new javax.swing.JComboBox<>(statusOptions);
+    
+    // 2. Create a custom editor that checks our switch before opening
+    javax.swing.DefaultCellEditor customEditor = new javax.swing.DefaultCellEditor(statusDropdown) {
+        @Override
+        public boolean isCellEditable(java.util.EventObject e) {
+            return isTableEditable; // Only allow the dropdown to open if this is true!
+        }
+    };
+    
+    // 3. Apply it to the Status column (Column 3)
+    jTable2.getColumnModel().getColumn(3).setCellEditor(customEditor);
     
     btnDashboard1.setBackground(new java.awt.Color(173, 216, 230)); // Light Blue
     btnDashboard1.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12)); // Make it bold
@@ -99,7 +118,7 @@ public class ManageRequestPage extends javax.swing.JFrame {
                 java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -148,6 +167,11 @@ public class ManageRequestPage extends javax.swing.JFrame {
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField1ActionPerformed(evt);
+            }
+        });
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextField1KeyReleased(evt);
             }
         });
 
@@ -227,8 +251,15 @@ public class ManageRequestPage extends javax.swing.JFrame {
             .addComponent(jSeparator1)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(16, 16, 16)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel1)
+                        .addGap(231, 231, 231)
+                        .addComponent(btnDashboard4, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(15, 15, 15))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnDashboard2, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnDashboard3, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -248,17 +279,11 @@ public class ManageRequestPage extends javax.swing.JFrame {
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 398, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(btnDashboard5, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(btnDashboard6, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel1)
-                        .addGap(231, 231, 231)
-                        .addComponent(btnDashboard4, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(15, 15, 15))))
+                                        .addComponent(btnDashboard6, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(410, 410, 410)
+                                        .addComponent(btnDashboard5, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -276,9 +301,9 @@ public class ManageRequestPage extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jSeparator2)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(0, 19, Short.MAX_VALUE)
+                                .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 9, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -286,7 +311,7 @@ public class ManageRequestPage extends javax.swing.JFrame {
                                     .addComponent(btnDashboard6, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnDashboard5, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(19, 19, 19)
+                                .addGap(47, 47, 47)
                                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -363,12 +388,53 @@ public class ManageRequestPage extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDashboard4ActionPerformed
 
     private void btnDashboard5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDashboard5ActionPerformed
-        // TODO add your handling code here:
+                                           
+        // If the button currently says "Update"
+        if (btnDashboard5.getText().equals("Update")) {
+            
+            btnDashboard5.setText("Confirm Changes"); // Change the button text
+            isTableEditable = true;                   // Unlock the table dropdowns
+            
+        } 
+        // If the button currently says "Confirm Changes"
+        else {
+            
+            // CRITICAL STEP: If the user clicks the button while the dropdown is still open,
+            // we must force the table to stop editing so it saves their final choice!
+            if (jTable2.isEditing()) {
+                jTable2.getCellEditor().stopCellEditing();
+            }
+            
+            btnDashboard5.setText("Update");          // Change text back to normal
+            isTableEditable = false;                  // Lock the table again
+            
+            // Show the success popup
+            javax.swing.JOptionPane.showMessageDialog(this, "Changes Updated!");
+            
+            // (Note: Your future code to save the table data to your file/database will go here)
+        }
+    
     }//GEN-LAST:event_btnDashboard5ActionPerformed
 
     private void btnDashboard6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDashboard6ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnDashboard6ActionPerformed
+if (btnDashboard6.getText().equalsIgnoreCase("Filter")) {
+        
+        // 1. Set up the table sorter on your table (This enables the header clicking functionality)
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable2.getModel();
+        javax.swing.table.TableRowSorter<javax.swing.table.DefaultTableModel> sorter = new javax.swing.table.TableRowSorter<>(model);
+        jTable2.setRowSorter(sorter);
+        
+        // 2. Change the button text to let the user know they can turn it off
+        btnDashboard6.setText("Remove Filter");
+        
+    } else {
+        
+        // 3. Completely remove the sorter (This disables header clicking and resets the table rows)
+        jTable2.setRowSorter(null);
+        
+        // 4. Reset the button text back to original
+        btnDashboard6.setText("Filter");
+    }    }//GEN-LAST:event_btnDashboard6ActionPerformed
 
     private void btnDashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDashboardActionPerformed
         // Create and show the staffDashboard window
@@ -425,6 +491,10 @@ public class ManageRequestPage extends javax.swing.JFrame {
             jTextField1.setText("Search by Request ID");
         }
     }//GEN-LAST:event_jTextField1FocusLost
+
+    private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
+       
+    }//GEN-LAST:event_jTextField1KeyReleased
 
     /**
      * @param args the command line arguments
@@ -483,4 +553,5 @@ public class ManageRequestPage extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextPane jTextPane2;
     // End of variables declaration//GEN-END:variables
+
 }

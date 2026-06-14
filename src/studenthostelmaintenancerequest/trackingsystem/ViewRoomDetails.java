@@ -19,6 +19,9 @@ public class ViewRoomDetails extends javax.swing.JFrame {
     public ViewRoomDetails() {
     initComponents();
     
+    javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable2.getModel();
+    model.setRowCount(0);
+    
     btnDashboard2.setBackground(new java.awt.Color(173, 216, 230)); // Light Blue
     btnDashboard2.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12)); // Make it bold
 
@@ -84,10 +87,12 @@ public class ViewRoomDetails extends javax.swing.JFrame {
         jSeparator3.setBackground(new java.awt.Color(204, 204, 204));
         jSeparator3.setForeground(new java.awt.Color(204, 204, 204));
 
+        jTable2.setBackground(new java.awt.Color(255, 255, 255));
         jTable2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jTable2.setForeground(new java.awt.Color(0, 0, 0));
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"REQ001", "Electrical", "8 June 2026", "IN PROGRESS"}
+
             },
             new String [] {
                 "Room Number", "Block", "Student Name", "Request Type"
@@ -266,8 +271,8 @@ public class ViewRoomDetails extends javax.swing.JFrame {
                                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(332, 332, 332)))
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(300, 300, 300)))
                         .addContainerGap())
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(45, 45, 45)
@@ -376,7 +381,42 @@ public class ViewRoomDetails extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDashboard3ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-
+// 1. Get the text the user typed
+    String searchId = jTextField1.getText().trim();
+    
+    // 2. Get the table model
+    javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable2.getModel();
+    
+    // 3. Always clear the table before showing new results
+    model.setRowCount(0);
+    
+    // 4. If they search an empty string or the placeholder, just stop here
+    if (searchId.isEmpty() || searchId.equalsIgnoreCase("Search by Request ID")) {
+        jTextPane3.setText("ID: "); // Reset the text pane to default
+        return; 
+    }
+    
+    // 5. Call the fake database query
+    String[] matchData = fetchRequestFromDatabase(searchId);
+    
+    // 6. Check if we found a match
+    if (matchData != null) {
+        // Show the result in the table
+        model.addRow(matchData);
+        
+        // --> ADD THIS: Update the text pane with the found ID
+        jTextPane3.setText("ID: " + searchId.toUpperCase());
+        
+    } else {
+        // If not found, reset the text pane to default
+        jTextPane3.setText("ID: ");
+        
+        // Show an error popup
+        javax.swing.JOptionPane.showMessageDialog(this, 
+            "No maintenance request found for ID: " + searchId, 
+            "Not Found", 
+            javax.swing.JOptionPane.WARNING_MESSAGE);
+    }
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jTextField1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField1FocusLost
@@ -454,4 +494,22 @@ public class ViewRoomDetails extends javax.swing.JFrame {
     private javax.swing.JTextPane jTextPane2;
     private javax.swing.JTextPane jTextPane3;
     // End of variables declaration//GEN-END:variables
+
+// This is your fake database! It just uses a switch statement for now.
+private String[] fetchRequestFromDatabase(String requestId) {
+    String id = requestId.trim().toUpperCase();
+    
+    // Fake data matching the columns: {Room Number, Block, Student Name, Request Type}
+    switch (id) {
+        case "REQ001":
+            return new String[]{"402-B", "Tower B, DHUAM", "Alex Johnson", "Electrical"};
+        case "REQ002":
+            return new String[]{"105-A", "Tower A, DHUAM", "Sarah Jenkins", "Electrical"};
+        case "REQ003":
+            return new String[]{"312-C", "Tower C, DHUAM", "Michael Smith", "Plumbing"};
+        default:
+            return null; // Returns nothing if they search an ID that isn't listed above
+    }
+}
+
 }

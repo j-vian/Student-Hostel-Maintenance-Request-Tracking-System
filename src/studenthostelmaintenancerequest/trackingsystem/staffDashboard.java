@@ -19,6 +19,8 @@ public class staffDashboard extends javax.swing.JFrame {
     public staffDashboard() {
     initComponents();
     
+    
+    
     btnDashboard.setBackground(new java.awt.Color(173, 216, 230)); // Light Blue
     btnDashboard.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12)); // Make it bold
 
