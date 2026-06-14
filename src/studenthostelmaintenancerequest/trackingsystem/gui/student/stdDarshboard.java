@@ -40,6 +40,8 @@ public class stdDarshboard extends javax.swing.JFrame {
 
         tblProfile.setModel(UIHelper.createStudentProfileTableModel(new Object[0][0]));
         UIHelper.styleStudentProfileTable(lblProfileSection, tblProfile, scrProfile);
+        UIHelper.layoutStudentProfileSection(pnlProfileSection, lblProfileSection, scrProfile);
+        UIHelper.setStudentProfileTableRows(tblProfile, scrProfile, new Object[0][0]);
 
         activeTableModel = UIHelper.createStudentActiveRequestTableModel(new Object[0][0]);
         tblActive.setModel(activeTableModel);
@@ -69,11 +71,13 @@ public class stdDarshboard extends javax.swing.JFrame {
 
     private void loadDashboardData(Student student) {
         try {
-            tblProfile.setModel(UIHelper.createStudentProfileTableModel(
-                    StudentService.getProfileRows(student)));
+            UIHelper.setStudentProfileTableRows(tblProfile, scrProfile,
+                    StudentService.getProfileRows(student));
             activeTableModel.replaceRows(StudentService.getActiveRequestRows(student));
             refreshActivePagination();
             resizeActiveTableSection();
+            UIHelper.sizeStudentProfileTable(tblProfile, scrProfile);
+            pnlProfileSection.revalidate();
         } catch (DatabaseException ex) {
             UIHelper.showDatabaseError(this, ex);
         }
