@@ -11,12 +11,12 @@ import javax.swing.ImageIcon;
  *
  * @author farou
  */
-public class staffDashboard extends javax.swing.JFrame {
+public class ManageRequestPage extends javax.swing.JFrame {
 
     /**
      * Creates new form staffDashboard
      */
-    public staffDashboard() {
+    public ManageRequestPage() {
     initComponents();
 
     ImageIcon icon = (ImageIcon) jLabel3.getIcon();
@@ -43,22 +43,21 @@ public class staffDashboard extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         jSeparator2 = new javax.swing.JSeparator();
         jLabel1 = new javax.swing.JLabel();
-        btnDashboard = new javax.swing.JButton();
-        btnDashboard1 = new javax.swing.JButton();
-        btnDashboard2 = new javax.swing.JButton();
-        btnDashboard3 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jSeparator3 = new javax.swing.JSeparator();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTextPane2 = new javax.swing.JTextPane();
         jLabel3 = new javax.swing.JLabel();
         btnDashboard4 = new javax.swing.JButton();
+        jTextField1 = new javax.swing.JTextField();
+        btnDashboard5 = new javax.swing.JButton();
+        btnDashboard6 = new javax.swing.JButton();
+        btnDashboard = new javax.swing.JButton();
+        btnDashboard1 = new javax.swing.JButton();
+        btnDashboard2 = new javax.swing.JButton();
+        btnDashboard3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -75,89 +74,12 @@ public class staffDashboard extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(51, 51, 51));
         jLabel1.setText("Student Hostel Maintenance Request & Tracking System");
 
-        btnDashboard.setBackground(new java.awt.Color(255, 255, 255));
-        btnDashboard.setForeground(new java.awt.Color(51, 51, 51));
-        btnDashboard.setText("Dashboard");
-        btnDashboard.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.cyan, null));
-        btnDashboard.setBorderPainted(false);
-        btnDashboard.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnDashboard.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDashboardActionPerformed(evt);
-            }
-        });
-
-        btnDashboard1.setBackground(new java.awt.Color(255, 255, 255));
-        btnDashboard1.setForeground(new java.awt.Color(51, 51, 51));
-        btnDashboard1.setText("Submit Maintenance \nRequest");
-        btnDashboard1.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.cyan, null));
-        btnDashboard1.setBorderPainted(false);
-        btnDashboard1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDashboard1ActionPerformed(evt);
-            }
-        });
-
-        btnDashboard2.setBackground(new java.awt.Color(255, 255, 255));
-        btnDashboard2.setForeground(new java.awt.Color(51, 51, 51));
-        btnDashboard2.setText("View Room Details");
-        btnDashboard2.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.cyan, null));
-        btnDashboard2.setBorderPainted(false);
-        btnDashboard2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDashboard2ActionPerformed(evt);
-            }
-        });
-
-        btnDashboard3.setBackground(new java.awt.Color(255, 255, 255));
-        btnDashboard3.setForeground(new java.awt.Color(51, 51, 51));
-        btnDashboard3.setText("View Request History");
-        btnDashboard3.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.cyan, null));
-        btnDashboard3.setBorderPainted(false);
-        btnDashboard3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDashboard3ActionPerformed(evt);
-            }
-        });
-
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel2.setText("Dashboard");
+        jLabel2.setText("Submit Maintenance Request");
 
         jSeparator3.setBackground(new java.awt.Color(204, 204, 204));
         jSeparator3.setForeground(new java.awt.Color(204, 204, 204));
-
-        jTable1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {"Staff ID", "ST12345"}
-            },
-            new String [] {
-                "Name", "John Doe"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Object.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane1.setViewportView(jTable1);
-
-        jTextPane1.setEditable(false);
-        jTextPane1.setBackground(new java.awt.Color(204, 204, 204));
-        jTextPane1.setForeground(new java.awt.Color(0, 0, 0));
-        jTextPane1.setText("STAFF PROFILE");
-        jScrollPane2.setViewportView(jTextPane1);
 
         jTable2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
@@ -208,15 +130,102 @@ public class staffDashboard extends javax.swing.JFrame {
             }
         });
 
+        jTextField1.setBackground(new java.awt.Color(255, 255, 255));
+        jTextField1.setForeground(new java.awt.Color(204, 204, 204));
+        jTextField1.setText("Search by Request ID");
+        jTextField1.setName(""); // NOI18N
+        jTextField1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jTextField1FocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTextField1FocusLost(evt);
+            }
+        });
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
+
+        btnDashboard5.setBackground(new java.awt.Color(255, 255, 255));
+        btnDashboard5.setForeground(new java.awt.Color(51, 51, 51));
+        btnDashboard5.setText("Update");
+        btnDashboard5.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.cyan, null));
+        btnDashboard5.setBorderPainted(false);
+        btnDashboard5.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnDashboard5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDashboard5ActionPerformed(evt);
+            }
+        });
+
+        btnDashboard6.setBackground(new java.awt.Color(255, 255, 255));
+        btnDashboard6.setForeground(new java.awt.Color(51, 51, 51));
+        btnDashboard6.setText("Filter");
+        btnDashboard6.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.cyan, null));
+        btnDashboard6.setBorderPainted(false);
+        btnDashboard6.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnDashboard6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDashboard6ActionPerformed(evt);
+            }
+        });
+
+        btnDashboard.setBackground(new java.awt.Color(255, 255, 255));
+        btnDashboard.setForeground(new java.awt.Color(51, 51, 51));
+        btnDashboard.setText("Dashboard");
+        btnDashboard.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.cyan, null));
+        btnDashboard.setBorderPainted(false);
+        btnDashboard.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnDashboard.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDashboardActionPerformed(evt);
+            }
+        });
+
+        btnDashboard1.setBackground(new java.awt.Color(255, 255, 255));
+        btnDashboard1.setForeground(new java.awt.Color(51, 51, 51));
+        btnDashboard1.setText("Submit Maintenance \nRequest");
+        btnDashboard1.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.cyan, null));
+        btnDashboard1.setBorderPainted(false);
+        btnDashboard1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDashboard1ActionPerformed(evt);
+            }
+        });
+
+        btnDashboard2.setBackground(new java.awt.Color(255, 255, 255));
+        btnDashboard2.setForeground(new java.awt.Color(51, 51, 51));
+        btnDashboard2.setText("View Room Details");
+        btnDashboard2.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.cyan, null));
+        btnDashboard2.setBorderPainted(false);
+        btnDashboard2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDashboard2ActionPerformed(evt);
+            }
+        });
+
+        btnDashboard3.setBackground(new java.awt.Color(255, 255, 255));
+        btnDashboard3.setForeground(new java.awt.Color(51, 51, 51));
+        btnDashboard3.setText("View Request History");
+        btnDashboard3.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.cyan, null));
+        btnDashboard3.setBorderPainted(false);
+        btnDashboard3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDashboard3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSeparator1)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(16, 16, 16)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnDashboard2, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnDashboard3, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -224,71 +233,72 @@ public class staffDashboard extends javax.swing.JFrame {
                             .addComponent(btnDashboard, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 3, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 552, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 443, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(3, 3, 3)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jLabel2))
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGap(21, 21, 21)
+                                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 398, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 443, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 443, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                .addContainerGap(112, Short.MAX_VALUE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jSeparator3))))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                            .addComponent(btnDashboard5, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(btnDashboard6, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(231, 231, 231)
                         .addComponent(btnDashboard4, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(20, 20, 20))))
+                        .addGap(15, 15, 15))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(12, 12, 12)
+                .addGap(13, 13, 13)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel3)
                     .addComponent(btnDashboard4, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(10, 10, 10)
+                .addGap(12, 12, 12)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jSeparator2))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jSeparator2)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(btnDashboard, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnDashboard1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnDashboard2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnDashboard3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(36, 36, 36))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(0, 19, Short.MAX_VALUE)
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 9, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnDashboard6, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnDashboard5, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(19, 19, 19)
                                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 240, Short.MAX_VALUE)))
-                .addContainerGap())
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(262, 262, 262)))
+                        .addContainerGap())
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(45, 45, 45)
+                        .addComponent(btnDashboard, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnDashboard1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnDashboard2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnDashboard3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -304,6 +314,58 @@ public class staffDashboard extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnDashboard4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDashboard4ActionPerformed
+        // 1. Create a popup dropdown menu
+        javax.swing.JPopupMenu popup = new javax.swing.JPopupMenu();
+
+        // --> NEW: Apply an etched border to the popup menu <--
+        popup.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        // 2. Create the "Log out" menu option and make the text red
+        javax.swing.JMenuItem logoutOption = new javax.swing.JMenuItem("Log out");
+        logoutOption.setForeground(java.awt.Color.RED);
+
+        // 3. Add an action for when the red "Log out" option is clicked
+        logoutOption.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                // Show the Yes/No confirmation dialog
+                int choice = javax.swing.JOptionPane.showConfirmDialog(
+                    null,
+                    "Log out?",
+                    "Logout Confirmation",
+                    javax.swing.JOptionPane.YES_NO_OPTION,
+                    javax.swing.JOptionPane.QUESTION_MESSAGE
+                );
+
+                // If YES is clicked, find the main window and close it
+                if (choice == javax.swing.JOptionPane.YES_OPTION) {
+                    java.awt.Window currentWindow = javax.swing.SwingUtilities.getWindowAncestor(
+                        (java.awt.Component) evt.getSource()
+                    );
+                    if (currentWindow != null) {
+                        currentWindow.dispose();
+                    }
+                }
+            }
+        });
+
+        // 4. Add the red option to the popup menu
+        popup.add(logoutOption);
+
+        // 5. Show the popup menu exactly underneath btnDashboard4
+        javax.swing.JButton button = (javax.swing.JButton) evt.getSource();
+        popup.show(button, 0, button.getHeight());
+
+    }//GEN-LAST:event_btnDashboard4ActionPerformed
+
+    private void btnDashboard5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDashboard5ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnDashboard5ActionPerformed
+
+    private void btnDashboard6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDashboard6ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnDashboard6ActionPerformed
 
     private void btnDashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDashboardActionPerformed
         // TODO add your handling code here:
@@ -321,49 +383,25 @@ public class staffDashboard extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnDashboard3ActionPerformed
 
-    private void btnDashboard4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDashboard4ActionPerformed
-// 1. Create a popup dropdown menu
-        javax.swing.JPopupMenu popup = new javax.swing.JPopupMenu();
-        
-        // --> NEW: Apply an etched border to the popup menu <--
-        popup.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        
-        // 2. Create the "Log out" menu option and make the text red
-        javax.swing.JMenuItem logoutOption = new javax.swing.JMenuItem("Log out");
-        logoutOption.setForeground(java.awt.Color.RED);
-        
-        // 3. Add an action for when the red "Log out" option is clicked
-        logoutOption.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                // Show the Yes/No confirmation dialog
-                int choice = javax.swing.JOptionPane.showConfirmDialog(
-                        null, 
-                        "Log out?", 
-                        "Logout Confirmation", 
-                        javax.swing.JOptionPane.YES_NO_OPTION,
-                        javax.swing.JOptionPane.QUESTION_MESSAGE
-                );
-                
-                // If YES is clicked, find the main window and close it
-                if (choice == javax.swing.JOptionPane.YES_OPTION) {
-                    java.awt.Window currentWindow = javax.swing.SwingUtilities.getWindowAncestor(
-                        (java.awt.Component) evt.getSource()
-                    );
-                    if (currentWindow != null) {
-                        currentWindow.dispose();
-                    }
-                }
-            }
-        });
-        
-        // 4. Add the red option to the popup menu
-        popup.add(logoutOption);
-        
-        // 5. Show the popup menu exactly underneath btnDashboard4
-        javax.swing.JButton button = (javax.swing.JButton) evt.getSource();
-        popup.show(button, 0, button.getHeight());
-    
-    }//GEN-LAST:event_btnDashboard4ActionPerformed
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void jTextField1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField1FocusGained
+       // Clears the placeholder when you click inside
+        if (jTextField1.getText().equals("Search by Request ID")) {
+            jTextField1.setText("");
+            jTextField1.setForeground(java.awt.Color.BLACK);
+        }
+    }//GEN-LAST:event_jTextField1FocusGained
+
+    private void jTextField1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField1FocusLost
+        // Puts the placeholder back if you leave the box empty
+        if (jTextField1.getText().isEmpty()) {
+            jTextField1.setForeground(java.awt.Color.GRAY);
+            jTextField1.setText("Search by Request ID");
+        }
+    }//GEN-LAST:event_jTextField1FocusLost
 
     /**
      * @param args the command line arguments
@@ -382,20 +420,21 @@ public class staffDashboard extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(staffDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ManageRequestPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(staffDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ManageRequestPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(staffDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ManageRequestPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(staffDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ManageRequestPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new staffDashboard().setVisible(true);
+                new ManageRequestPage().setVisible(true);
             }
         });
     }
@@ -406,20 +445,19 @@ public class staffDashboard extends javax.swing.JFrame {
     private javax.swing.JButton btnDashboard2;
     private javax.swing.JButton btnDashboard3;
     private javax.swing.JButton btnDashboard4;
+    private javax.swing.JButton btnDashboard5;
+    private javax.swing.JButton btnDashboard6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
-    private javax.swing.JTextPane jTextPane1;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextPane jTextPane2;
     // End of variables declaration//GEN-END:variables
 }
