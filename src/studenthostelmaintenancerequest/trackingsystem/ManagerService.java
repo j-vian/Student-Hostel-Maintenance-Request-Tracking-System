@@ -72,6 +72,13 @@ public final class ManagerService {
         for (Object[] row : rows) {
             String requestId = String.valueOf(row[0]);
             Status status = parseDisplayStatus(String.valueOf(row[5]));
+            if (status == Status.IN_PROGRESS) {
+                continue;
+            }
+            if (status != Status.COMPLETED && status != Status.CANCELLED) {
+                throw new DatabaseException(
+                        "Active requests can only be set to COMPLETED or CANCELLED.");
+            }
             db.updateRequestStatus(requestId, status, changedBy);
         }
     }

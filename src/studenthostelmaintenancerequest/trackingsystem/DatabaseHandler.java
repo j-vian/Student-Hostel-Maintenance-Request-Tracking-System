@@ -369,22 +369,30 @@ public class DatabaseHandler implements DataAccess {
         return requests.length == 0 ? null : requests[0];
     }
 
+    private static final String RECENT_ACTIVITY_ORDER = """
+             ORDER BY COALESCE(
+               (SELECT MAX(h.changed_at)
+                FROM request_status_history h
+                WHERE h.request_id = mr.request_id),
+               mr.date_raised
+             ) DESC""";
+
     @Override
     public MaintenanceRequest[] fetchAllRequests() throws DatabaseException {
-        return fetchRequests(BASE_REQUEST_QUERY + " ORDER BY mr.date_raised DESC");
+        return fetchRequests(BASE_REQUEST_QUERY + RECENT_ACTIVITY_ORDER);
     }
 
     @Override
     public MaintenanceRequest[] fetchRequestsByStudent(String studentId) throws DatabaseException {
         return fetchRequests(
-                BASE_REQUEST_QUERY + " WHERE mr.student_id = ? ORDER BY mr.date_raised DESC",
+                BASE_REQUEST_QUERY + " WHERE mr.student_id = ?" + RECENT_ACTIVITY_ORDER,
                 studentId.trim());
     }
 
     @Override
     public MaintenanceRequest[] fetchRequestsByStaff(String staffId) throws DatabaseException {
         return fetchRequests(
-                BASE_REQUEST_QUERY + " WHERE mr.assigned_staff_id = ? ORDER BY mr.date_raised DESC",
+                BASE_REQUEST_QUERY + " WHERE mr.assigned_staff_id = ?" + RECENT_ACTIVITY_ORDER,
                 staffId.trim());
     }
 
@@ -450,7 +458,10 @@ public class DatabaseHandler implements DataAccess {
     }
 
     public Object[][] fetchOverviewRequestRows(int limit) throws DatabaseException {
-        String sql = MANAGER_LIST_QUERY + " ORDER BY mr.date_raised DESC LIMIT ?";
+        String sql = MANAGER_LIST_QUERY
+                + " WHERE mr.status IN ('SUBMITTED', 'IN_PROGRESS')"
+                + RECENT_ACTIVITY_ORDER
+                + " LIMIT ?";
         List<Object[]> rows = queryManagerRows(sql, limit, null);
         Object[][] data = new Object[rows.size()][5];
         for (int i = 0; i < rows.size(); i++) {
@@ -467,7 +478,7 @@ public class DatabaseHandler implements DataAccess {
         if (!isBlank(requestIdSearch)) {
             sql += " AND UPPER(mr.request_id) LIKE ?";
         }
-        sql += " ORDER BY mr.date_raised DESC";
+        sql += RECENT_ACTIVITY_ORDER;
 
         List<Object[]> rows = queryManagerRows(sql, 0, normalizeSearchId(requestIdSearch));
         Object[][] data = new Object[rows.size()][6];
@@ -486,7 +497,7 @@ public class DatabaseHandler implements DataAccess {
         if (!isBlank(requestIdSearch)) {
             sql += " AND UPPER(mr.request_id) LIKE ?";
         }
-        sql += " ORDER BY mr.date_raised DESC";
+        sql += RECENT_ACTIVITY_ORDER;
 
         List<Object[]> rows = queryManagerRows(sql, 0, normalizeSearchId(requestIdSearch));
         Object[][] data = new Object[rows.size()][5];
@@ -504,7 +515,7 @@ public class DatabaseHandler implements DataAccess {
         if (!isBlank(requestIdSearch)) {
             sql += " WHERE UPPER(mr.request_id) LIKE ?";
         }
-        sql += " ORDER BY mr.date_raised DESC";
+        sql += RECENT_ACTIVITY_ORDER;
 
         List<Object[]> rows = queryManagerRows(sql, 0, normalizeSearchId(requestIdSearch));
         Object[][] data = new Object[rows.size()][7];
@@ -518,6 +529,19 @@ public class DatabaseHandler implements DataAccess {
     }
 
     public ManagerRoomDetails fetchRoomDetailsByRequestId(String requestId) throws DatabaseException {
+        return fetchRoomDetails(requestId, null);
+    }
+
+    public ManagerRoomDetails fetchRoomDetailsForAssignedStaff(String requestId, String staffId)
+            throws DatabaseException {
+        if (isBlank(staffId)) {
+            return null;
+        }
+        return fetchRoomDetails(requestId, staffId.trim());
+    }
+
+    private ManagerRoomDetails fetchRoomDetails(String requestId, String assignedStaffId)
+            throws DatabaseException {
         if (isBlank(requestId)) {
             return null;
         }
@@ -531,10 +555,16 @@ public class DatabaseHandler implements DataAccess {
                 INNER JOIN rooms r ON mr.room_id = r.room_id
                 WHERE UPPER(mr.request_id) = ?
                 """;
+        if (assignedStaffId != null) {
+            sql += " AND mr.assigned_staff_id = ?";
+        }
 
         try (Connection conn = openConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, requestId.trim().toUpperCase());
+            if (assignedStaffId != null) {
+                ps.setString(2, assignedStaffId);
+            }
             try (ResultSet rs = ps.executeQuery()) {
                 if (!rs.next()) {
                     return null;

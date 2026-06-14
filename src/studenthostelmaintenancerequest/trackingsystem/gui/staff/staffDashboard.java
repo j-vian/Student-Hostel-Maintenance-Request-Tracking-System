@@ -1,13 +1,16 @@
 package studenthostelmaintenancerequest.trackingsystem.gui.staff;
 
 import javax.swing.JLabel;
+import studenthostelmaintenancerequest.trackingsystem.DatabaseException;
+import studenthostelmaintenancerequest.trackingsystem.Staff;
+import studenthostelmaintenancerequest.trackingsystem.StaffService;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.StudentActiveRequestTableModel;
 
 /**
- * Staff dashboard — profile summary and active maintenance requests.
+ * Staff dashboard — profile summary and in-progress assigned requests.
  */
 public class staffDashboard extends javax.swing.JFrame {
 
@@ -22,6 +25,11 @@ public class staffDashboard extends javax.swing.JFrame {
     }
 
     private void customizeForm() {
+        Staff staff = StaffService.requireStaff(this);
+        if (staff == null) {
+            return;
+        }
+
         UIHelper.configureStaffShell(this,
                 pnlHeader, pnlSidebar, pnlMain, pnlPageHeader,
                 lblAppTitle, lblPageTitle, pnlHeaderLogo,
@@ -34,10 +42,9 @@ public class staffDashboard extends javax.swing.JFrame {
         tblProfile.setModel(UIHelper.createStudentProfileTableModel(new Object[0][0]));
         UIHelper.styleStudentProfileTable(lblProfileSection, tblProfile, scrProfile);
         UIHelper.layoutStudentProfileSection(pnlProfileSection, lblProfileSection, scrProfile);
-        UIHelper.setStudentProfileTableRows(tblProfile, scrProfile, UIHelper.buildStaffProfileMockRows());
+        UIHelper.setStudentProfileTableRows(tblProfile, scrProfile, new Object[0][0]);
 
-        activeTableModel = UIHelper.createStudentActiveRequestTableModel(
-                UIHelper.buildStaffDashboardActiveMockRows());
+        activeTableModel = UIHelper.createStudentActiveRequestTableModel(new Object[0][0]);
         tblActive.setModel(activeTableModel);
         UIHelper.styleManagerTableSection(lblActiveSection, tblActive, scrActive);
         UIHelper.applyStudentActiveRequestTableRenderers(tblActive);
@@ -53,12 +60,28 @@ public class staffDashboard extends javax.swing.JFrame {
         btnActivePrevious.addActionListener(e -> changeActivePage(-1));
         btnActiveNext.addActionListener(e -> changeActivePage(1));
 
+        loadDashboardData(staff);
+
         UIHelper.showManagerFrame(this);
         javax.swing.SwingUtilities.invokeLater(() -> {
             UIHelper.sizeStudentProfileTable(tblProfile, scrProfile);
             resizeActiveTableSection();
             pnlProfileSection.revalidate();
         });
+    }
+
+    private void loadDashboardData(Staff staff) {
+        try {
+            UIHelper.setStudentProfileTableRows(tblProfile, scrProfile,
+                    StaffService.getProfileRows(staff));
+            activeTableModel.replaceRows(StaffService.getDashboardActiveRows(staff));
+            refreshActivePagination();
+            resizeActiveTableSection();
+            UIHelper.sizeStudentProfileTable(tblProfile, scrProfile);
+            pnlProfileSection.revalidate();
+        } catch (DatabaseException ex) {
+            UIHelper.showDatabaseError(this, ex);
+        }
     }
 
     private void changeActivePage(int direction) {

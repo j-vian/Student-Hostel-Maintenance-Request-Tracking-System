@@ -4,6 +4,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JFrame;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
 import studenthostelmaintenancerequest.trackingsystem.gui.manager.ManagerDashboardFrame;
+import studenthostelmaintenancerequest.trackingsystem.gui.staff.staffDashboard;
 import studenthostelmaintenancerequest.trackingsystem.gui.student.stdDarshboard;
 
 /**
@@ -78,10 +79,7 @@ public final class AuthService {
                 UIHelper.navigateTo(currentFrame, new stdDarshboard());
                 break;
             case STAFF:
-                JOptionPane.showMessageDialog(currentFrame,
-                        "Staff login successful.\nStaff dashboard GUI is still being completed by your team.",
-                        "Login",
-                        JOptionPane.INFORMATION_MESSAGE);
+                UIHelper.navigateTo(currentFrame, new staffDashboard());
                 break;
             default:
                 showError(currentFrame, "Unsupported account role.");

@@ -3,6 +3,9 @@ package studenthostelmaintenancerequest.trackingsystem.gui.staff;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JLabel;
+import studenthostelmaintenancerequest.trackingsystem.DatabaseException;
+import studenthostelmaintenancerequest.trackingsystem.Staff;
+import studenthostelmaintenancerequest.trackingsystem.StaffService;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.AppColors;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton;
@@ -31,6 +34,11 @@ public class viewRequestHistoryPage extends javax.swing.JFrame {
     }
 
     private void customizeForm() {
+        Staff staff = StaffService.requireStaff(this);
+        if (staff == null) {
+            return;
+        }
+
         UIHelper.configureStaffShell(this,
                 pnlHeader, pnlSidebar, pnlMain, pnlPageHeader,
                 lblAppTitle, lblPageTitle, pnlHeaderLogo,
@@ -45,8 +53,7 @@ public class viewRequestHistoryPage extends javax.swing.JFrame {
         UIHelper.styleManagerFilterButton(btnFilter);
 
         lblTableSection.setText("Maintenance Request History");
-        allHistoryRows = UIHelper.buildStaffHistoryMockRows();
-        historyTableModel = UIHelper.createStudentHistoryTableModel(allHistoryRows);
+        historyTableModel = UIHelper.createStudentHistoryTableModel(new Object[0][0]);
         tblHistory.setModel(historyTableModel);
         UIHelper.styleManagerTableSection(lblTableSection, tblHistory, scrHistory);
         UIHelper.applyStudentHistoryTableRenderers(tblHistory);
@@ -68,8 +75,19 @@ public class viewRequestHistoryPage extends javax.swing.JFrame {
         btnPagePrevious.addActionListener(e -> changePage(-1));
         btnPageNext.addActionListener(e -> changePage(1));
 
+        loadHistoryData(staff);
+
         UIHelper.showManagerFrame(this);
         resizeTableSection();
+    }
+
+    private void loadHistoryData(Staff staff) {
+        try {
+            allHistoryRows = StaffService.getHistoryRequestRows(staff);
+            applySearchAndFilter();
+        } catch (DatabaseException ex) {
+            UIHelper.showDatabaseError(this, ex);
+        }
     }
 
     private void applySearchAndFilter() {

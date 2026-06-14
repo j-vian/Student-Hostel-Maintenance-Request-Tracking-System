@@ -1,5 +1,9 @@
 package studenthostelmaintenancerequest.trackingsystem.gui.staff;
 
+import studenthostelmaintenancerequest.trackingsystem.DatabaseException;
+import studenthostelmaintenancerequest.trackingsystem.ManagerRoomDetails;
+import studenthostelmaintenancerequest.trackingsystem.Staff;
+import studenthostelmaintenancerequest.trackingsystem.StaffService;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerRoomInformationPanel;
@@ -11,6 +15,7 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
  */
 public class ViewRoomDetails extends javax.swing.JFrame {
 
+    private Staff staff;
     private PlaceholderTextField txtSearch;
     private ManagerRoomInformationPanel pnlRoomInformation;
 
@@ -20,6 +25,11 @@ public class ViewRoomDetails extends javax.swing.JFrame {
     }
 
     private void customizeForm() {
+        staff = StaffService.requireStaff(this);
+        if (staff == null) {
+            return;
+        }
+
         UIHelper.configureStaffShell(this,
                 pnlHeader, pnlSidebar, pnlMain, pnlPageHeader,
                 lblAppTitle, lblPageTitle, pnlHeaderLogo,
@@ -51,10 +61,20 @@ public class ViewRoomDetails extends javax.swing.JFrame {
             pnlRoomInformation.clearDetails();
             return;
         }
-        if ("REQ001".equalsIgnoreCase(requestId)) {
+        try {
+            ManagerRoomDetails details = StaffService.lookupRoomDetails(staff, requestId);
+            if (details == null) {
+                pnlRoomInformation.clearDetails();
+                return;
+            }
             pnlRoomInformation.setDetails(
-                    "REQ001", "402-B", "Tower B, DHUAM", "Alex Johnson", "Electrical");
-        } else {
+                    details.requestId,
+                    details.roomNumber,
+                    details.placeName,
+                    details.studentName,
+                    details.requestType);
+        } catch (DatabaseException ex) {
+            UIHelper.showDatabaseError(this, ex);
             pnlRoomInformation.clearDetails();
         }
         pnlMain.revalidate();

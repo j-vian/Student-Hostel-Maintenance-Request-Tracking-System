@@ -2780,8 +2780,7 @@ public final class UIHelper {
         }
 
         private static boolean isStaffActiveStatus(Object status) {
-            String normalized = StatusBadgeLabel.formatStatus(String.valueOf(status));
-            return "IN PROGRESS".equals(normalized) || "SUBMITTED".equals(normalized);
+            return "IN PROGRESS".equals(StatusBadgeLabel.formatStatus(String.valueOf(status)));
         }
 
         @Override

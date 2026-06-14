@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.table.TableCellEditor;
+import studenthostelmaintenancerequest.trackingsystem.DatabaseException;
+import studenthostelmaintenancerequest.trackingsystem.Staff;
+import studenthostelmaintenancerequest.trackingsystem.StaffService;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.AppColors;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton;
@@ -16,6 +19,7 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.StaffM
  */
 public class ManageRequestPage extends javax.swing.JFrame {
 
+    private Staff staff;
     private StaffManageRequestTableModel requestTableModel;
     private TableCellEditor statusCellEditor;
     private boolean statusEditMode;
@@ -25,7 +29,6 @@ public class ManageRequestPage extends javax.swing.JFrame {
     private javax.swing.JButton btnPageNext;
 
     private Object[][] allManageRows = new Object[0][0];
-    private String filterStatus = "All";
     private String filterType = "All";
 
     public ManageRequestPage() {
@@ -34,6 +37,11 @@ public class ManageRequestPage extends javax.swing.JFrame {
     }
 
     private void customizeForm() {
+        staff = StaffService.requireStaff(this);
+        if (staff == null) {
+            return;
+        }
+
         UIHelper.configureStaffShell(this,
                 pnlHeader, pnlSidebar, pnlMain, pnlPageHeader,
                 lblAppTitle, lblPageTitle, pnlHeaderLogo,
@@ -50,8 +58,7 @@ public class ManageRequestPage extends javax.swing.JFrame {
 
         lblTableSection.setText("Active Requests");
 
-        allManageRows = UIHelper.buildStaffManageRequestMockRows();
-        requestTableModel = UIHelper.createStaffManageRequestTableModel(allManageRows);
+        requestTableModel = UIHelper.createStaffManageRequestTableModel(new Object[0][0]);
         tblRequests.setModel(requestTableModel);
         statusCellEditor = UIHelper.createStaffManageRequestStatusEditor(tblRequests);
         UIHelper.styleManagerTableSection(lblTableSection, tblRequests, scrTable);
@@ -63,15 +70,14 @@ public class ManageRequestPage extends javax.swing.JFrame {
         UIHelper.layoutManagerTableSectionWithPagination(
                 pnlTableSection, lblTableSection, scrTable,
                 lblPagination, btnPagePrevious, btnPageNext);
-        refreshPaginationFooter();
 
         btnPagePrevious.addActionListener(e -> changePage(-1));
         btnPageNext.addActionListener(e -> changePage(1));
         btnFilter.addActionListener(e -> showFilterDialog());
         txtSearch.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
-            public void insertUpdate(javax.swing.event.DocumentEvent e) { applySearchAndFilter(); }
-            public void removeUpdate(javax.swing.event.DocumentEvent e) { applySearchAndFilter(); }
-            public void changedUpdate(javax.swing.event.DocumentEvent e) { applySearchAndFilter(); }
+            public void insertUpdate(javax.swing.event.DocumentEvent e) { loadManageData(); }
+            public void removeUpdate(javax.swing.event.DocumentEvent e) { loadManageData(); }
+            public void changedUpdate(javax.swing.event.DocumentEvent e) { loadManageData(); }
         });
 
         btnConfirmChanges.addActionListener(e -> {
@@ -82,6 +88,8 @@ public class ManageRequestPage extends javax.swing.JFrame {
             }
         });
 
+        loadManageData();
+
         UIHelper.showManagerFrame(this);
         javax.swing.SwingUtilities.invokeLater(() -> {
             UIHelper.sizeStaffManageRequestTable(tblRequests, scrTable);
@@ -89,42 +97,40 @@ public class ManageRequestPage extends javax.swing.JFrame {
         });
     }
 
-    private void applySearchAndFilter() {
+    private void loadManageData() {
         if (statusEditMode) {
             return;
         }
-        String keyword = txtSearch.getInputText().trim().toLowerCase();
-        List<Object[]> filtered = new ArrayList<>();
-
-        for (Object[] row : allManageRows) {
-            boolean keywordMatch = keyword.isEmpty()
-                    || row[0].toString().toLowerCase().contains(keyword);
-            boolean statusMatch = filterStatus.equals("All")
-                    || row[3].toString().equalsIgnoreCase(filterStatus);
-            boolean typeMatch = filterType.equals("All")
-                    || row[1].toString().equalsIgnoreCase(filterType);
-
-            if (keywordMatch && statusMatch && typeMatch) {
-                filtered.add(row);
-            }
+        try {
+            allManageRows = StaffService.getManageActiveRows(staff, txtSearch.getInputText());
+            applyTypeFilter();
+        } catch (DatabaseException ex) {
+            UIHelper.showDatabaseError(this, ex);
         }
+    }
 
-        requestTableModel.replaceRows(filtered.toArray(Object[][]::new));
+    private void applyTypeFilter() {
+        if (filterType.equals("All")) {
+            requestTableModel.replaceRows(allManageRows);
+        } else {
+            List<Object[]> filtered = new ArrayList<>();
+            for (Object[] row : allManageRows) {
+                if (row[1].toString().equalsIgnoreCase(filterType)) {
+                    filtered.add(row);
+                }
+            }
+            requestTableModel.replaceRows(filtered.toArray(Object[][]::new));
+        }
         refreshPaginationFooter();
         resizeTableSection();
     }
 
     private void showFilterDialog() {
-        String[] statusOptions = {"All", "IN PROGRESS", "SUBMITTED"};
         String[] typeOptions = {"All", "Electrical", "Plumbing", "Furniture"};
 
-        javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.GridLayout(2, 2, 8, 8));
-        javax.swing.JComboBox<String> statusCombo = new javax.swing.JComboBox<>(statusOptions);
+        javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.GridLayout(1, 2, 8, 8));
         javax.swing.JComboBox<String> typeCombo = new javax.swing.JComboBox<>(typeOptions);
-        statusCombo.setSelectedItem(filterStatus);
         typeCombo.setSelectedItem(filterType);
-        panel.add(new JLabel("Status:"));
-        panel.add(statusCombo);
         panel.add(new JLabel("Request Type:"));
         panel.add(typeCombo);
 
@@ -134,12 +140,11 @@ public class ManageRequestPage extends javax.swing.JFrame {
                 javax.swing.JOptionPane.PLAIN_MESSAGE);
 
         if (result == javax.swing.JOptionPane.OK_OPTION) {
-            filterStatus = (String) statusCombo.getSelectedItem();
             filterType = (String) typeCombo.getSelectedItem();
-            boolean active = !filterStatus.equals("All") || !filterType.equals("All");
+            boolean active = !filterType.equals("All");
             btnFilter.setText(active ? "Filter ✓" : "Filter");
             btnFilter.setForeground(active ? AppColors.PRIMARY : AppColors.LABEL);
-            applySearchAndFilter();
+            applyTypeFilter();
         }
     }
 
@@ -181,11 +186,18 @@ public class ManageRequestPage extends javax.swing.JFrame {
         if (tblRequests.isEditing()) {
             tblRequests.getCellEditor().stopCellEditing();
         }
+        try {
+            StaffService.saveManageRequestStatuses(staff, requestTableModel.getAllRows());
+        } catch (DatabaseException ex) {
+            UIHelper.showDatabaseError(this, ex);
+            return;
+        }
         statusEditMode = false;
         requestTableModel.setStatusColumnEditable(false);
         tblRequests.getColumnModel().getColumn(UIHelper.STAFF_MANAGE_COL_STATUS).setCellEditor(null);
         btnConfirmChanges.setText("Update");
         UIHelper.styleManagerUpdateButton(btnConfirmChanges);
+        loadManageData();
         tblRequests.repaint();
     }
 
