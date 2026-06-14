@@ -1994,6 +1994,383 @@ public final class UIHelper {
                 model.canGoPrevious(), model.canGoNext());
     }
 
+    public static final int STUDENT_HISTORY_PAGE_SIZE = 3;
+    public static final int STUDENT_ACTIVE_COL_STATUS = 3;
+    public static final int STUDENT_HISTORY_COL_PRIORITY = 3;
+    public static final int STUDENT_HISTORY_COL_STATUS = 4;
+
+    public static void installStudentSession(
+            javax.swing.JFrame frame,
+            javax.swing.JPanel pnlUserProfile,
+            javax.swing.JLabel lblUserName,
+            javax.swing.JLabel lblUserRole,
+            javax.swing.JButton btnUserMenu) {
+        ManagerUserMenu.install(pnlUserProfile, lblUserName, lblUserRole, btnUserMenu,
+                () -> {
+                    SessionManager.clear();
+                    navigateTo(frame, new LoginFrame());
+                });
+        if (SessionManager.isLoggedIn()) {
+            lblUserName.setText(SessionManager.getDisplayUsername());
+            lblUserRole.setText("STUDENT");
+        } else {
+            lblUserName.setText("Alex Johnson");
+            lblUserRole.setText("STUDENT");
+        }
+    }
+
+    public static void layoutStudentSidebar(JPanel pnlSidebar, ManagerNavButton... buttons) {
+        pnlSidebar.setPreferredSize(new Dimension(MANAGER_SIDEBAR_WIDTH, 0));
+        layoutManagerSidebar(pnlSidebar, buttons);
+    }
+
+    public static void styleStudentMainContent(JPanel main) {
+        main.setBackground(AppColors.BACKGROUND);
+        main.setBorder(new EmptyBorder(
+                MANAGER_MAIN_PADDING, MANAGER_MAIN_PADDING,
+                MANAGER_MAIN_PADDING, MANAGER_MAIN_PADDING));
+    }
+
+    public static void styleStudentPageTitle(JLabel lblPageTitle) {
+        lblPageTitle.setFont(AppFonts.pageTitle());
+        lblPageTitle.setForeground(AppColors.LABEL);
+    }
+
+    public static void styleStudentFieldLabel(JLabel... labels) {
+        for (JLabel label : labels) {
+            label.setFont(AppFonts.label());
+            label.setForeground(AppColors.LABEL);
+        }
+    }
+
+    public static void styleStudentHintLabel(JLabel label) {
+        label.setFont(AppFonts.body());
+        label.setForeground(AppColors.MUTED);
+    }
+
+    public static void styleOutlineButton(JButton button, int width) {
+        button.setFont(AppFonts.bodyBold());
+        button.setForeground(AppColors.PRIMARY);
+        button.setBackground(AppColors.SURFACE);
+        button.setBorder(new CompoundBorder(
+                new LineBorder(AppColors.PRIMARY, 1, true),
+                new EmptyBorder(10, 20, 10, 20)));
+        button.setFocusPainted(false);
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        fixSize(button, width, BUTTON_HEIGHT);
+    }
+
+    public static void styleStudentFormCard(JPanel card) {
+        card.setBackground(AppColors.SURFACE);
+        card.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(AppColors.GRID_LINE, 1, true),
+                new EmptyBorder(24, 32, 24, 32)));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void styleStudentFormField(javax.swing.JTextField field, int width) {
+        field.setFont(AppFonts.body());
+        field.setBackground(AppColors.INPUT_FILL);
+        field.setForeground(AppColors.LABEL);
+        field.setBorder(inputBorder());
+        fixSize((JComponent) field, width, FIELD_HEIGHT);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void styleStudentFormCombo(JComboBox<?> combo, int width) {
+        combo.setFont(AppFonts.body());
+        combo.setBackground(Color.WHITE);
+        combo.setForeground(AppColors.LABEL);
+        combo.setBorder(comboBorder());
+        fixSize((JComponent) combo, width, FIELD_HEIGHT);
+    }
+
+    public static void styleStudentFormTextArea(javax.swing.JTextArea area, JScrollPane scroll, int width, int height) {
+        area.setFont(AppFonts.body());
+        area.setBackground(AppColors.INPUT_FILL);
+        area.setForeground(AppColors.LABEL);
+        area.setLineWrap(true);
+        area.setWrapStyleWord(true);
+        area.setBorder(new EmptyBorder(10, 14, 10, 14));
+        scroll.setBorder(inputBorder());
+        Dimension size = new Dimension(width, height);
+        scroll.setPreferredSize(size);
+        scroll.setMinimumSize(size);
+        scroll.setMaximumSize(new Dimension(width, height));
+    }
+
+    public static void setupStudentHeader(
+            JPanel pnlHeader,
+            JLabel lblAppTitle,
+            JPanel pnlUserHost,
+            LogoPanel pnlHeaderLogo) {
+        pnlHeader.setLayout(new BorderLayout());
+        pnlHeader.setPreferredSize(new Dimension(0, MANAGER_HEADER_HEIGHT));
+        pnlHeader.removeAll();
+
+        JPanel pnlHeaderLeft = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 14));
+        pnlHeaderLeft.setOpaque(false);
+        pnlHeaderLeft.add(pnlHeaderLogo);
+        pnlHeaderLeft.add(lblAppTitle);
+
+        pnlHeader.add(pnlHeaderLeft, BorderLayout.WEST);
+        pnlHeader.add(pnlUserHost, BorderLayout.EAST);
+    }
+
+    public static JPanel createStudentUserProfileHost() {
+        JPanel host = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 12));
+        host.setOpaque(false);
+        host.setBorder(new EmptyBorder(0, 0, 0, 24));
+        return host;
+    }
+
+    public static JPanel createStudentUserProfile(
+            JLabel lblUserName, JLabel lblUserRole, JButton btnUserMenu) {
+        JPanel pnlUserProfile = new JPanel(new BorderLayout(8, 0));
+        JPanel pnlUserText = new JPanel();
+        pnlUserText.setLayout(new javax.swing.BoxLayout(pnlUserText, javax.swing.BoxLayout.Y_AXIS));
+        pnlUserText.setOpaque(false);
+        pnlUserText.add(lblUserName);
+        pnlUserText.add(lblUserRole);
+        pnlUserProfile.add(pnlUserText, BorderLayout.CENTER);
+        pnlUserProfile.add(btnUserMenu, BorderLayout.EAST);
+        return pnlUserProfile;
+    }
+
+    public static void styleStudentProfileTable(JLabel sectionTitle, JTable table, JScrollPane scroll) {
+        sectionTitle.setFont(AppFonts.tableSection());
+        sectionTitle.setForeground(AppColors.LABEL);
+        sectionTitle.setHorizontalAlignment(JLabel.CENTER);
+        sectionTitle.setOpaque(true);
+        sectionTitle.setBackground(AppColors.STAT_TOTAL_HEADER);
+        sectionTitle.setBorder(new CompoundBorder(
+                BorderFactory.createLineBorder(AppColors.GRID_LINE, 1),
+                new EmptyBorder(10, 14, 10, 14)));
+
+        table.setTableHeader(null);
+        table.setFont(AppFonts.body());
+        table.setRowHeight(36);
+        table.setShowGrid(true);
+        table.setGridColor(AppColors.GRID_LINE);
+        table.setFocusable(false);
+        table.setRowSelectionAllowed(false);
+
+        table.getColumnModel().getColumn(0).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
+            JLabel label = new JLabel(String.valueOf(value));
+            label.setFont(AppFonts.body());
+            label.setForeground(AppColors.LABEL);
+            label.setBackground(AppColors.STAT_TOTAL_BODY);
+            label.setOpaque(true);
+            label.setBorder(new EmptyBorder(0, 12, 0, 12));
+            return label;
+        });
+        table.getColumnModel().getColumn(1).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
+            JLabel label = new JLabel(String.valueOf(value));
+            label.setFont(AppFonts.bodyBold());
+            label.setForeground(AppColors.LABEL);
+            label.setBackground(AppColors.SURFACE);
+            label.setOpaque(true);
+            label.setBorder(new EmptyBorder(0, 12, 0, 12));
+            return label;
+        });
+        table.getColumnModel().getColumn(0).setPreferredWidth(120);
+        table.getColumnModel().getColumn(1).setPreferredWidth(180);
+
+        scroll.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, AppColors.GRID_LINE));
+        scroll.getViewport().setBackground(AppColors.SURFACE);
+        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+    }
+
+    public static DefaultTableModel createStudentProfileTableModel(Object[][] rows) {
+        return new DefaultTableModel(rows, new String[]{"Field", "Value"}) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+    }
+
+    public static DefaultTableModel createStudentActiveRequestTableModel(Object[][] rows) {
+        return new DefaultTableModel(rows, new String[]{
+            "Request ID", "Request Type", "Date Raised", "Status"}) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+    }
+
+    public static void applyStudentActiveRequestTableRenderers(JTable table) {
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        centerRenderer.setFont(AppFonts.body());
+        centerRenderer.setForeground(AppColors.LABEL);
+        centerRenderer.setBackground(AppColors.SURFACE);
+
+        for (int column = 0; column < STUDENT_ACTIVE_COL_STATUS; column++) {
+            table.getColumnModel().getColumn(column).setCellRenderer(centerRenderer);
+        }
+
+        table.getColumnModel().getColumn(STUDENT_ACTIVE_COL_STATUS).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
+            StatusBadgeLabel badge = new StatusBadgeLabel(String.valueOf(value));
+            JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
+            wrapper.setBackground(AppColors.SURFACE);
+            wrapper.add(badge);
+            return wrapper;
+        });
+    }
+
+    public static void applyStudentHistoryTableRenderers(JTable table) {
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        centerRenderer.setFont(AppFonts.body());
+        centerRenderer.setForeground(AppColors.LABEL);
+        centerRenderer.setBackground(AppColors.SURFACE);
+
+        for (int column = 0; column < STUDENT_HISTORY_COL_PRIORITY; column++) {
+            table.getColumnModel().getColumn(column).setCellRenderer(centerRenderer);
+        }
+
+        table.getColumnModel().getColumn(STUDENT_HISTORY_COL_PRIORITY).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
+            PriorityBadgeLabel badge = new PriorityBadgeLabel(String.valueOf(value));
+            JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
+            wrapper.setBackground(AppColors.SURFACE);
+            wrapper.add(badge);
+            return wrapper;
+        });
+
+        table.getColumnModel().getColumn(STUDENT_HISTORY_COL_STATUS).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
+            StatusBadgeLabel badge = new StatusBadgeLabel(String.valueOf(value));
+            JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
+            wrapper.setBackground(AppColors.SURFACE);
+            wrapper.add(badge);
+            return wrapper;
+        });
+    }
+
+    public static StudentHistoryTableModel createStudentHistoryTableModel() {
+        return createStudentHistoryTableModel(new Object[0][5]);
+    }
+
+    public static StudentHistoryTableModel createStudentHistoryTableModel(Object[][] data) {
+        return new StudentHistoryTableModel(data, new String[]{
+            "Request ID", "Request Type", "Date Raised", "Priority", "Status"});
+    }
+
+    public static void updateStudentPaginationFooter(
+            JLabel lblShowing, JButton btnPrevious, JButton btnNext,
+            StudentHistoryTableModel model) {
+        if (model.getTotalRowCount() == 0) {
+            lblShowing.setText("No results found");
+        } else {
+            lblShowing.setText(String.format("Showing %d to %d of %d results",
+                    model.getShowingFrom(), model.getShowingTo(), model.getTotalRowCount()));
+        }
+        btnPrevious.setEnabled(model.canGoPrevious());
+        btnNext.setEnabled(model.canGoNext());
+    }
+
+    public static void sizeStudentHistoryTable(JTable table, JScrollPane scroll) {
+        sizeManagerPaginatedTable(table, scroll);
+    }
+
+    public static final class StudentHistoryTableModel extends AbstractTableModel {
+
+        private final java.util.List<Object[]> allRows = new java.util.ArrayList<>();
+        private final String[] columnNames;
+        private int currentPage;
+
+        public StudentHistoryTableModel(Object[][] data, Object[] columns) {
+            this.columnNames = new String[columns.length];
+            for (int i = 0; i < columns.length; i++) {
+                this.columnNames[i] = String.valueOf(columns[i]);
+            }
+            replaceRows(data);
+        }
+
+        public void replaceRows(Object[][] data) {
+            allRows.clear();
+            currentPage = 0;
+            if (data != null) {
+                for (Object[] row : data) {
+                    allRows.add(row.clone());
+                }
+            }
+            fireTableDataChanged();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return columnNames.length;
+        }
+
+        @Override
+        public String getColumnName(int column) {
+            return columnNames[column];
+        }
+
+        @Override
+        public int getRowCount() {
+            if (allRows.isEmpty()) {
+                return 0;
+            }
+            int start = currentPage * STUDENT_HISTORY_PAGE_SIZE;
+            if (start >= allRows.size()) {
+                return 0;
+            }
+            return Math.min(STUDENT_HISTORY_PAGE_SIZE, allRows.size() - start);
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            int dataIndex = currentPage * STUDENT_HISTORY_PAGE_SIZE + rowIndex;
+            return allRows.get(dataIndex)[columnIndex];
+        }
+
+        public int getTotalRowCount() {
+            return allRows.size();
+        }
+
+        public int getShowingFrom() {
+            if (allRows.isEmpty()) {
+                return 0;
+            }
+            return currentPage * STUDENT_HISTORY_PAGE_SIZE + 1;
+        }
+
+        public int getShowingTo() {
+            return Math.min((currentPage + 1) * STUDENT_HISTORY_PAGE_SIZE, allRows.size());
+        }
+
+        public boolean canGoPrevious() {
+            return currentPage > 0;
+        }
+
+        public boolean canGoNext() {
+            return (currentPage + 1) * STUDENT_HISTORY_PAGE_SIZE < allRows.size();
+        }
+
+        public void previousPage() {
+            if (canGoPrevious()) {
+                currentPage--;
+                fireTableDataChanged();
+            }
+        }
+
+        public void nextPage() {
+            if (canGoNext()) {
+                currentPage++;
+                fireTableDataChanged();
+            }
+        }
+
+        public void resetPage() {
+            currentPage = 0;
+            fireTableDataChanged();
+        }
+    }
+
     private static JPanel createRequirementItem(String text) {
         JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         row.setOpaque(false);
