@@ -13,6 +13,7 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
 public class SubmitMRequest extends javax.swing.JFrame {
 
     private static final int FORM_FIELD_WIDTH = 544;
+    private static final int TOP_FIELD_WIDTH = 165;
 
     public SubmitMRequest() {
         initComponents();
@@ -29,7 +30,7 @@ public class SubmitMRequest extends javax.swing.JFrame {
         wireNavigation();
 
         UIHelper.styleStudentFormCard(pnlFormCard);
-        UIHelper.styleStudentFieldLabel(lblDate, lblRoom, lblRequestType, lblPriority, lblDescription);
+        UIHelper.styleStudentFieldLabel(lblDate, lblRoom, lblPlace, lblRequestType, lblPriority, lblDescription);
         UIHelper.styleStudentHintLabel(lblPriorityHint);
 
         String today = LocalDate.now().format(DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH));
@@ -37,8 +38,11 @@ public class SubmitMRequest extends javax.swing.JFrame {
         txtDate.setEditable(false);
         txtRoom.setText("402-B");
         txtRoom.setEditable(false);
-        UIHelper.styleStudentFormField(txtDate, 260);
-        UIHelper.styleStudentFormField(txtRoom, 260);
+        txtPlace.setText("DHUAM");
+        txtPlace.setEditable(false);
+        UIHelper.styleStudentFormField(txtDate, TOP_FIELD_WIDTH);
+        UIHelper.styleStudentFormField(txtRoom, TOP_FIELD_WIDTH);
+        UIHelper.styleStudentFormField(txtPlace, TOP_FIELD_WIDTH);
 
         cmbRequestType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{
             "Select the type of issue", "Electrical", "Plumbing", "Furniture"
@@ -115,8 +119,10 @@ public class SubmitMRequest extends javax.swing.JFrame {
         pnlFormCard = new javax.swing.JPanel();
         lblDate = new javax.swing.JLabel();
         lblRoom = new javax.swing.JLabel();
+        lblPlace = new javax.swing.JLabel();
         txtDate = new javax.swing.JTextField();
         txtRoom = new javax.swing.JTextField();
+        txtPlace = new javax.swing.JTextField();
         lblRequestType = new javax.swing.JLabel();
         cmbRequestType = new javax.swing.JComboBox<>();
         lblDescription = new javax.swing.JLabel();
@@ -251,6 +257,8 @@ public class SubmitMRequest extends javax.swing.JFrame {
 
         lblRoom.setText("Room Number");
 
+        lblPlace.setText("Place Name");
+
         lblRequestType.setText("Request Type");
 
         cmbRequestType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
@@ -284,9 +292,9 @@ public class SubmitMRequest extends javax.swing.JFrame {
             .addGroup(pnlFormCardLayout.createSequentialGroup()
                 .addGap(32, 32, 32)
                 .addGroup(pnlFormCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(scrDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 544, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmbRequestType, javax.swing.GroupLayout.PREFERRED_SIZE, 544, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmbPriority, javax.swing.GroupLayout.PREFERRED_SIZE, 544, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(scrDescription, javax.swing.GroupLayout.DEFAULT_SIZE, FORM_FIELD_WIDTH, Short.MAX_VALUE)
+                    .addComponent(cmbRequestType, 0, FORM_FIELD_WIDTH, Short.MAX_VALUE)
+                    .addComponent(cmbPriority, 0, FORM_FIELD_WIDTH, Short.MAX_VALUE)
                     .addComponent(lblRequestType)
                     .addComponent(lblDescription)
                     .addComponent(lblPriority)
@@ -294,11 +302,15 @@ public class SubmitMRequest extends javax.swing.JFrame {
                     .addGroup(pnlFormCardLayout.createSequentialGroup()
                         .addGroup(pnlFormCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblDate)
-                            .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, TOP_FIELD_WIDTH, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(24, 24, 24)
                         .addGroup(pnlFormCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblRoom)
-                            .addComponent(txtRoom, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(txtRoom, javax.swing.GroupLayout.PREFERRED_SIZE, TOP_FIELD_WIDTH, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(24, 24, 24)
+                        .addGroup(pnlFormCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblPlace)
+                            .addComponent(txtPlace, javax.swing.GroupLayout.PREFERRED_SIZE, TOP_FIELD_WIDTH, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlFormCardLayout.createSequentialGroup()
                         .addComponent(btnReset)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -311,11 +323,13 @@ public class SubmitMRequest extends javax.swing.JFrame {
                 .addGap(28, 28, 28)
                 .addGroup(pnlFormCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblDate)
-                    .addComponent(lblRoom))
+                    .addComponent(lblRoom)
+                    .addComponent(lblPlace))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlFormCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtRoom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtRoom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtPlace, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(lblRequestType)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -396,6 +410,7 @@ public class SubmitMRequest extends javax.swing.JFrame {
     private javax.swing.JLabel lblDate;
     private javax.swing.JLabel lblDescription;
     private javax.swing.JLabel lblPageTitle;
+    private javax.swing.JLabel lblPlace;
     private javax.swing.JLabel lblPriority;
     private javax.swing.JLabel lblPriorityHint;
     private javax.swing.JLabel lblRequestType;
@@ -417,6 +432,7 @@ public class SubmitMRequest extends javax.swing.JFrame {
     private javax.swing.JScrollPane scrDescription;
     private javax.swing.JTextArea txtDescription;
     private javax.swing.JTextField txtDate;
+    private javax.swing.JTextField txtPlace;
     private javax.swing.JTextField txtRoom;
     // End of variables declaration//GEN-END:variables
 }

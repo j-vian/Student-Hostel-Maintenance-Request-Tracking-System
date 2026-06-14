@@ -16,20 +16,26 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.Studen
  */
 public class studRHistory extends javax.swing.JFrame {
 
-    private static final Object[][] MOCK_HISTORY = {
-        {"REQ001", "Electrical", "8 June 2026", "High", "IN PROGRESS"},
-        {"REQ002", "Furniture", "8 June 2026", "Medium", "SUBMITTED"},
-        {"REQ003", "Plumbing", "8 June 2026", "Low", "COMPLETED"},
-        {"REQ004", "Electrical", "7 June 2026", "High", "IN PROGRESS"},
-        {"REQ005", "Plumbing", "6 June 2026", "Medium", "COMPLETED"},
-        {"REQ006", "Furniture", "5 June 2026", "Low", "SUBMITTED"},
-        {"REQ007", "Electrical", "4 June 2026", "High", "COMPLETED"},
-        {"REQ008", "Furniture", "3 June 2026", "Medium", "IN PROGRESS"},
-        {"REQ009", "Plumbing", "2 June 2026", "Low", "SUBMITTED"},
-        {"REQ010", "Electrical", "1 June 2026", "High", "COMPLETED"},
-        {"REQ011", "Plumbing", "31 May 2026", "Medium", "IN PROGRESS"},
-        {"REQ012", "Furniture", "30 May 2026", "Low", "SUBMITTED"}
-    };
+    private static final Object[][] MOCK_HISTORY = buildMockHistory();
+
+    private static Object[][] buildMockHistory() {
+        String[] types = {"Electrical", "Plumbing", "Furniture"};
+        String[] dates = {"8 June 2026", "9 June 2026", "10 June 2026", "11 June 2026",
+            "12 June 2026", "13 June 2026", "14 June 2026"};
+        String[] priorities = {"High", "Medium", "Low"};
+        String[] statuses = {"IN PROGRESS", "SUBMITTED", "COMPLETED"};
+        Object[][] rows = new Object[21][5];
+        for (int i = 0; i < rows.length; i++) {
+            rows[i] = new Object[]{
+                String.format("REQ%03d", i + 1),
+                types[i % types.length],
+                dates[i % dates.length],
+                priorities[i % priorities.length],
+                statuses[i % statuses.length]
+            };
+        }
+        return rows;
+    }
 
     private PlaceholderTextField txtSearch;
     private StudentHistoryTableModel historyTableModel;
@@ -166,7 +172,7 @@ public class studRHistory extends javax.swing.JFrame {
 
     private void resizeTableSection() {
         javax.swing.SwingUtilities.invokeLater(() -> {
-            UIHelper.sizeStudentHistoryTable(tblHistory, scrHistory);
+            UIHelper.sizeStudentPaginatedTable(tblHistory, scrHistory);
             pnlTableSection.revalidate();
         });
     }

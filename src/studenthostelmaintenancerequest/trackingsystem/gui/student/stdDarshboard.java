@@ -1,8 +1,10 @@
 package studenthostelmaintenancerequest.trackingsystem.gui.student;
 
+import javax.swing.JLabel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
+import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.StudentActiveRequestTableModel;
 
 /**
  * Student dashboard — profile summary and active maintenance requests.
@@ -15,15 +17,31 @@ public class stdDarshboard extends javax.swing.JFrame {
         {"Room No.", "402-B"}
     };
 
-    private static final Object[][] MOCK_ACTIVE_REQUESTS = {
-        {"REQ001", "Electrical", "8 June 2026", "IN PROGRESS"},
-        {"REQ002", "Furniture", "8 June 2026", "SUBMITTED"},
-        {"REQ003", "Plumbing", "8 June 2026", "COMPLETED"}
-    };
+    private StudentActiveRequestTableModel activeTableModel;
+    private JLabel lblActivePagination;
+    private javax.swing.JButton btnActivePrevious;
+    private javax.swing.JButton btnActiveNext;
 
     public stdDarshboard() {
         initComponents();
         customizeForm();
+    }
+
+    private static Object[][] buildMockActiveRequests() {
+        String[] types = {"Electrical", "Plumbing", "Furniture"};
+        String[] dates = {"8 June 2026", "9 June 2026", "10 June 2026", "11 June 2026",
+            "12 June 2026", "13 June 2026", "14 June 2026"};
+        String[] statuses = {"IN PROGRESS", "SUBMITTED", "COMPLETED"};
+        Object[][] rows = new Object[14][4];
+        for (int i = 0; i < rows.length; i++) {
+            rows[i] = new Object[]{
+                String.format("REQ%03d", i + 1),
+                types[i % types.length],
+                dates[i % dates.length],
+                statuses[i % statuses.length]
+            };
+        }
+        return rows;
     }
 
     private void customizeForm() {
@@ -38,15 +56,48 @@ public class stdDarshboard extends javax.swing.JFrame {
         tblProfile.setModel(UIHelper.createStudentProfileTableModel(MOCK_PROFILE));
         UIHelper.styleStudentProfileTable(lblProfileSection, tblProfile, scrProfile);
 
-        tblActive.setModel(UIHelper.createStudentActiveRequestTableModel(MOCK_ACTIVE_REQUESTS));
+        activeTableModel = UIHelper.createStudentActiveRequestTableModel(buildMockActiveRequests());
+        tblActive.setModel(activeTableModel);
         UIHelper.styleManagerTableSection(lblActiveSection, tblActive, scrActive);
         UIHelper.applyStudentActiveRequestTableRenderers(tblActive);
 
+        lblActivePagination = new JLabel();
+        btnActivePrevious = new javax.swing.JButton("<");
+        btnActiveNext = new javax.swing.JButton(">");
+        UIHelper.layoutManagerTableSectionWithPagination(
+                pnlActiveSection, lblActiveSection, scrActive,
+                lblActivePagination, btnActivePrevious, btnActiveNext);
+        refreshActivePagination();
+
+        btnActivePrevious.addActionListener(e -> changeActivePage(-1));
+        btnActiveNext.addActionListener(e -> changeActivePage(1));
+
         UIHelper.showManagerFrame(this);
         javax.swing.SwingUtilities.invokeLater(() -> {
-            UIHelper.sizeManagerOverviewTable(tblProfile, scrProfile);
-            UIHelper.sizeManagerOverviewTable(tblActive, scrActive);
+            UIHelper.sizeStudentProfileTable(tblProfile, scrProfile);
+            resizeActiveTableSection();
             pnlProfileSection.revalidate();
+        });
+    }
+
+    private void changeActivePage(int direction) {
+        if (direction < 0) {
+            activeTableModel.previousPage();
+        } else {
+            activeTableModel.nextPage();
+        }
+        refreshActivePagination();
+        resizeActiveTableSection();
+    }
+
+    private void refreshActivePagination() {
+        UIHelper.updateStudentPaginationFooter(
+                lblActivePagination, btnActivePrevious, btnActiveNext, activeTableModel);
+    }
+
+    private void resizeActiveTableSection() {
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            UIHelper.sizeStudentPaginatedTable(tblActive, scrActive);
             pnlActiveSection.revalidate();
         });
     }
@@ -215,7 +266,7 @@ public class stdDarshboard extends javax.swing.JFrame {
                 {"Room No.", "402-B"}
             },
             new String [] {
-                "Field", "Value"
+                " ", " "
             }
         ) {
             boolean[] canEdit = new boolean [] {
