@@ -612,8 +612,8 @@ public class DatabaseHandler implements DataAccess {
                         rs.getString("request_id"),
                         rs.getString("room_number"),
                         rs.getString("place_name"),
-                        formatFullName(rs.getString("student_first_name"), rs.getString("student_last_name")),
-                        formatRequestType(rs.getString("request_type")));
+                        RequestDisplayFormatter.formatFullName(rs.getString("student_first_name"), rs.getString("student_last_name")),
+                        RequestDisplayFormatter.formatRequestType(rs.getString("request_type")));
             }
         } catch (SQLException ex) {
             throw new DatabaseException("Unable to load room details.", ex);
@@ -671,20 +671,20 @@ public class DatabaseHandler implements DataAccess {
                     String staffLast = rs.getString("staff_last_name");
                     Object assignedStaff = (staffFirst == null || staffLast == null)
                             ? null
-                            : formatFullName(staffFirst, staffLast);
+                            : RequestDisplayFormatter.formatFullName(staffFirst, staffLast);
 
                     Timestamp timestamp = rs.getTimestamp("date_raised");
                     LocalDateTime dateRaised = timestamp == null ? null : timestamp.toLocalDateTime();
 
                     rows.add(new Object[]{
                         rs.getString("request_id"),
-                        formatRequestType(rs.getString("request_type")),
-                        formatFullName(rs.getString("student_first_name"), rs.getString("student_last_name")),
+                        RequestDisplayFormatter.formatRequestType(rs.getString("request_type")),
+                        RequestDisplayFormatter.formatFullName(rs.getString("student_first_name"), rs.getString("student_last_name")),
                         assignedStaff,
-                        formatDisplayStatus(rs.getString("status")),
-                        formatDate(dateRaised),
+                        RequestDisplayFormatter.formatDisplayStatus(rs.getString("status")),
+                        RequestDisplayFormatter.formatDate(dateRaised),
                         rs.getString("description"),
-                        ManagerService.formatPriority(rs.getString("priority"))
+                        RequestDisplayFormatter.formatPriority(rs.getString("priority"))
                     });
                 }
             }
@@ -699,37 +699,6 @@ public class DatabaseHandler implements DataAccess {
             return null;
         }
         return "%" + requestIdSearch.trim().toUpperCase() + "%";
-    }
-
-    private static String formatFullName(String firstName, String lastName) {
-        return ((firstName == null ? "" : firstName.trim()) + " "
-                + (lastName == null ? "" : lastName.trim())).trim();
-    }
-
-    private static String formatRequestType(String requestType) {
-        if (requestType == null || requestType.isBlank()) {
-            return "";
-        }
-        return switch (requestType.trim().toLowerCase()) {
-            case "electrical" -> "Electrical";
-            case "plumbing" -> "Plumbing";
-            case "furniture" -> "Furniture";
-            default -> requestType.substring(0, 1).toUpperCase() + requestType.substring(1);
-        };
-    }
-
-    private static String formatDisplayStatus(String dbStatus) {
-        if (dbStatus == null) {
-            return "";
-        }
-        return dbStatus.trim().replace('_', ' ').toUpperCase();
-    }
-
-    private static String formatDate(LocalDateTime dateTime) {
-        if (dateTime == null) {
-            return "";
-        }
-        return dateTime.format(java.time.format.DateTimeFormatter.ofPattern("d MMMM yyyy", java.util.Locale.ENGLISH));
     }
 
     private static final String BASE_REQUEST_QUERY = """

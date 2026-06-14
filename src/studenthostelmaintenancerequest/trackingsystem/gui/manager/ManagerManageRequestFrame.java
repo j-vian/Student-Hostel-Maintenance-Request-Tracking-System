@@ -303,7 +303,7 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
         pnlUserProfile.setOpaque(false);
 
         lblUserName.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lblUserName.setText("John Wick");
+        lblUserName.setText("Admin");
 
         lblUserRole.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblUserRole.setText("ADMIN");

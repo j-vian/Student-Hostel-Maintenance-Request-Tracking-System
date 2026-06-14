@@ -146,7 +146,7 @@
                     <Component class="javax.swing.JLabel" name="lblUserName">
                       <Properties>
                         <Property name="horizontalAlignment" type="int" value="4"/>
-                        <Property name="text" type="java.lang.String" value="John Wick"/>
+                        <Property name="text" type="java.lang.String" value="Admin"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JLabel" name="lblUserRole">

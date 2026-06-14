@@ -1,5 +1,5 @@
 -- Optional demo data for manager screens (run in phpMyAdmin if you already created the schema once).
-USE hostel_maintenance;
+USE hostel_maintenance_db;
 
 DELETE FROM request_status_history WHERE request_id IN ('REQ001', 'REQ002', 'REQ003');
 DELETE FROM maintenance_requests WHERE request_id IN ('REQ001', 'REQ002', 'REQ003');

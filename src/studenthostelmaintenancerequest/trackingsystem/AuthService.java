@@ -5,7 +5,7 @@ import javax.swing.JFrame;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
 import studenthostelmaintenancerequest.trackingsystem.gui.manager.ManagerDashboardFrame;
 import studenthostelmaintenancerequest.trackingsystem.gui.staff.staffDashboard;
-import studenthostelmaintenancerequest.trackingsystem.gui.student.stdDarshboard;
+import studenthostelmaintenancerequest.trackingsystem.gui.student.stdDashboard;
 
 /**
  * Handles login, sign-up validation, and role-based navigation.
@@ -56,7 +56,7 @@ public final class AuthService {
                 return;
             }
             UIHelper.navigateTo(currentFrame,
-                    new studenthostelmaintenancerequest.trackingsystem.gui.auth.setNewPasswordFrame(email.trim()));
+                    new studenthostelmaintenancerequest.trackingsystem.gui.auth.SetNewPasswordFrame(email.trim()));
         } catch (DatabaseException ex) {
             showError(currentFrame, ex.getMessage());
         }
@@ -142,7 +142,7 @@ public final class AuthService {
                 UIHelper.navigateTo(currentFrame, new ManagerDashboardFrame());
                 break;
             case STUDENT:
-                UIHelper.navigateTo(currentFrame, new stdDarshboard());
+                UIHelper.navigateTo(currentFrame, new stdDashboard());
                 break;
             case STAFF:
                 UIHelper.navigateTo(currentFrame, new staffDashboard());

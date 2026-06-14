@@ -12,14 +12,14 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.Studen
 /**
  * Student dashboard — profile summary and active maintenance requests.
  */
-public class stdDarshboard extends javax.swing.JFrame {
+public class stdDashboard extends javax.swing.JFrame {
 
     private StudentActiveRequestTableModel activeTableModel;
     private JLabel lblActivePagination;
     private javax.swing.JButton btnActivePrevious;
     private javax.swing.JButton btnActiveNext;
 
-    public stdDarshboard() {
+    public stdDashboard() {
         initComponents();
         customizeForm();
     }
@@ -180,7 +180,7 @@ public class stdDarshboard extends javax.swing.JFrame {
         pnlUserProfile.setOpaque(false);
 
         lblUserName.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lblUserName.setText("Alex Johnson");
+        lblUserName.setText("Student");
 
         lblUserRole.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblUserRole.setText("STUDENT");
@@ -264,9 +264,9 @@ public class stdDarshboard extends javax.swing.JFrame {
 
         tblProfile.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"Name", "Alex Johnson"},
-                {"Student ID", "RC23155"},
-                {"Room No.", "402-B"}
+                {"Name", ""},
+                {"Student ID", ""},
+                {"Room No.", ""}
             },
             new String [] {
                 " ", " "
@@ -302,9 +302,6 @@ public class stdDarshboard extends javax.swing.JFrame {
 
         tblActive.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"REQ001", "Electrical", "8 June 2026", "IN PROGRESS"},
-                {"REQ002", "Furniture", "8 June 2026", "SUBMITTED"},
-                {"REQ003", "Plumbing", "8 June 2026", "COMPLETED"}
             },
             new String [] {
                 "Request ID", "Request Type", "Date Raised", "Status"
@@ -383,7 +380,7 @@ public class stdDarshboard extends javax.swing.JFrame {
 
     public static void main(String[] args) {
         UIHelper.initApplicationLook();
-        java.awt.EventQueue.invokeLater(() -> new stdDarshboard());
+        java.awt.EventQueue.invokeLater(() -> new stdDashboard());
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

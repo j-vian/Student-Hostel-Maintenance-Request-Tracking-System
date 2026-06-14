@@ -33,8 +33,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
 import javax.swing.plaf.basic.BasicButtonUI;
-import javax.swing.plaf.basic.BasicHTML;
-import javax.swing.text.View;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -296,38 +294,6 @@ public final class UIHelper {
             label.setForeground(AppColors.LABEL);
             label.setHorizontalAlignment(JLabel.CENTER);
         }
-    }
-
-    /**
-     * @deprecated Use {@link #styleAuthInstructionLine(JLabel...)} for reliable centered lines.
-     */
-    @Deprecated
-    public static void styleAuthInstruction(JLabel lblInstruction, int contentWidth) {
-        String text = lblInstruction.getText()
-                .replace("<html>", "")
-                .replace("</html>", "");
-        String html = String.format(
-                "<html><div style='text-align:center;width:%dpx;font-family:%s;font-size:%dpt;"
-                        + "color:#1A1C1C;line-height:1.45;'>%s</div></html>",
-                contentWidth, AppFonts.cssFamily(), AppFonts.BODY_SIZE, text);
-        lblInstruction.setText(html);
-        lblInstruction.setHorizontalAlignment(JLabel.CENTER);
-        lblInstruction.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-
-        int height = measureHtmlLabelHeight(lblInstruction, html, contentWidth);
-        Dimension size = new Dimension(contentWidth, height);
-        lblInstruction.setPreferredSize(size);
-        lblInstruction.setMinimumSize(size);
-        lblInstruction.setMaximumSize(size);
-    }
-
-    private static int measureHtmlLabelHeight(JLabel label, String html, int width) {
-        View view = BasicHTML.createHTMLView(label, html);
-        if (view == null) {
-            return 48;
-        }
-        view.setSize(width, 0);
-        return Math.max((int) Math.ceil(view.getPreferredSpan(View.Y_AXIS)) + 6, 40);
     }
 
     public static void styleAuthFieldLabel(JLabel... labels) {

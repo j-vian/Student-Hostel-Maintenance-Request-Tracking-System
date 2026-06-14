@@ -7,7 +7,7 @@ import javax.swing.JPanel;
 import studenthostelmaintenancerequest.trackingsystem.DatabaseException;
 import studenthostelmaintenancerequest.trackingsystem.Student;
 import studenthostelmaintenancerequest.trackingsystem.StudentService;
-import studenthostelmaintenancerequest.trackingsystem.gui.common.AppColors;
+import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.FilterOption;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField;
@@ -92,7 +92,7 @@ public class studRHistory extends javax.swing.JFrame {
     }
 
     private void wireNavigation() {
-        btnNavDashboard.addActionListener(e -> UIHelper.navigateTo(this, new stdDarshboard()));
+        btnNavDashboard.addActionListener(e -> UIHelper.navigateTo(this, new stdDashboard()));
         btnNavSubmit.addActionListener(e -> UIHelper.navigateTo(this, new SubmitMRequest()));
         btnNavHistory.addActionListener(e -> { /* current page */ });
     }
@@ -127,30 +127,15 @@ public class studRHistory extends javax.swing.JFrame {
     }
 
     private void showFilterDialog() {
-        String[] statusOptions = {"All", "IN PROGRESS", "SUBMITTED", "COMPLETED", "CANCELLED"};
-        String[] typeOptions = {"All", "Electrical", "Plumbing", "Furniture"};
+        FilterOption statusOption = new FilterOption("Status",
+                new String[]{"All", "IN PROGRESS", "SUBMITTED", "COMPLETED", "CANCELLED"}, filterStatus);
+        FilterOption typeOption = new FilterOption("Request Type",
+                new String[]{"All", "Electrical", "Plumbing", "Furniture"}, filterType);
 
-        JPanel panel = new JPanel(new java.awt.GridLayout(2, 2, 8, 8));
-        javax.swing.JComboBox<String> statusCombo = new javax.swing.JComboBox<>(statusOptions);
-        javax.swing.JComboBox<String> typeCombo = new javax.swing.JComboBox<>(typeOptions);
-        statusCombo.setSelectedItem(filterStatus);
-        typeCombo.setSelectedItem(filterType);
-        panel.add(new JLabel("Status:"));
-        panel.add(statusCombo);
-        panel.add(new JLabel("Request Type:"));
-        panel.add(typeCombo);
-
-        int result = javax.swing.JOptionPane.showConfirmDialog(
-                this, panel, "Filter Requests",
-                javax.swing.JOptionPane.OK_CANCEL_OPTION,
-                javax.swing.JOptionPane.PLAIN_MESSAGE);
-
-        if (result == javax.swing.JOptionPane.OK_OPTION) {
-            filterStatus = (String) statusCombo.getSelectedItem();
-            filterType = (String) typeCombo.getSelectedItem();
-            boolean active = !filterStatus.equals("All") || !filterType.equals("All");
-            btnFilter.setText(active ? "Filter ✓" : "Filter");
-            btnFilter.setForeground(active ? AppColors.PRIMARY : AppColors.LABEL);
+        if (UIHelper.showRequestFilterDialog(this, statusOption, typeOption)) {
+            filterStatus = statusOption.value;
+            filterType = typeOption.value;
+            UIHelper.updateFilterButtonState(btnFilter, statusOption, typeOption);
             applySearchAndFilter();
         }
     }
@@ -243,7 +228,7 @@ public class studRHistory extends javax.swing.JFrame {
         pnlUserProfile.setOpaque(false);
 
         lblUserName.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lblUserName.setText("Alex Johnson");
+        lblUserName.setText("Student");
 
         lblUserRole.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblUserRole.setText("STUDENT");

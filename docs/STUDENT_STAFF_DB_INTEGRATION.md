@@ -343,7 +343,7 @@ Run **without mock data** (see Section 9). Use fresh sign-ups or seed accounts.
 
 | Role | Email | Password |
 |------|-------|----------|
-| Manager | `youradminusername@admin.com.my` | `admin123` |
+| Manager | `shmrts-admin@admin.com.my` / `umpsa-admin@admin.com.my` / `hostelcare-admin@admin.com.my` / `youradminusername@admin.com.my` | `umpsaADMINs3cr37` |
 | Student | `john123@gmail.com` | `student123` |
 | Staff (electrician) | `farouq001@gmail.com` | `staff123` |
 | Staff (plumber) | `faiz002@gmail.com` | `staff123` |
@@ -423,7 +423,7 @@ Each frame’s `customizeForm()` should call a **service load method**, not `new
 
 | Feature | Current state |
 |---------|---------------|
-| Forgot password | GUI only — `setNewPasswordFrame` has no DB logic |
+| Forgot password | DB-backed email verify + password reset via `AuthService` |
 | Password hashing | Plain text in DB (academic project default) |
 | Delete request | `DatabaseHandler.deleteRequest()` exists but no GUI wired |
 

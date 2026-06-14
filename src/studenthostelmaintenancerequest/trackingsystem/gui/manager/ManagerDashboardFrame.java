@@ -121,10 +121,10 @@ public class ManagerDashboardFrame extends javax.swing.JFrame {
         btnNavRequestHistory = new ManagerNavButton("View Request History");
         pnlMain = new javax.swing.JPanel();
         pnlStatCards = new javax.swing.JPanel();
-        cardTotal = new StatCardPanel("Total Requests", "24", AppColors.STAT_TOTAL_HEADER, AppColors.STAT_TOTAL_BODY);
-        cardActive = new StatCardPanel("Active Requests", "12", AppColors.STAT_ACTIVE_HEADER, AppColors.STAT_ACTIVE_BODY);
-        cardCompleted = new StatCardPanel("Completed Requests", "10", AppColors.STAT_COMPLETED_HEADER, AppColors.STAT_COMPLETED_BODY);
-        cardCancelled = new StatCardPanel("Cancelled Requests", "2", AppColors.STAT_CANCELLED_HEADER, AppColors.STAT_CANCELLED_BODY);
+        cardTotal = new StatCardPanel("Total Requests", "0", AppColors.STAT_TOTAL_HEADER, AppColors.STAT_TOTAL_BODY);
+        cardActive = new StatCardPanel("Active Requests", "0", AppColors.STAT_ACTIVE_HEADER, AppColors.STAT_ACTIVE_BODY);
+        cardCompleted = new StatCardPanel("Completed Requests", "0", AppColors.STAT_COMPLETED_HEADER, AppColors.STAT_COMPLETED_BODY);
+        cardCancelled = new StatCardPanel("Cancelled Requests", "0", AppColors.STAT_CANCELLED_HEADER, AppColors.STAT_CANCELLED_BODY);
         pnlTableSection = new javax.swing.JPanel();
         lblTableSection = new javax.swing.JLabel();
         scrTable = new javax.swing.JScrollPane();
@@ -167,7 +167,7 @@ public class ManagerDashboardFrame extends javax.swing.JFrame {
         pnlUserProfile.setOpaque(false);
 
         lblUserName.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lblUserName.setText("John Wick");
+        lblUserName.setText("Admin");
 
         lblUserRole.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblUserRole.setText("ADMIN");

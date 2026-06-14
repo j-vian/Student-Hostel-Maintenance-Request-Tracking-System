@@ -198,44 +198,23 @@ public final class ManagerService {
     }
 
     static String formatFullName(String firstName, String lastName) {
-        return (firstName + " " + lastName).trim();
+        return RequestDisplayFormatter.formatFullName(firstName, lastName);
     }
 
     static String formatRequestType(String requestType) {
-        if (requestType == null || requestType.isBlank()) {
-            return "";
-        }
-        String value = requestType.trim().toLowerCase();
-        return switch (value) {
-            case "electrical" -> "Electrical";
-            case "plumbing" -> "Plumbing";
-            case "furniture" -> "Furniture";
-            default -> requestType.substring(0, 1).toUpperCase() + requestType.substring(1);
-        };
+        return RequestDisplayFormatter.formatRequestType(requestType);
     }
 
     static String formatDisplayStatus(String dbStatus) {
-        return StatusBadgeLabel.formatStatus(dbStatus);
+        return RequestDisplayFormatter.formatDisplayStatus(dbStatus);
     }
 
     static String formatDate(LocalDateTime dateTime) {
-        if (dateTime == null) {
-            return "";
-        }
-        return DATE_FORMAT.format(dateTime);
+        return RequestDisplayFormatter.formatDate(dateTime);
     }
 
     static String formatPriority(String priority) {
-        if (priority == null || priority.isBlank()) {
-            return "";
-        }
-        String value = priority.trim().toLowerCase();
-        return switch (value) {
-            case "high" -> "High";
-            case "medium" -> "Medium";
-            case "low" -> "Low";
-            default -> priority.substring(0, 1).toUpperCase() + priority.substring(1);
-        };
+        return RequestDisplayFormatter.formatPriority(priority);
     }
 
     public static String formatBlockDisplay(String roomNumber, String placeName) {

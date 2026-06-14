@@ -265,7 +265,7 @@ public class ManageRequestPage extends javax.swing.JFrame {
         pnlUserProfile.setOpaque(false);
 
         lblUserName.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lblUserName.setText("John Doe");
+        lblUserName.setText("Staff");
 
         lblUserRole.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblUserRole.setText("STAFF");

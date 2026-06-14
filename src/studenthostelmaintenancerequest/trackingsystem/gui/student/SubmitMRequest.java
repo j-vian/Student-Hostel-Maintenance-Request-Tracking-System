@@ -71,7 +71,7 @@ public class SubmitMRequest extends javax.swing.JFrame {
     }
 
     private void wireNavigation() {
-        btnNavDashboard.addActionListener(e -> UIHelper.navigateTo(this, new stdDarshboard()));
+        btnNavDashboard.addActionListener(e -> UIHelper.navigateTo(this, new stdDashboard()));
         btnNavSubmit.addActionListener(e -> { /* current page */ });
         btnNavHistory.addActionListener(e -> UIHelper.navigateTo(this, new studRHistory()));
     }
@@ -203,7 +203,7 @@ public class SubmitMRequest extends javax.swing.JFrame {
         pnlUserProfile.setOpaque(false);
 
         lblUserName.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lblUserName.setText("Alex Johnson");
+        lblUserName.setText("Student");
 
         lblUserRole.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblUserRole.setText("STUDENT");

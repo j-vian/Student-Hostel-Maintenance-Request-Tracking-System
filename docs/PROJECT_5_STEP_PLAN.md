@@ -35,7 +35,7 @@ Teammate `.java` / `.form` files were merged and moved into proper packages. Old
 
 | Role | Package | Frames |
 |------|---------|--------|
-| **Student** | `gui/student/` | `stdDarshboard`, `SubmitMRequest`, `studRHistory` |
+| **Student** | `gui/student/` | `stdDashboard`, `SubmitMRequest`, `studRHistory` |
 | **Staff** | `gui/staff/` | `staffDashboard`, `ManageRequestPage`, `ViewRoomDetails`, `viewRequestHistoryPage` |
 | **Manager** | `gui/manager/` | Dashboard, Manage Active Requests, Assign Staff, View Room Details, View Request History |
 
@@ -114,7 +114,7 @@ All list queries order by latest `request_status_history.changed_at` (fallback: 
 | Role | Email | Password |
 |------|-------|----------|
 | Student | `john123@gmail.com` | `student123` |
-| Manager | `youradminusername@admin.com.my` | `admin123` |
+| Manager | `shmrts-admin@admin.com.my` / `umpsa-admin@admin.com.my` / `hostelcare-admin@admin.com.my` / `youradminusername@admin.com.my` | `umpsaADMINs3cr37` |
 | Staff | `farouq001@gmail.com` / `faiz002@gmail.com` | `staff123` |
 
 ---
@@ -145,7 +145,7 @@ Optional: trim hardcoded defaults in `.form` files (manager dashboard stat cards
 
 - Remove unused imports/methods after mock deletion
 - Review `UIHelper.java` size — split only if clearly warranted (e.g. table models vs shell helpers)
-- Consistent naming (e.g. `stdDarshboard` typo — fix only if team agrees)
+- Consistent naming applied (`stdDashboard`, `SetNewPasswordFrame`)
 - Align student history filter with shared `showRequestFilterDialog` (staff/manager already use it)
 - **Clean and Build** in NetBeans must succeed
 

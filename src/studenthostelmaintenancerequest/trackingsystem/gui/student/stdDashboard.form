@@ -115,7 +115,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="jButton1">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Darshboard"/>
+            <Property name="text" type="java.lang.String" value="Dashboard"/>
           </Properties>
         </Component>
       </SubComponents>
@@ -182,7 +182,7 @@
           <SubComponents>
             <Component class="javax.swing.JButton" name="jButton4">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Alex Johnson &#x25be; STUDENT"/>
+                <Property name="text" type="java.lang.String" value="Student"/>
                 <Property name="contentAreaFilled" type="boolean" value="false"/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
@@ -247,7 +247,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="18" style="1"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Darshboard"/>
+            <Property name="text" type="java.lang.String" value="Dashboard"/>
           </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane1">
@@ -346,7 +346,7 @@
                       <Data value="Student ID"/>
                       <Data value="Room No ."/>
                     </Column>
-                    <Column editable="false" title="Alex Johnson" type="java.lang.Object">
+                    <Column editable="false" title="Student" type="java.lang.Object">
                       <Data value="RC23155"/>
                       <Data value="402-B"/>
                     </Column>
