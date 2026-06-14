@@ -13,12 +13,11 @@ public final class SignUpData {
     private final String password;
     private final UserRole role;
     private final String roomNumber;
-    private final String placeName;
     private final String staffRole;
     private final String otherExpertise;
 
     public SignUpData(String userId, String username, String firstName, String lastName,
-            String email, String password, UserRole role, String roomNumber, String placeName,
+            String email, String password, UserRole role, String roomNumber,
             String staffRole, String otherExpertise) {
         this.userId = userId;
         this.username = username;
@@ -28,7 +27,6 @@ public final class SignUpData {
         this.password = password;
         this.role = role;
         this.roomNumber = roomNumber;
-        this.placeName = placeName;
         this.staffRole = staffRole;
         this.otherExpertise = otherExpertise;
     }
@@ -63,10 +61,6 @@ public final class SignUpData {
 
     public String getRoomNumber() {
         return roomNumber;
-    }
-
-    public String getPlaceName() {
-        return placeName;
     }
 
     public String getStaffRole() {

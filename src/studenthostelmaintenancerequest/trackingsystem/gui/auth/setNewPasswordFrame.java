@@ -4,6 +4,7 @@
  */
 package studenthostelmaintenancerequest.trackingsystem.gui.auth;
 
+import studenthostelmaintenancerequest.trackingsystem.AuthService;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.GradientBackgroundPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.PasswordFieldPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.PasswordRequirementsPanel;
@@ -16,8 +17,14 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
 public class setNewPasswordFrame extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(setNewPasswordFrame.class.getName());
+    private final String resetEmail;
 
     public setNewPasswordFrame() {
+        this(null);
+    }
+
+    public setNewPasswordFrame(String resetEmail) {
+        this.resetEmail = resetEmail;
         initComponents();
         customizeForm();
     }
@@ -38,7 +45,13 @@ public class setNewPasswordFrame extends javax.swing.JFrame {
     }
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {
-        // Backend reset logic will be added later.
+        if (resetEmail == null || resetEmail.isBlank()) {
+            UIHelper.navigateTo(this, new ForgotPasswordFrame());
+            return;
+        }
+        String newPassword = new String(pnlNewPassword.getPasswordField().getPassword());
+        String confirmPassword = new String(pnlConfirmPassword.getPasswordField().getPassword());
+        AuthService.resetPassword(this, resetEmail, newPassword, confirmPassword);
     }
 
     /**

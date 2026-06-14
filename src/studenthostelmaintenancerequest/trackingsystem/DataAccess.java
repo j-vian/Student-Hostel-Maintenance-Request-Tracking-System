@@ -13,6 +13,10 @@ public interface DataAccess {
 
     void registerStaff(SignUpData data) throws DatabaseException;
 
+    boolean isEmailRegistered(String email) throws DatabaseException;
+
+    void updatePassword(String email, String newPassword) throws DatabaseException;
+
     String generateNextRequestId() throws DatabaseException;
 
     void insertRequest(MaintenanceRequest request, String studentId, int roomId, String changedBy)

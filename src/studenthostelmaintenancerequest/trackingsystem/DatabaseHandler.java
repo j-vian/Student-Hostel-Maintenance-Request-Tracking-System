@@ -20,6 +20,8 @@ public class DatabaseHandler implements DataAccess {
 
     private static DatabaseHandler instance;
     private final MaintenanceFactory requestFactory = new MaintenanceFactory();
+    /** Placeholder until the student submits a request with the actual place name. */
+    private static final String STUDENT_REGISTRATION_PLACE = "TBD";
 
     public static DatabaseHandler getInstance() {
         if (instance == null) {
@@ -98,7 +100,7 @@ public class DatabaseHandler implements DataAccess {
         validateSignUpData(data, UserRole.STUDENT);
         blockAdminEmail(data.getEmail());
 
-        int roomId = findOrCreateRoomInternal(data.getRoomNumber(), data.getPlaceName());
+        int roomId = findOrCreateRoomInternal(data.getRoomNumber(), STUDENT_REGISTRATION_PLACE);
         insertUser(data, roomId);
     }
 
@@ -120,9 +122,8 @@ public class DatabaseHandler implements DataAccess {
         if (data.getRole() != expectedRole) {
             throw new DatabaseException("Invalid role selected.");
         }
-        if (expectedRole == UserRole.STUDENT
-                && (isBlank(data.getRoomNumber()) || isBlank(data.getPlaceName()))) {
-            throw new DatabaseException("Room number and place name are required for students.");
+        if (expectedRole == UserRole.STUDENT && isBlank(data.getRoomNumber())) {
+            throw new DatabaseException("Room number is required for students.");
         }
         if (expectedRole == UserRole.STAFF && isBlank(data.getStaffRole())) {
             throw new DatabaseException("Staff expertise is required.");
@@ -209,6 +210,40 @@ public class DatabaseHandler implements DataAccess {
             ps.executeUpdate();
         } catch (SQLException ex) {
             throw new DatabaseException("Unable to create account.", ex);
+        }
+    }
+
+    @Override
+    public boolean isEmailRegistered(String email) throws DatabaseException {
+        if (email == null || email.isBlank()) {
+            return false;
+        }
+        return emailExists(email);
+    }
+
+    @Override
+    public void updatePassword(String email, String newPassword) throws DatabaseException {
+        if (email == null || email.isBlank()) {
+            throw new DatabaseException("Email is required.");
+        }
+        if (newPassword == null || newPassword.isEmpty()) {
+            throw new DatabaseException("New password is required.");
+        }
+        if (!isEmailRegistered(email)) {
+            throw new DatabaseException("No account found for this email address.");
+        }
+
+        String sql = "UPDATE users SET password = ? WHERE LOWER(email) = ?";
+        try (Connection conn = openConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, newPassword);
+            ps.setString(2, email.trim().toLowerCase());
+            int updated = ps.executeUpdate();
+            if (updated == 0) {
+                throw new DatabaseException("Unable to update password.");
+            }
+        } catch (SQLException ex) {
+            throw new DatabaseException("Unable to update password.", ex);
         }
     }
 

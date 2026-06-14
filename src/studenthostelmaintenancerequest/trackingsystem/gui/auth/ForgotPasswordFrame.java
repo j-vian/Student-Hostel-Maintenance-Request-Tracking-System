@@ -4,6 +4,7 @@
  */
 package studenthostelmaintenancerequest.trackingsystem.gui.auth;
 
+import studenthostelmaintenancerequest.trackingsystem.AuthService;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.GradientBackgroundPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
@@ -38,7 +39,7 @@ public class ForgotPasswordFrame extends javax.swing.JFrame {
     }
 
     private void btnVerifyActionPerformed(java.awt.event.ActionEvent evt) {
-        UIHelper.navigateTo(this, new setNewPasswordFrame());
+        AuthService.verifyEmailForPasswordReset(this, txtEmail.getText().trim());
     }
 
     /**

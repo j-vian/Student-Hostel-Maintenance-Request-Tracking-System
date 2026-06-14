@@ -1162,27 +1162,6 @@ public final class UIHelper {
             "Assigned Staff", "Date Raised", "Priority", "Status"});
     }
 
-    private static Object[][] buildManageRequestSampleData() {
-        String[] types = {"Electrical", "Plumbing", "Furniture"};
-        String[] students = {"Alex Johnson", "Maria Chen", "Sam Patel"};
-        String[] staff = {"John Doe", "Jane Smith"};
-        String[] dates = {"8 June 2026", "9 June 2026", "10 June 2026", "11 June 2026",
-            "12 June 2026", "13 June 2026", "14 June 2026"};
-
-        Object[][] rows = new Object[21][6];
-        for (int i = 0; i < rows.length; i++) {
-            rows[i] = new Object[]{
-                String.format("REQ%03d", i + 1),
-                types[i % types.length],
-                students[i % students.length],
-                staff[i % staff.length],
-                dates[i % dates.length],
-                "IN PROGRESS"
-            };
-        }
-        return rows;
-    }
-
     public static final class ManagerManageRequestTableModel extends AbstractTableModel {
 
         private final java.util.List<Object[]> allRows = new java.util.ArrayList<>();
@@ -1506,26 +1485,6 @@ public final class UIHelper {
             "Date Raised", "Priority", "Status", "Assigned Staff"});
     }
 
-    private static Object[][] buildAssignStaffSampleData() {
-        String[] types = {"Electrical", "Plumbing", "Furniture"};
-        String[] students = {"Alex Johnson", "Maria Chen", "Sam Patel"};
-        String[] staff = {"John Doe", "Jane Smith"};
-
-        Object[][] rows = new Object[21][5];
-        for (int i = 0; i < rows.length; i++) {
-            String status = (i % 3 == 1) ? "SUBMITTED" : "IN PROGRESS";
-            Object assignedStaff = "SUBMITTED".equals(status) ? null : staff[i % staff.length];
-            rows[i] = new Object[]{
-                String.format("REQ%03d", i + 1),
-                types[i % types.length],
-                students[i % students.length],
-                status,
-                assignedStaff
-            };
-        }
-        return rows;
-    }
-
     private static boolean isAssignableRequestStatus(Object status) {
         return "SUBMITTED".equals(StatusBadgeLabel.formatStatus(String.valueOf(status)));
     }
@@ -1832,54 +1791,6 @@ public final class UIHelper {
         component.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
     }
 
-    public static final class ManagerRoomDetails {
-
-        public final String requestId;
-        public final String roomNumber;
-        public final String block;
-        public final String studentName;
-        public final String requestType;
-
-        public ManagerRoomDetails(String requestId, String roomNumber, String block,
-                String studentName, String requestType) {
-            this.requestId = requestId;
-            this.roomNumber = roomNumber;
-            this.block = block;
-            this.studentName = studentName;
-            this.requestType = requestType;
-        }
-    }
-
-    public static ManagerRoomDetails lookupManagerRoomDetails(String requestId) {
-        if (requestId == null || requestId.isBlank()) {
-            return null;
-        }
-        return MANAGER_ROOM_DETAILS.get(requestId.trim().toUpperCase());
-    }
-
-    private static final java.util.Map<String, ManagerRoomDetails> MANAGER_ROOM_DETAILS =
-            buildManagerRoomDetailsLookup();
-
-    private static java.util.Map<String, ManagerRoomDetails> buildManagerRoomDetailsLookup() {
-        String[] types = {"Electrical", "Plumbing", "Furniture"};
-        String[] students = {"Alex Johnson", "Maria Chen", "Sam Patel"};
-        String[] roomNumbers = {"402-B", "305-A", "118-C"};
-        String[] blocks = {"Tower B, DHUAM", "Tower A, DHUAM", "Tower C, DHUAM"};
-
-        java.util.Map<String, ManagerRoomDetails> lookup = new java.util.HashMap<>();
-        for (int i = 0; i < 21; i++) {
-            int index = i % 3;
-            String requestId = String.format("REQ%03d", i + 1);
-            lookup.put(requestId, new ManagerRoomDetails(
-                    requestId,
-                    roomNumbers[index],
-                    blocks[index],
-                    students[index],
-                    types[index]));
-        }
-        return lookup;
-    }
-
     public static void layoutManagerViewHistoryToolbar(
             JPanel toolbar, JPanel searchField, JButton btnFilter) {
 
@@ -1910,34 +1821,6 @@ public final class UIHelper {
         return new ManagerViewHistoryTableModel(data, new String[]{
             "Request ID", "Request Type", "Student Name",
             "Assigned Staff", "Description", "Date Raised", "Priority", "Status"});
-    }
-
-    private static Object[][] buildViewHistorySampleData() {
-        Object[][] rows = new Object[21][7];
-        rows[0] = new Object[]{"REQ001", "Electrical", "Alex Johnson", "John Doe", "8 June 2026", "High", "IN PROGRESS"};
-        rows[1] = new Object[]{"REQ001", "Plumbing", "Alex Johnson", "John Doe", "8 June 2026", "Medium", "SUBMITTED"};
-        rows[2] = new Object[]{"REQ001", "Furniture", "Alex Johnson", "John Doe", "8 June 2026", "Low", "COMPLETED"};
-
-        String[] types = {"Electrical", "Plumbing", "Furniture"};
-        String[] students = {"Alex Johnson", "Maria Chen", "Sam Patel"};
-        String[] staff = {"John Doe", "Jane Smith"};
-        String[] dates = {"8 June 2026", "9 June 2026", "10 June 2026", "11 June 2026",
-            "12 June 2026", "13 June 2026", "14 June 2026"};
-        String[] priorities = {"High", "Medium", "Low"};
-        String[] statuses = {"IN PROGRESS", "SUBMITTED", "COMPLETED"};
-
-        for (int i = 3; i < rows.length; i++) {
-            rows[i] = new Object[]{
-                String.format("REQ%03d", i + 1),
-                types[i % types.length],
-                students[i % students.length],
-                staff[i % staff.length],
-                dates[i % dates.length],
-                priorities[i % priorities.length],
-                statuses[i % statuses.length]
-            };
-        }
-        return rows;
     }
 
     public static final class ManagerViewHistoryTableModel extends AbstractTableModel {
@@ -2764,7 +2647,7 @@ public final class UIHelper {
             lblUserName.setText(SessionManager.getFullName());
             lblUserRole.setText("STAFF");
         } else {
-            lblUserName.setText("John Doe");
+            lblUserName.setText("Staff");
             lblUserRole.setText("STAFF");
         }
     }
@@ -2772,53 +2655,6 @@ public final class UIHelper {
     public static void layoutStaffSidebar(JPanel pnlSidebar, ManagerNavButton... buttons) {
         pnlSidebar.setPreferredSize(new Dimension(STUDENT_SIDEBAR_WIDTH, 0));
         layoutManagerSidebar(pnlSidebar, buttons);
-    }
-
-    public static Object[][] buildStaffProfileMockRows() {
-        return new Object[][]{
-            {"Name", "John Doe"},
-            {"Staff ID", "ST12345"}
-        };
-    }
-
-    public static Object[][] buildStaffDashboardActiveMockRows() {
-        return new Object[][]{
-            {"REQ001", "Electrical", "8 June 2026", "IN PROGRESS"},
-            {"REQ002", "Electrical", "8 June 2026", "SUBMITTED"},
-            {"REQ003", "Plumbing", "8 June 2026", "SUBMITTED"}
-        };
-    }
-
-    public static Object[][] buildStaffManageRequestMockRows() {
-        Object[][] rows = new Object[12][4];
-        String[] types = {"Electrical", "Plumbing", "Furniture"};
-        String[] statuses = {"IN PROGRESS", "SUBMITTED", "SUBMITTED"};
-        for (int i = 0; i < rows.length; i++) {
-            rows[i] = new Object[]{
-                String.format("REQ%03d", i + 1),
-                types[i % types.length],
-                "8 June 2026",
-                statuses[i % statuses.length]
-            };
-        }
-        return rows;
-    }
-
-    public static Object[][] buildStaffHistoryMockRows() {
-        Object[][] rows = new Object[12][5];
-        String[] types = {"Electrical", "Plumbing", "Furniture"};
-        String[] priorities = {"High", "Medium", "Low"};
-        String[] statuses = {"IN PROGRESS", "SUBMITTED", "COMPLETED"};
-        for (int i = 0; i < rows.length; i++) {
-            rows[i] = new Object[]{
-                String.format("REQ%03d", i + 1),
-                types[i % types.length],
-                "8 June 2026",
-                priorities[i % priorities.length],
-                statuses[i % statuses.length]
-            };
-        }
-        return rows;
     }
 
     public static StaffManageRequestTableModel createStaffManageRequestTableModel() {

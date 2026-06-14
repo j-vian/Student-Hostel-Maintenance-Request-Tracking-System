@@ -32,15 +32,13 @@ public class SignUpFrame extends javax.swing.JFrame {
         UIHelper.styleSignupCard(pnlCard, lblTitle, btnSignUp);
         UIHelper.styleSignupFieldLabel(
                 lblFirstName, lblLastName, lblUsername, lblUserId, lblEmail,
-                lblPassword, lblConfirmPassword, lblRole, lblRoomNumber, lblPlaceName, lblExpertise);
+                lblPassword, lblConfirmPassword, lblRole, lblRoomNumber, lblExpertise);
         UIHelper.styleSignupHalfTextField(txtFirstName, txtLastName);
-        UIHelper.styleSignupTextField(txtUsername, txtUserId, txtEmail, txtRoomNumber, txtPlaceName, txtOtherExpertise);
+        UIHelper.styleSignupTextField(txtUsername, txtUserId, txtEmail, txtRoomNumber, txtOtherExpertise);
         UIHelper.styleSignupComboBox(cmbRole, cmbExpertise);
 
         lblRoomNumber.setVisible(false);
         txtRoomNumber.setVisible(false);
-        lblPlaceName.setVisible(false);
-        txtPlaceName.setVisible(false);
         lblExpertise.setVisible(false);
         cmbExpertise.setVisible(false);
         txtOtherExpertise.setVisible(false);
@@ -81,8 +79,6 @@ public class SignUpFrame extends javax.swing.JFrame {
         boolean staff = "Staff".equals(selected);
         lblRoomNumber.setVisible(student);
         txtRoomNumber.setVisible(student);
-        lblPlaceName.setVisible(student);
-        txtPlaceName.setVisible(student);
         lblExpertise.setVisible(staff);
         cmbExpertise.setVisible(staff);
         updateOtherExpertiseField();
@@ -146,7 +142,6 @@ public class SignUpFrame extends javax.swing.JFrame {
                 new String(pnlPassword.getPasswordField().getPassword()),
                 role,
                 txtRoomNumber.getText().trim(),
-                txtPlaceName.getText().trim(),
                 staffRole,
                 otherExpertise);
 
@@ -185,8 +180,6 @@ public class SignUpFrame extends javax.swing.JFrame {
         cmbRole = new javax.swing.JComboBox();
         lblRoomNumber = new javax.swing.JLabel();
         txtRoomNumber = new PlaceholderTextField("Room Number");
-        lblPlaceName = new javax.swing.JLabel();
-        txtPlaceName = new PlaceholderTextField("Place Name (e.g. DHUAM, KK5)");
         lblExpertise = new javax.swing.JLabel();
         cmbExpertise = new javax.swing.JComboBox();
         txtOtherExpertise = new PlaceholderTextField("e.g. Electrician, Plumber");
@@ -225,8 +218,6 @@ public class SignUpFrame extends javax.swing.JFrame {
 
         lblRoomNumber.setText("Room Number");
 
-        lblPlaceName.setText("Place Name");
-
         lblExpertise.setText("Select Expertise");
 
         cmbExpertise.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Select your expertise", "Electrician", "Plumber", "Furniture Tech", "Other" }));
@@ -261,8 +252,6 @@ public class SignUpFrame extends javax.swing.JFrame {
                     .addComponent(cmbRole, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblRoomNumber)
                     .addComponent(txtRoomNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblPlaceName)
-                    .addComponent(txtPlaceName, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblExpertise)
                     .addComponent(cmbExpertise, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtOtherExpertise, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -326,10 +315,6 @@ public class SignUpFrame extends javax.swing.JFrame {
                 .addComponent(lblRoomNumber)
                 .addGap(6, 6, 6)
                 .addComponent(txtRoomNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addComponent(lblPlaceName)
-                .addGap(6, 6, 6)
-                .addComponent(txtPlaceName, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12)
                 .addComponent(lblExpertise)
                 .addGap(6, 6, 6)
@@ -411,7 +396,6 @@ public class SignUpFrame extends javax.swing.JFrame {
     private javax.swing.JLabel lblExpertise;
     private javax.swing.JLabel lblFirstName;
     private javax.swing.JLabel lblLastName;
-    private javax.swing.JLabel lblPlaceName;
     private javax.swing.JLabel lblPassword;
     private javax.swing.JLabel lblRole;
     private javax.swing.JLabel lblRoomNumber;
@@ -427,7 +411,6 @@ public class SignUpFrame extends javax.swing.JFrame {
     private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtFirstName;
     private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtLastName;
     private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtOtherExpertise;
-    private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtPlaceName;
     private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtRoomNumber;
     private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtUserId;
     private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtUsername;

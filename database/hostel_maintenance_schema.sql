@@ -64,18 +64,13 @@ CREATE TABLE request_status_history (
         FOREIGN KEY (changed_by) REFERENCES users (user_id)
 );
 
--- Default admin (login with this email on the Login page).
--- Password: admin123
+-- Manager admin accounts (password for all: umpsaADMINs3cr37)
 INSERT INTO users (user_id, username, first_name, last_name, email, password, role)
-VALUES (
-    'ADM001',
-    'hosteladmin',
-    'System',
-    'Administrator',
-    'youradminusername@admin.com.my',
-    'admin123',
-    'MANAGER'
-);
+VALUES
+    ('ADM001', 'hosteladmin', 'System', 'Administrator', 'youradminusername@admin.com.my', 'umpsaADMINs3cr37', 'MANAGER'),
+    ('ADM002', 'shmrtsadmin', 'SHMRTS', 'Administrator', 'shmrts-admin@admin.com.my', 'umpsaADMINs3cr37', 'MANAGER'),
+    ('ADM003', 'umpsaadmin', 'UMPSA', 'Administrator', 'umpsa-admin@admin.com.my', 'umpsaADMINs3cr37', 'MANAGER'),
+    ('ADM004', 'hostelcareadmin', 'Hostel Care', 'Administrator', 'hostelcare-admin@admin.com.my', 'umpsaADMINs3cr37', 'MANAGER');
 
 -- Optional demo rooms/users for testing (safe to delete later).
 INSERT INTO rooms (room_number, place_name) VALUES
