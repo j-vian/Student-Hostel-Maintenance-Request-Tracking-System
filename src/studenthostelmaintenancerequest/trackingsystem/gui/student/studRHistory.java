@@ -1,6 +1,5 @@
 package studenthostelmaintenancerequest.trackingsystem.gui.student;
 
-import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JLabel;
@@ -32,17 +31,11 @@ public class studRHistory extends javax.swing.JFrame {
         {"REQ012", "Furniture", "30 May 2026", "Low", "SUBMITTED"}
     };
 
-    private LogoPanel pnlHeaderLogo;
-    private JPanel pnlUserProfile;
-    private JLabel lblUserName;
-    private JLabel lblUserRole;
-    private javax.swing.JButton btnUserMenu;
-    private ManagerNavButton btnNavDashboard;
-    private ManagerNavButton btnNavSubmit;
-    private ManagerNavButton btnNavHistory;
-
     private PlaceholderTextField txtSearch;
     private StudentHistoryTableModel historyTableModel;
+    private JLabel lblPagination;
+    private javax.swing.JButton btnPagePrevious;
+    private javax.swing.JButton btnPageNext;
 
     private String filterStatus = "All";
     private String filterType = "All";
@@ -53,46 +46,31 @@ public class studRHistory extends javax.swing.JFrame {
     }
 
     private void customizeForm() {
-        setTitle("View Request History");
-
-        pnlHeaderLogo = new LogoPanel();
-        lblUserName = new JLabel();
-        lblUserRole = new JLabel();
-        btnUserMenu = new javax.swing.JButton();
-        JPanel pnlUserHost = UIHelper.createStudentUserProfileHost();
-        pnlUserProfile = UIHelper.createStudentUserProfile(lblUserName, lblUserRole, btnUserMenu);
-        pnlUserHost.add(pnlUserProfile);
-
-        UIHelper.setupStudentHeader(jPanel1, jLabel6, pnlUserHost, pnlHeaderLogo);
-        UIHelper.styleManagerShell(jPanel1, jPanel2, jPanel4, jLabel6, pnlHeaderLogo);
-        UIHelper.styleStudentMainContent(jPanel4);
-        UIHelper.installStudentSession(this, pnlUserProfile, lblUserName, lblUserRole, btnUserMenu);
-
-        btnNavDashboard = new ManagerNavButton("Dashboard");
-        btnNavSubmit = new ManagerNavButton("Submit Maintenance Request");
-        btnNavHistory = new ManagerNavButton("View Request History");
-        jPanel2.removeAll();
-        UIHelper.layoutStudentSidebar(jPanel2, btnNavDashboard, btnNavSubmit, btnNavHistory);
-        UIHelper.styleManagerNavButton(btnNavDashboard, false);
-        UIHelper.styleManagerNavButton(btnNavSubmit, false);
-        UIHelper.styleManagerNavButton(btnNavHistory, true);
+        UIHelper.configureStudentShell(this,
+                pnlHeader, pnlSidebar, pnlMain, pnlPageHeader,
+                lblAppTitle, lblPageTitle, pnlHeaderLogo,
+                pnlUserProfile, lblUserName, lblUserRole, btnUserMenu,
+                btnNavDashboard, btnNavSubmit, btnNavHistory,
+                UIHelper.StudentNavPage.HISTORY);
         wireNavigation();
-
-        UIHelper.styleStudentPageTitle(jLabel1);
 
         txtSearch = new PlaceholderTextField("Search Request by ID");
         JPanel pnlSearchField = UIHelper.createSearchField(txtSearch);
-        UIHelper.styleManagerFilterButton(jButton7);
-        rebuildContentArea(pnlSearchField);
+        UIHelper.layoutManagerViewHistoryToolbar(pnlToolbar, pnlSearchField, btnFilter);
+        UIHelper.styleManagerFilterButton(btnFilter);
 
-        jLabel2.setText("Maintenance Request History");
+        lblTableSection.setText("Maintenance Request History");
         historyTableModel = UIHelper.createStudentHistoryTableModel(MOCK_HISTORY);
-        jTable1.setModel(historyTableModel);
-        UIHelper.styleManagerTableSection(jLabel2, jTable1, jScrollPane1);
-        UIHelper.applyStudentHistoryTableRenderers(jTable1);
+        tblHistory.setModel(historyTableModel);
+        UIHelper.styleManagerTableSection(lblTableSection, tblHistory, scrHistory);
+        UIHelper.applyStudentHistoryTableRenderers(tblHistory);
 
-        UIHelper.styleManagerPaginationButton(jButton5);
-        UIHelper.styleManagerPaginationButton(jButton6);
+        lblPagination = new JLabel();
+        btnPagePrevious = new javax.swing.JButton("<");
+        btnPageNext = new javax.swing.JButton(">");
+        UIHelper.layoutManagerTableSectionWithPagination(
+                pnlTableSection, lblTableSection, scrHistory,
+                lblPagination, btnPagePrevious, btnPageNext);
         refreshPaginationFooter();
 
         txtSearch.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
@@ -100,53 +78,12 @@ public class studRHistory extends javax.swing.JFrame {
             public void removeUpdate(javax.swing.event.DocumentEvent e) { applySearchAndFilter(); }
             public void changedUpdate(javax.swing.event.DocumentEvent e) { applySearchAndFilter(); }
         });
-        jButton7.addActionListener(e -> showFilterDialog());
-        jButton5.addActionListener(e -> changePage(-1));
-        jButton6.addActionListener(e -> changePage(1));
+        btnFilter.addActionListener(e -> showFilterDialog());
+        btnPagePrevious.addActionListener(e -> changePage(-1));
+        btnPageNext.addActionListener(e -> changePage(1));
 
         UIHelper.showManagerFrame(this);
         resizeTableSection();
-    }
-
-    private void rebuildContentArea(JPanel pnlSearchField) {
-        jPanel4.removeAll();
-        jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.Y_AXIS));
-        jPanel4.setOpaque(false);
-
-        jLabel1.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
-        jPanel4.add(jLabel1);
-        jPanel4.add(javax.swing.Box.createVerticalStrut(12));
-
-        JPanel searchRow = new JPanel(new BorderLayout(12, 0));
-        searchRow.setOpaque(false);
-        searchRow.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
-        searchRow.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, UIHelper.MANAGER_SEARCH_HEIGHT));
-        searchRow.add(pnlSearchField, BorderLayout.CENTER);
-        searchRow.add(jButton7, BorderLayout.EAST);
-        jPanel4.add(searchRow);
-        jPanel4.add(javax.swing.Box.createVerticalStrut(18));
-
-        JPanel tableSection = new JPanel(new BorderLayout());
-        tableSection.setOpaque(false);
-        tableSection.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
-        tableSection.setMaximumSize(new java.awt.Dimension(640, Integer.MAX_VALUE));
-        tableSection.add(jLabel2, BorderLayout.NORTH);
-        tableSection.add(jScrollPane1, BorderLayout.CENTER);
-        jPanel4.add(tableSection);
-        jPanel4.add(javax.swing.Box.createVerticalStrut(12));
-
-        JPanel footer = new JPanel(new BorderLayout());
-        footer.setOpaque(false);
-        footer.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
-        footer.setMaximumSize(new java.awt.Dimension(640, 40));
-        footer.add(jLabel3, BorderLayout.WEST);
-        JPanel nav = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 8, 0));
-        nav.setOpaque(false);
-        nav.add(jButton5);
-        nav.add(jButton6);
-        footer.add(nav, BorderLayout.EAST);
-        jPanel4.add(footer);
-        jPanel4.add(javax.swing.Box.createVerticalGlue());
     }
 
     private void wireNavigation() {
@@ -207,8 +144,8 @@ public class studRHistory extends javax.swing.JFrame {
             filterStatus = (String) statusCombo.getSelectedItem();
             filterType = (String) typeCombo.getSelectedItem();
             boolean active = !filterStatus.equals("All") || !filterType.equals("All");
-            jButton7.setText(active ? "Filter ✓" : "Filter");
-            jButton7.setForeground(active ? AppColors.PRIMARY : AppColors.LABEL);
+            btnFilter.setText(active ? "Filter ✓" : "Filter");
+            btnFilter.setForeground(active ? AppColors.PRIMARY : AppColors.LABEL);
             applySearchAndFilter();
         }
     }
@@ -224,13 +161,13 @@ public class studRHistory extends javax.swing.JFrame {
     }
 
     private void refreshPaginationFooter() {
-        UIHelper.updateStudentPaginationFooter(jLabel3, jButton5, jButton6, historyTableModel);
+        UIHelper.updateStudentPaginationFooter(lblPagination, btnPagePrevious, btnPageNext, historyTableModel);
     }
 
     private void resizeTableSection() {
         javax.swing.SwingUtilities.invokeLater(() -> {
-            UIHelper.sizeStudentHistoryTable(jTable1, jScrollPane1);
-            jPanel4.revalidate();
+            UIHelper.sizeStudentHistoryTable(tblHistory, scrHistory);
+            pnlTableSection.revalidate();
         });
     }
 
@@ -238,38 +175,156 @@ public class studRHistory extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel4 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
-        jButton7 = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
-        jButton3 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel6 = new javax.swing.JLabel();
-        jPanel3 = new javax.swing.JPanel();
-        jButton4 = new javax.swing.JButton();
+        pnlRoot = new javax.swing.JPanel();
+        pnlHeader = new javax.swing.JPanel();
+        pnlHeaderLeft = new javax.swing.JPanel();
+        pnlHeaderLogo = new LogoPanel();
+        lblAppTitle = new javax.swing.JLabel();
+        pnlUserProfile = new javax.swing.JPanel();
+        pnlUserText = new javax.swing.JPanel();
+        lblUserName = new javax.swing.JLabel();
+        lblUserRole = new javax.swing.JLabel();
+        btnUserMenu = new javax.swing.JButton();
+        pnlBody = new javax.swing.JPanel();
+        pnlSidebar = new javax.swing.JPanel();
+        btnNavDashboard = new ManagerNavButton("Dashboard");
+        btnNavSubmit = new ManagerNavButton("Submit Maintenance Request");
+        btnNavHistory = new ManagerNavButton("View Request History");
+        pnlContent = new javax.swing.JPanel();
+        pnlPageHeader = new javax.swing.JPanel();
+        lblPageTitle = new javax.swing.JLabel();
+        pnlMain = new javax.swing.JPanel();
+        pnlToolbar = new javax.swing.JPanel();
+        btnFilter = new javax.swing.JButton();
+        pnlTableSection = new javax.swing.JPanel();
+        lblTableSection = new javax.swing.JLabel();
+        scrHistory = new javax.swing.JScrollPane();
+        tblHistory = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("View Request History");
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel1.setText("View Request History");
+        pnlRoot.setLayout(new java.awt.BorderLayout());
 
-        jLabel2.setBackground(new java.awt.Color(210, 210, 210));
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("Maintenance Request History");
-        jLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jLabel2.setOpaque(true);
+        pnlHeader.setLayout(new java.awt.BorderLayout());
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        pnlHeaderLeft.setOpaque(false);
+
+        lblAppTitle.setText("Student Hostel Maintenance Request & Tracking System");
+
+        javax.swing.GroupLayout pnlHeaderLeftLayout = new javax.swing.GroupLayout(pnlHeaderLeft);
+        pnlHeaderLeft.setLayout(pnlHeaderLeftLayout);
+        pnlHeaderLeftLayout.setHorizontalGroup(
+            pnlHeaderLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlHeaderLeftLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(pnlHeaderLogo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(lblAppTitle)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlHeaderLeftLayout.setVerticalGroup(
+            pnlHeaderLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlHeaderLeftLayout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addGroup(pnlHeaderLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(pnlHeaderLogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblAppTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
+        );
+
+        pnlHeader.add(pnlHeaderLeft, java.awt.BorderLayout.WEST);
+
+        pnlUserProfile.setOpaque(false);
+
+        lblUserName.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lblUserName.setText("Alex Johnson");
+
+        lblUserRole.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lblUserRole.setText("STUDENT");
+
+        javax.swing.GroupLayout pnlUserTextLayout = new javax.swing.GroupLayout(pnlUserText);
+        pnlUserText.setLayout(pnlUserTextLayout);
+        pnlUserText.setOpaque(false);
+        pnlUserTextLayout.setHorizontalGroup(
+            pnlUserTextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(lblUserName, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(lblUserRole, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        pnlUserTextLayout.setVerticalGroup(
+            pnlUserTextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlUserTextLayout.createSequentialGroup()
+                .addComponent(lblUserName)
+                .addGap(2, 2, 2)
+                .addComponent(lblUserRole))
+        );
+
+        btnUserMenu.setText("v");
+
+        javax.swing.GroupLayout pnlUserProfileLayout = new javax.swing.GroupLayout(pnlUserProfile);
+        pnlUserProfile.setLayout(pnlUserProfileLayout);
+        pnlUserProfileLayout.setHorizontalGroup(
+            pnlUserProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlUserProfileLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(pnlUserText, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(2, 2, 2)
+                .addComponent(btnUserMenu)
+                .addGap(20, 20, 20))
+        );
+        pnlUserProfileLayout.setVerticalGroup(
+            pnlUserProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlUserProfileLayout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addGroup(pnlUserProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(pnlUserText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnUserMenu))
+                .addGap(10, 10, 10))
+        );
+
+        pnlHeader.add(pnlUserProfile, java.awt.BorderLayout.EAST);
+
+        pnlRoot.add(pnlHeader, java.awt.BorderLayout.NORTH);
+
+        pnlBody.setLayout(new java.awt.BorderLayout());
+
+        pnlSidebar.setLayout(new javax.swing.BoxLayout(pnlSidebar, javax.swing.BoxLayout.Y_AXIS));
+        pnlSidebar.add(btnNavDashboard);
+        pnlSidebar.add(btnNavSubmit);
+        pnlSidebar.add(btnNavHistory);
+
+        pnlBody.add(pnlSidebar, java.awt.BorderLayout.WEST);
+
+        pnlContent.setLayout(new java.awt.BorderLayout());
+
+        lblPageTitle.setText("View Request History");
+
+        javax.swing.GroupLayout pnlPageHeaderLayout = new javax.swing.GroupLayout(pnlPageHeader);
+        pnlPageHeader.setLayout(pnlPageHeaderLayout);
+        pnlPageHeaderLayout.setHorizontalGroup(
+            pnlPageHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlPageHeaderLayout.createSequentialGroup()
+                .addGap(32, 32, 32)
+                .addComponent(lblPageTitle)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlPageHeaderLayout.setVerticalGroup(
+            pnlPageHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlPageHeaderLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(lblPageTitle)
+                .addGap(20, 20, 20))
+        );
+
+        pnlContent.add(pnlPageHeader, java.awt.BorderLayout.NORTH);
+
+        pnlToolbar.setOpaque(false);
+
+        btnFilter.setText("Filter");
+
+        lblTableSection.setText("Maintenance Request History");
+
+        tblHistory.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {},
             new String [] {
                 "Request ID", "Request Type", "Date Raised", "Priority", "Status"
@@ -283,184 +338,99 @@ public class studRHistory extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        scrHistory.setViewportView(tblHistory);
 
-        jButton5.setText("<");
-        jButton6.setText(">");
-        jLabel3.setText("Showing 1 to 3 of 12 results");
+        javax.swing.GroupLayout pnlTableSectionLayout = new javax.swing.GroupLayout(pnlTableSection);
+        pnlTableSection.setLayout(pnlTableSectionLayout);
+        pnlTableSection.setOpaque(false);
+        pnlTableSectionLayout.setHorizontalGroup(
+            pnlTableSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(lblTableSection, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(scrHistory, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        pnlTableSectionLayout.setVerticalGroup(
+            pnlTableSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlTableSectionLayout.createSequentialGroup()
+                .addComponent(lblTableSection)
+                .addGap(0, 0, 0)
+                .addComponent(scrHistory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
 
-        jButton7.setBackground(new java.awt.Color(245, 245, 245));
-        jButton7.setText("Filter");
-        jButton7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton7.setFocusPainted(false);
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+        javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
+        pnlMain.setLayout(pnlMainLayout);
+        pnlMainLayout.setHorizontalGroup(
+            pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlMainLayout.createSequentialGroup()
                 .addGap(32, 32, 32)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton6)
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnlTableSection, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(32, 32, 32))
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(32, 32, 32)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 640, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 640, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton7)))
-                .addContainerGap(32, Short.MAX_VALUE))
         );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton7))
-                .addGap(18, 18, 18)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton5)
-                    .addComponent(jButton6)
-                    .addComponent(jLabel3))
-                .addContainerGap(32, Short.MAX_VALUE))
-        );
-
-        jButton3.setText("View Request History");
-        jButton2.setLabel("Submit Maintenance Request");
-        jButton1.setText("Darshboard");
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton3)
-                            .addComponent(jButton1))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
-                .addComponent(jButton2)
-                .addGap(32, 32, 32)
-                .addComponent(jButton3)
-                .addGap(37, 37, 37))
-        );
-
-        jPanel1.setForeground(new java.awt.Color(102, 102, 102));
-
-        jLabel6.setText("Student Hostel Maintenance Request & Tracking System");
-
-        jButton4.setText("Alex Johnson ▾ STUDENT");
-        jButton4.setContentAreaFilled(false);
-        jButton4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jButton4)
+        pnlMainLayout.setVerticalGroup(
+            pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlMainLayout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addComponent(pnlToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(24, 24, 24)
+                .addComponent(pnlTableSection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jButton4)
-                .addGap(0, 12, Short.MAX_VALUE))
-        );
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(70, 70, 70)
-                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 128, Short.MAX_VALUE)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel6)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(82, 82, 82))
-        );
+        pnlContent.add(pnlMain, java.awt.BorderLayout.CENTER);
+
+        pnlBody.add(pnlContent, java.awt.BorderLayout.CENTER);
+
+        pnlRoot.add(pnlBody, java.awt.BorderLayout.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(pnlRoot, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(0, 0, 0))
+            .addComponent(pnlRoot, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
+
+        pnlSidebar.setPreferredSize(new java.awt.Dimension(UIHelper.STUDENT_SIDEBAR_WIDTH, 0));
+        pnlPageHeader.setPreferredSize(new java.awt.Dimension(0, 72));
+        pnlHeader.setPreferredSize(new java.awt.Dimension(0, 64));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     public static void main(String[] args) {
-        java.awt.EventQueue.invokeLater(() -> UIHelper.showManagerFrame(new studRHistory()));
+        UIHelper.initApplicationLook();
+        java.awt.EventQueue.invokeLater(() -> new studRHistory());
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JButton btnFilter;
+    private javax.swing.JButton btnUserMenu;
+    private ManagerNavButton btnNavDashboard;
+    private ManagerNavButton btnNavHistory;
+    private ManagerNavButton btnNavSubmit;
+    private javax.swing.JLabel lblAppTitle;
+    private javax.swing.JLabel lblPageTitle;
+    private javax.swing.JLabel lblTableSection;
+    private javax.swing.JLabel lblUserName;
+    private javax.swing.JLabel lblUserRole;
+    private javax.swing.JPanel pnlBody;
+    private javax.swing.JPanel pnlContent;
+    private javax.swing.JPanel pnlHeader;
+    private LogoPanel pnlHeaderLogo;
+    private javax.swing.JPanel pnlHeaderLeft;
+    private javax.swing.JPanel pnlMain;
+    private javax.swing.JPanel pnlPageHeader;
+    private javax.swing.JPanel pnlRoot;
+    private javax.swing.JPanel pnlSidebar;
+    private javax.swing.JPanel pnlTableSection;
+    private javax.swing.JPanel pnlToolbar;
+    private javax.swing.JPanel pnlUserProfile;
+    private javax.swing.JPanel pnlUserText;
+    private javax.swing.JScrollPane scrHistory;
+    private javax.swing.JTable tblHistory;
     // End of variables declaration//GEN-END:variables
 }

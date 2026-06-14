@@ -1,9 +1,5 @@
 package studenthostelmaintenancerequest.trackingsystem.gui.student;
 
-import java.awt.Dimension;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.table.DefaultTableModel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
@@ -12,15 +8,6 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
  * Student dashboard — profile summary and active maintenance requests.
  */
 public class stdDarshboard extends javax.swing.JFrame {
-
-    private LogoPanel pnlHeaderLogo;
-    private JPanel pnlUserProfile;
-    private JLabel lblUserName;
-    private JLabel lblUserRole;
-    private javax.swing.JButton btnUserMenu;
-    private ManagerNavButton btnNavDashboard;
-    private ManagerNavButton btnNavSubmit;
-    private ManagerNavButton btnNavHistory;
 
     private static final Object[][] MOCK_PROFILE = {
         {"Name", "Alex Johnson"},
@@ -40,47 +27,27 @@ public class stdDarshboard extends javax.swing.JFrame {
     }
 
     private void customizeForm() {
-        setTitle("Student Dashboard");
-
-        pnlHeaderLogo = new LogoPanel();
-        lblUserName = new JLabel();
-        lblUserRole = new JLabel();
-        btnUserMenu = new javax.swing.JButton();
-        JPanel pnlUserHost = UIHelper.createStudentUserProfileHost();
-        pnlUserProfile = UIHelper.createStudentUserProfile(lblUserName, lblUserRole, btnUserMenu);
-        pnlUserHost.add(pnlUserProfile);
-
-        UIHelper.setupStudentHeader(jPanel1, jLabel6, pnlUserHost, pnlHeaderLogo);
-        UIHelper.styleManagerShell(jPanel1, jPanel2, jPanel4, jLabel6, pnlHeaderLogo);
-        UIHelper.styleStudentMainContent(jPanel4);
-        UIHelper.installStudentSession(this, pnlUserProfile, lblUserName, lblUserRole, btnUserMenu);
-
-        btnNavDashboard = new ManagerNavButton("Dashboard");
-        btnNavSubmit = new ManagerNavButton("Submit Maintenance Request");
-        btnNavHistory = new ManagerNavButton("View Request History");
-        jPanel2.removeAll();
-        UIHelper.layoutStudentSidebar(jPanel2, btnNavDashboard, btnNavSubmit, btnNavHistory);
-        UIHelper.styleManagerNavButton(btnNavDashboard, true);
-        UIHelper.styleManagerNavButton(btnNavSubmit, false);
-        UIHelper.styleManagerNavButton(btnNavHistory, false);
+        UIHelper.configureStudentShell(this,
+                pnlHeader, pnlSidebar, pnlMain, pnlPageHeader,
+                lblAppTitle, lblPageTitle, pnlHeaderLogo,
+                pnlUserProfile, lblUserName, lblUserRole, btnUserMenu,
+                btnNavDashboard, btnNavSubmit, btnNavHistory,
+                UIHelper.StudentNavPage.DASHBOARD);
         wireNavigation();
 
-        jLabel1.setText("Dashboard");
-        UIHelper.styleStudentPageTitle(jLabel1);
+        tblProfile.setModel(UIHelper.createStudentProfileTableModel(MOCK_PROFILE));
+        UIHelper.styleStudentProfileTable(lblProfileSection, tblProfile, scrProfile);
 
-        jTable2.setModel(UIHelper.createStudentProfileTableModel(MOCK_PROFILE));
-        UIHelper.styleStudentProfileTable(jLabel3, jTable2, jScrollPane2);
-        jScrollPane2.setPreferredSize(new Dimension(320, 108));
-
-        jTable1.setModel(UIHelper.createStudentActiveRequestTableModel(MOCK_ACTIVE_REQUESTS));
-        UIHelper.styleManagerTableSection(jLabel7, jTable1, jScrollPane1);
-        UIHelper.applyStudentActiveRequestTableRenderers(jTable1);
-        jScrollPane1.setPreferredSize(new Dimension(640, 0));
+        tblActive.setModel(UIHelper.createStudentActiveRequestTableModel(MOCK_ACTIVE_REQUESTS));
+        UIHelper.styleManagerTableSection(lblActiveSection, tblActive, scrActive);
+        UIHelper.applyStudentActiveRequestTableRenderers(tblActive);
 
         UIHelper.showManagerFrame(this);
         javax.swing.SwingUtilities.invokeLater(() -> {
-            UIHelper.sizeManagerOverviewTable(jTable1, jScrollPane1);
-            jPanel4.revalidate();
+            UIHelper.sizeManagerOverviewTable(tblProfile, scrProfile);
+            UIHelper.sizeManagerOverviewTable(tblActive, scrActive);
+            pnlProfileSection.revalidate();
+            pnlActiveSection.revalidate();
         });
     }
 
@@ -94,134 +61,155 @@ public class stdDarshboard extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPopupMenu1 = new javax.swing.JPopupMenu();
-        jPanel2 = new javax.swing.JPanel();
-        jButton3 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel6 = new javax.swing.JLabel();
-        jPanel3 = new javax.swing.JPanel();
-        jButton4 = new javax.swing.JButton();
-        jPanel4 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jLabel3 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
-        jLabel7 = new javax.swing.JLabel();
+        pnlRoot = new javax.swing.JPanel();
+        pnlHeader = new javax.swing.JPanel();
+        pnlHeaderLeft = new javax.swing.JPanel();
+        pnlHeaderLogo = new LogoPanel();
+        lblAppTitle = new javax.swing.JLabel();
+        pnlUserProfile = new javax.swing.JPanel();
+        pnlUserText = new javax.swing.JPanel();
+        lblUserName = new javax.swing.JLabel();
+        lblUserRole = new javax.swing.JLabel();
+        btnUserMenu = new javax.swing.JButton();
+        pnlBody = new javax.swing.JPanel();
+        pnlSidebar = new javax.swing.JPanel();
+        btnNavDashboard = new ManagerNavButton("Dashboard");
+        btnNavSubmit = new ManagerNavButton("Submit Maintenance Request");
+        btnNavHistory = new ManagerNavButton("View Request History");
+        pnlContent = new javax.swing.JPanel();
+        pnlPageHeader = new javax.swing.JPanel();
+        lblPageTitle = new javax.swing.JLabel();
+        pnlMain = new javax.swing.JPanel();
+        pnlProfileSection = new javax.swing.JPanel();
+        lblProfileSection = new javax.swing.JLabel();
+        scrProfile = new javax.swing.JScrollPane();
+        tblProfile = new javax.swing.JTable();
+        pnlActiveSection = new javax.swing.JPanel();
+        lblActiveSection = new javax.swing.JLabel();
+        scrActive = new javax.swing.JScrollPane();
+        tblActive = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(750, 500));
+        setTitle("Student Dashboard");
 
-        jButton3.setText("View Request History");
-        jButton2.setLabel("Submit Maintenance Request");
-        jButton1.setText("Darshboard");
+        pnlRoot.setLayout(new java.awt.BorderLayout());
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton3)
-                            .addComponent(jButton1))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
-                .addComponent(jButton2)
-                .addGap(32, 32, 32)
-                .addComponent(jButton3)
-                .addGap(37, 37, 37))
-        );
+        pnlHeader.setLayout(new java.awt.BorderLayout());
 
-        jPanel1.setForeground(new java.awt.Color(102, 102, 102));
+        pnlHeaderLeft.setOpaque(false);
 
-        jLabel6.setText("Student Hostel Maintenance Request & Tracking System");
+        lblAppTitle.setText("Student Hostel Maintenance Request & Tracking System");
 
-        jButton4.setText("Alex Johnson ▾ STUDENT");
-        jButton4.setContentAreaFilled(false);
-        jButton4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jButton4)
+        javax.swing.GroupLayout pnlHeaderLeftLayout = new javax.swing.GroupLayout(pnlHeaderLeft);
+        pnlHeaderLeft.setLayout(pnlHeaderLeftLayout);
+        pnlHeaderLeftLayout.setHorizontalGroup(
+            pnlHeaderLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlHeaderLeftLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(pnlHeaderLogo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(lblAppTitle)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jButton4)
-                .addGap(0, 12, Short.MAX_VALUE))
+        pnlHeaderLeftLayout.setVerticalGroup(
+            pnlHeaderLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlHeaderLeftLayout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addGroup(pnlHeaderLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(pnlHeaderLogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblAppTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(70, 70, 70)
-                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 128, Short.MAX_VALUE)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30))
+        pnlHeader.add(pnlHeaderLeft, java.awt.BorderLayout.WEST);
+
+        pnlUserProfile.setOpaque(false);
+
+        lblUserName.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lblUserName.setText("Alex Johnson");
+
+        lblUserRole.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lblUserRole.setText("STUDENT");
+
+        javax.swing.GroupLayout pnlUserTextLayout = new javax.swing.GroupLayout(pnlUserText);
+        pnlUserText.setLayout(pnlUserTextLayout);
+        pnlUserText.setOpaque(false);
+        pnlUserTextLayout.setHorizontalGroup(
+            pnlUserTextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(lblUserName, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(lblUserRole, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+        pnlUserTextLayout.setVerticalGroup(
+            pnlUserTextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlUserTextLayout.createSequentialGroup()
+                .addComponent(lblUserName)
+                .addGap(2, 2, 2)
+                .addComponent(lblUserRole))
+        );
+
+        btnUserMenu.setText("v");
+
+        javax.swing.GroupLayout pnlUserProfileLayout = new javax.swing.GroupLayout(pnlUserProfile);
+        pnlUserProfile.setLayout(pnlUserProfileLayout);
+        pnlUserProfileLayout.setHorizontalGroup(
+            pnlUserProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlUserProfileLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel6)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(82, 82, 82))
+                .addComponent(pnlUserText, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(2, 2, 2)
+                .addComponent(btnUserMenu)
+                .addGap(20, 20, 20))
+        );
+        pnlUserProfileLayout.setVerticalGroup(
+            pnlUserProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlUserProfileLayout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addGroup(pnlUserProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(pnlUserText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnUserMenu))
+                .addGap(10, 10, 10))
         );
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel1.setText("Darshboard");
+        pnlHeader.add(pnlUserProfile, java.awt.BorderLayout.EAST);
 
-        jTable1.setModel(new DefaultTableModel(
-            new Object[][] {
-                {"REQ001", "Electrical", "8 June 2026", "IN PROGRESS"},
-                {"REQ002", "Furniture", "8 June 2026", "SUBMITTED"},
-                {"REQ003", "Plumbing", "8 June 2026", "COMPLETED"}
-            },
-            new String [] {
-                "Request ID", "Request Type", "Date Raised", "Status"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
-            };
+        pnlRoot.add(pnlHeader, java.awt.BorderLayout.NORTH);
 
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane1.setViewportView(jTable1);
+        pnlBody.setLayout(new java.awt.BorderLayout());
 
-        jLabel3.setBackground(new java.awt.Color(204, 204, 204));
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("STUDENT PROFILE");
-        jLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        pnlSidebar.setLayout(new javax.swing.BoxLayout(pnlSidebar, javax.swing.BoxLayout.Y_AXIS));
+        pnlSidebar.add(btnNavDashboard);
+        pnlSidebar.add(btnNavSubmit);
+        pnlSidebar.add(btnNavHistory);
 
-        jTable2.setModel(new DefaultTableModel(
-            new Object[][] {
+        pnlBody.add(pnlSidebar, java.awt.BorderLayout.WEST);
+
+        pnlContent.setLayout(new java.awt.BorderLayout());
+
+        lblPageTitle.setText("Dashboard");
+
+        javax.swing.GroupLayout pnlPageHeaderLayout = new javax.swing.GroupLayout(pnlPageHeader);
+        pnlPageHeader.setLayout(pnlPageHeaderLayout);
+        pnlPageHeaderLayout.setHorizontalGroup(
+            pnlPageHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlPageHeaderLayout.createSequentialGroup()
+                .addGap(32, 32, 32)
+                .addComponent(lblPageTitle)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlPageHeaderLayout.setVerticalGroup(
+            pnlPageHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlPageHeaderLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(lblPageTitle)
+                .addGap(20, 20, 20))
+        );
+
+        pnlContent.add(pnlPageHeader, java.awt.BorderLayout.NORTH);
+
+        lblProfileSection.setText("STUDENT PROFILE");
+
+        tblProfile.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
                 {"Name", "Alex Johnson"},
                 {"Student ID", "RC23155"},
                 {"Room No.", "402-B"}
@@ -238,94 +226,139 @@ public class stdDarshboard extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane2.setViewportView(jTable2);
+        scrProfile.setViewportView(tblProfile);
 
-        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel7.setText("Active Requests");
-        jLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        javax.swing.GroupLayout pnlProfileSectionLayout = new javax.swing.GroupLayout(pnlProfileSection);
+        pnlProfileSection.setLayout(pnlProfileSectionLayout);
+        pnlProfileSection.setOpaque(false);
+        pnlProfileSectionLayout.setHorizontalGroup(
+            pnlProfileSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(lblProfileSection, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(scrProfile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        pnlProfileSectionLayout.setVerticalGroup(
+            pnlProfileSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlProfileSectionLayout.createSequentialGroup()
+                .addComponent(lblProfileSection)
+                .addGap(0, 0, 0)
+                .addComponent(scrProfile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(16, 16, 16)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 640, Short.MAX_VALUE)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE))))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        lblActiveSection.setText("Active Requests");
+
+        tblActive.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"REQ001", "Electrical", "8 June 2026", "IN PROGRESS"},
+                {"REQ002", "Furniture", "8 June 2026", "SUBMITTED"},
+                {"REQ003", "Plumbing", "8 June 2026", "COMPLETED"}
+            },
+            new String [] {
+                "Request ID", "Request Type", "Date Raised", "Status"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        scrActive.setViewportView(tblActive);
+
+        javax.swing.GroupLayout pnlActiveSectionLayout = new javax.swing.GroupLayout(pnlActiveSection);
+        pnlActiveSection.setLayout(pnlActiveSectionLayout);
+        pnlActiveSection.setOpaque(false);
+        pnlActiveSectionLayout.setHorizontalGroup(
+            pnlActiveSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(lblActiveSection, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(scrActive, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        pnlActiveSectionLayout.setVerticalGroup(
+            pnlActiveSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlActiveSectionLayout.createSequentialGroup()
+                .addComponent(lblActiveSection)
+                .addGap(0, 0, 0)
+                .addComponent(scrActive, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
+        pnlMain.setLayout(pnlMainLayout);
+        pnlMainLayout.setHorizontalGroup(
+            pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlMainLayout.createSequentialGroup()
+                .addGap(32, 32, 32)
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlProfileSection, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnlActiveSection, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(32, 32, 32))
+        );
+        pnlMainLayout.setVerticalGroup(
+            pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlMainLayout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addComponent(pnlProfileSection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
+                .addComponent(pnlActiveSection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addGap(24, 24, 24)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24)
-                .addComponent(jLabel7)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(32, Short.MAX_VALUE))
-        );
+
+        pnlContent.add(pnlMain, java.awt.BorderLayout.CENTER);
+
+        pnlBody.add(pnlContent, java.awt.BorderLayout.CENTER);
+
+        pnlRoot.add(pnlBody, java.awt.BorderLayout.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(pnlRoot, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(0, 0, 0))
+            .addComponent(pnlRoot, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
+
+        pnlSidebar.setPreferredSize(new java.awt.Dimension(UIHelper.STUDENT_SIDEBAR_WIDTH, 0));
+        pnlPageHeader.setPreferredSize(new java.awt.Dimension(0, 72));
+        pnlHeader.setPreferredSize(new java.awt.Dimension(0, 64));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     public static void main(String[] args) {
-        java.awt.EventQueue.invokeLater(() -> {
-            UIHelper.showManagerFrame(new stdDarshboard());
-        });
+        UIHelper.initApplicationLook();
+        java.awt.EventQueue.invokeLater(() -> new stdDarshboard());
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPopupMenu jPopupMenu1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
+    private javax.swing.JButton btnUserMenu;
+    private ManagerNavButton btnNavDashboard;
+    private ManagerNavButton btnNavHistory;
+    private ManagerNavButton btnNavSubmit;
+    private javax.swing.JLabel lblActiveSection;
+    private javax.swing.JLabel lblAppTitle;
+    private javax.swing.JLabel lblPageTitle;
+    private javax.swing.JLabel lblProfileSection;
+    private javax.swing.JLabel lblUserName;
+    private javax.swing.JLabel lblUserRole;
+    private javax.swing.JPanel pnlActiveSection;
+    private javax.swing.JPanel pnlBody;
+    private javax.swing.JPanel pnlContent;
+    private javax.swing.JPanel pnlHeader;
+    private LogoPanel pnlHeaderLogo;
+    private javax.swing.JPanel pnlHeaderLeft;
+    private javax.swing.JPanel pnlMain;
+    private javax.swing.JPanel pnlPageHeader;
+    private javax.swing.JPanel pnlProfileSection;
+    private javax.swing.JPanel pnlRoot;
+    private javax.swing.JPanel pnlSidebar;
+    private javax.swing.JPanel pnlUserProfile;
+    private javax.swing.JPanel pnlUserText;
+    private javax.swing.JScrollPane scrActive;
+    private javax.swing.JScrollPane scrProfile;
+    private javax.swing.JTable tblActive;
+    private javax.swing.JTable tblProfile;
     // End of variables declaration//GEN-END:variables
 }

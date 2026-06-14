@@ -1994,10 +1994,43 @@ public final class UIHelper {
                 model.canGoPrevious(), model.canGoNext());
     }
 
+    public static final int STUDENT_SIDEBAR_WIDTH = 248;
     public static final int STUDENT_HISTORY_PAGE_SIZE = 3;
     public static final int STUDENT_ACTIVE_COL_STATUS = 3;
     public static final int STUDENT_HISTORY_COL_PRIORITY = 3;
     public static final int STUDENT_HISTORY_COL_STATUS = 4;
+
+    public enum StudentNavPage {
+        DASHBOARD, SUBMIT, HISTORY
+    }
+
+    public static void configureStudentShell(
+            javax.swing.JFrame frame,
+            JPanel pnlHeader,
+            JPanel pnlSidebar,
+            JPanel pnlMain,
+            JPanel pnlPageHeader,
+            JLabel lblAppTitle,
+            JLabel lblPageTitle,
+            LogoPanel pnlHeaderLogo,
+            JPanel pnlUserProfile,
+            JLabel lblUserName,
+            JLabel lblUserRole,
+            JButton btnUserMenu,
+            ManagerNavButton btnNavDashboard,
+            ManagerNavButton btnNavSubmit,
+            ManagerNavButton btnNavHistory,
+            StudentNavPage activePage) {
+
+        styleManagerShell(pnlHeader, pnlSidebar, pnlMain, lblAppTitle, pnlHeaderLogo);
+        styleManagerPageHeader(pnlPageHeader, lblPageTitle);
+        installStudentSession(frame, pnlUserProfile, lblUserName, lblUserRole, btnUserMenu);
+        pnlSidebar.setPreferredSize(new Dimension(STUDENT_SIDEBAR_WIDTH, 0));
+        layoutStudentSidebar(pnlSidebar, btnNavDashboard, btnNavSubmit, btnNavHistory);
+        styleManagerNavButton(btnNavDashboard, activePage == StudentNavPage.DASHBOARD);
+        styleManagerNavButton(btnNavSubmit, activePage == StudentNavPage.SUBMIT);
+        styleManagerNavButton(btnNavHistory, activePage == StudentNavPage.HISTORY);
+    }
 
     public static void installStudentSession(
             javax.swing.JFrame frame,
@@ -2020,7 +2053,7 @@ public final class UIHelper {
     }
 
     public static void layoutStudentSidebar(JPanel pnlSidebar, ManagerNavButton... buttons) {
-        pnlSidebar.setPreferredSize(new Dimension(MANAGER_SIDEBAR_WIDTH, 0));
+        pnlSidebar.setPreferredSize(new Dimension(STUDENT_SIDEBAR_WIDTH, 0));
         layoutManagerSidebar(pnlSidebar, buttons);
     }
 
