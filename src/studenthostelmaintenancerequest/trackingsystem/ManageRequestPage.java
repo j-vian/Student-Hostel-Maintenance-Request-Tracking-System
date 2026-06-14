@@ -18,6 +18,9 @@ public class ManageRequestPage extends javax.swing.JFrame {
      */
     public ManageRequestPage() {
     initComponents();
+    
+    btnDashboard1.setBackground(new java.awt.Color(173, 216, 230)); // Light Blue
+    btnDashboard1.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12)); // Make it bold
 
     ImageIcon icon = (ImageIcon) jLabel3.getIcon();
 
@@ -368,19 +371,39 @@ public class ManageRequestPage extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDashboard6ActionPerformed
 
     private void btnDashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDashboardActionPerformed
-        // TODO add your handling code here:
+        // Create and show the staffDashboard window
+        staffDashboard nextScreen = new staffDashboard(); 
+        nextScreen.setVisible(true);
+        
+        // Close the current window
+        this.dispose();
     }//GEN-LAST:event_btnDashboardActionPerformed
 
     private void btnDashboard1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDashboard1ActionPerformed
-        // TODO add your handling code here:
+        // Create and show the ManageRequestPage window
+        ManageRequestPage nextScreen = new ManageRequestPage();
+        nextScreen.setVisible(true);
+        
+        // Close the current window
+        this.dispose();
     }//GEN-LAST:event_btnDashboard1ActionPerformed
 
     private void btnDashboard2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDashboard2ActionPerformed
-        // TODO add your handling code here:
+        // Create and show the ViewRoomDetailsPage window
+        ViewRoomDetails nextScreen = new ViewRoomDetails();
+        nextScreen.setVisible(true);
+        
+        // Close the current window
+        this.dispose();
     }//GEN-LAST:event_btnDashboard2ActionPerformed
 
     private void btnDashboard3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDashboard3ActionPerformed
-        // TODO add your handling code here:
+        // Create and show the viewRequestHistoryPage window
+        viewRequestHistoryPage nextScreen = new viewRequestHistoryPage();
+        nextScreen.setVisible(true);
+        
+        // Close the current window
+        this.dispose();
     }//GEN-LAST:event_btnDashboard3ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
