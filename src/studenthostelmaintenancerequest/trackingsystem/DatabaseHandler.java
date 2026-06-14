@@ -369,13 +369,16 @@ public class DatabaseHandler implements DataAccess {
         return requests.length == 0 ? null : requests[0];
     }
 
-    private static final String RECENT_ACTIVITY_ORDER = """
-             ORDER BY COALESCE(
-               (SELECT MAX(h.changed_at)
-                FROM request_status_history h
-                WHERE h.request_id = mr.request_id),
-               mr.date_raised
-             ) DESC""";
+    private static final String RECENT_ACTIVITY_JOIN = """
+            LEFT JOIN (
+                SELECT request_id, MAX(changed_at) AS last_activity
+                FROM request_status_history
+                GROUP BY request_id
+            ) rah ON rah.request_id = mr.request_id
+            """;
+
+    private static final String RECENT_ACTIVITY_ORDER =
+            " ORDER BY COALESCE(rah.last_activity, mr.date_raised) DESC";
 
     @Override
     public MaintenanceRequest[] fetchAllRequests() throws DatabaseException {
@@ -429,7 +432,8 @@ public class DatabaseHandler implements DataAccess {
             FROM maintenance_requests mr
             INNER JOIN users s ON mr.student_id = s.user_id
             LEFT JOIN users st ON mr.assigned_staff_id = st.user_id
-            """;
+            """
+            + RECENT_ACTIVITY_JOIN;
 
     public int[] fetchDashboardCounts() throws DatabaseException {
         int[] counts = new int[4];
@@ -699,7 +703,8 @@ public class DatabaseHandler implements DataAccess {
                    r.room_id, r.room_number, r.place_name
             FROM maintenance_requests mr
             INNER JOIN rooms r ON mr.room_id = r.room_id
-            """;
+            """
+            + RECENT_ACTIVITY_JOIN;
 
     private MaintenanceRequest[] fetchRequests(String sql, String... params) throws DatabaseException {
         List<MaintenanceRequest> requests = new ArrayList<>();

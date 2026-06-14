@@ -949,9 +949,14 @@ public final class UIHelper {
     }
 
     public static void showDatabaseError(java.awt.Component parent, Exception ex) {
+        String message = ex.getMessage() == null ? "An unexpected database error occurred." : ex.getMessage();
+        Throwable cause = ex.getCause();
+        if (cause != null && cause.getMessage() != null && !cause.getMessage().isBlank()) {
+            message = message + "\n\n" + cause.getMessage();
+        }
         javax.swing.JOptionPane.showMessageDialog(
                 parent,
-                ex.getMessage(),
+                message,
                 "Database Error",
                 javax.swing.JOptionPane.ERROR_MESSAGE);
     }
@@ -1446,8 +1451,7 @@ public final class UIHelper {
     }
 
     private static boolean isAssignableRequestStatus(Object status) {
-        String normalized = StatusBadgeLabel.formatStatus(String.valueOf(status));
-        return "IN PROGRESS".equals(normalized) || "SUBMITTED".equals(normalized);
+        return "SUBMITTED".equals(StatusBadgeLabel.formatStatus(String.valueOf(status)));
     }
 
     public static final class ManagerAssignStaffTableModel extends AbstractTableModel {
