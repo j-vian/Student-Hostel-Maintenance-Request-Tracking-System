@@ -3,6 +3,10 @@ package studenthostelmaintenancerequest.trackingsystem.gui.student;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import studenthostelmaintenancerequest.trackingsystem.DatabaseException;
+import studenthostelmaintenancerequest.trackingsystem.MaintenanceRequest;
+import studenthostelmaintenancerequest.trackingsystem.Student;
+import studenthostelmaintenancerequest.trackingsystem.StudentService;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextArea;
@@ -22,6 +26,11 @@ public class SubmitMRequest extends javax.swing.JFrame {
     }
 
     private void customizeForm() {
+        Student student = StudentService.requireStudent(this);
+        if (student == null) {
+            return;
+        }
+
         UIHelper.configureStudentShell(this,
                 pnlHeader, pnlSidebar, pnlMain, pnlPageHeader,
                 lblAppTitle, lblPageTitle, pnlHeaderLogo,
@@ -37,7 +46,9 @@ public class SubmitMRequest extends javax.swing.JFrame {
         String today = LocalDate.now().format(DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH));
         txtDate.setText(today);
         txtDate.setEditable(false);
-        txtRoom.setText("402-B");
+        if (student.getRoom() != null) {
+            txtRoom.setText(student.getRoomNumber());
+        }
         txtRoom.setEditable(false);
         UIHelper.styleStudentFormFieldFlexible(txtDate);
         UIHelper.styleStudentFormFieldFlexible(txtRoom);
@@ -73,6 +84,11 @@ public class SubmitMRequest extends javax.swing.JFrame {
     }
 
     private void submitRequest() {
+        Student student = StudentService.requireStudent(this);
+        if (student == null) {
+            return;
+        }
+
         if (cmbRequestType.getSelectedIndex() == 0) {
             javax.swing.JOptionPane.showMessageDialog(this, "Please select a Request Type.", "Validation", javax.swing.JOptionPane.WARNING_MESSAGE);
             return;
@@ -90,11 +106,22 @@ public class SubmitMRequest extends javax.swing.JFrame {
             return;
         }
 
-        javax.swing.JOptionPane.showMessageDialog(this,
-                "Request submitted successfully!",
-                "Success",
-                javax.swing.JOptionPane.INFORMATION_MESSAGE);
-        resetForm();
+        try {
+            MaintenanceRequest request = StudentService.submitRequest(
+                    student,
+                    StudentService.normalizeRequestType(String.valueOf(cmbRequestType.getSelectedItem())),
+                    txtDescription.getInputText(),
+                    String.valueOf(cmbPriority.getSelectedItem()),
+                    txtPlace.getInputText());
+
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Request " + request.getRequestId() + " submitted successfully!",
+                    "Success",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            resetForm();
+        } catch (DatabaseException ex) {
+            UIHelper.showDatabaseError(this, ex);
+        }
     }
 
     @SuppressWarnings("unchecked")

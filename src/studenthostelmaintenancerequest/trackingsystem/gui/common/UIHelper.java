@@ -2045,10 +2045,10 @@ public final class UIHelper {
                     navigateTo(frame, new LoginFrame());
                 });
         if (SessionManager.isLoggedIn()) {
-            lblUserName.setText(SessionManager.getDisplayUsername());
+            lblUserName.setText(SessionManager.getFullName());
             lblUserRole.setText("STUDENT");
         } else {
-            lblUserName.setText("Alex Johnson");
+            lblUserName.setText("Student");
             lblUserRole.setText("STUDENT");
         }
     }

@@ -35,4 +35,6 @@ public interface DataAccess {
     MaintenanceRequest[] fetchRequestsByStaff(String staffId) throws DatabaseException;
 
     User[] fetchAllStaff() throws DatabaseException;
+
+    int findOrCreateRoom(String roomNumber, String placeName) throws DatabaseException;
 }

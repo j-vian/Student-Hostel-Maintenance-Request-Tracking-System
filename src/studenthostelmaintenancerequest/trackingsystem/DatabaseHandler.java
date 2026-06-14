@@ -98,7 +98,7 @@ public class DatabaseHandler implements DataAccess {
         validateSignUpData(data, UserRole.STUDENT);
         blockAdminEmail(data.getEmail());
 
-        int roomId = findOrCreateRoom(data.getRoomNumber(), data.getPlaceName());
+        int roomId = findOrCreateRoomInternal(data.getRoomNumber(), data.getPlaceName());
         insertUser(data, roomId);
     }
 
@@ -144,7 +144,12 @@ public class DatabaseHandler implements DataAccess {
         }
     }
 
-    private int findOrCreateRoom(String roomNumber, String placeName) throws DatabaseException {
+    @Override
+    public int findOrCreateRoom(String roomNumber, String placeName) throws DatabaseException {
+        return findOrCreateRoomInternal(roomNumber, placeName);
+    }
+
+    private int findOrCreateRoomInternal(String roomNumber, String placeName) throws DatabaseException {
         String selectSql = """
                 SELECT room_id FROM rooms
                 WHERE room_number = ? AND place_name = ?
@@ -701,6 +706,10 @@ public class DatabaseHandler implements DataAccess {
                 room);
 
         request.setStatus(Status.valueOf(rs.getString("status")));
+        java.sql.Timestamp raisedAt = rs.getTimestamp("date_raised");
+        if (raisedAt != null) {
+            request.setDateRaised(raisedAt.toLocalDateTime());
+        }
         return request;
     }
 

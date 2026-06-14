@@ -4,6 +4,8 @@
  */
 package studenthostelmaintenancerequest.trackingsystem;
 
+import java.time.LocalDateTime;
+
 /**
  * Abstract base class for all maintenance request types.
  *
@@ -17,6 +19,7 @@ public abstract class MaintenanceRequest {
     private Status status;
     private Room room;
     private RequestHistory history;
+    private LocalDateTime dateRaised;
 
     public MaintenanceRequest(String requestId, String description, String priority, Room room) {
         this.requestId = requestId;
@@ -24,6 +27,7 @@ public abstract class MaintenanceRequest {
         this.priority = priority;
         this.status = Status.SUBMITTED;
         this.room = room;
+        this.dateRaised = LocalDateTime.now();
         this.history = new RequestHistory("H" + requestId, "SUBMITTED", this);
         if (room != null) {
             room.linkMaintenanceRequest(this);
@@ -91,5 +95,26 @@ public abstract class MaintenanceRequest {
 
     public RequestHistory getHistory() {
         return history;
+    }
+
+    public LocalDateTime getDateRaised() {
+        return dateRaised;
+    }
+
+    public void setDateRaised(LocalDateTime dateRaised) {
+        this.dateRaised = dateRaised;
+    }
+
+    public String getRequestTypeLabel() {
+        if (this instanceof ElectricalRequest) {
+            return "Electrical";
+        }
+        if (this instanceof PlumbingRequest) {
+            return "Plumbing";
+        }
+        if (this instanceof FurnitureRequest) {
+            return "Furniture";
+        }
+        return "";
     }
 }

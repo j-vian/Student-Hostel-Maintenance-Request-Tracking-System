@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import studenthostelmaintenancerequest.trackingsystem.DatabaseException;
+import studenthostelmaintenancerequest.trackingsystem.Student;
+import studenthostelmaintenancerequest.trackingsystem.StudentService;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.AppColors;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton;
@@ -16,33 +19,13 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.Studen
  */
 public class studRHistory extends javax.swing.JFrame {
 
-    private static final Object[][] MOCK_HISTORY = buildMockHistory();
-
-    private static Object[][] buildMockHistory() {
-        String[] types = {"Electrical", "Plumbing", "Furniture"};
-        String[] dates = {"8 June 2026", "9 June 2026", "10 June 2026", "11 June 2026",
-            "12 June 2026", "13 June 2026", "14 June 2026"};
-        String[] priorities = {"High", "Medium", "Low"};
-        String[] statuses = {"IN PROGRESS", "SUBMITTED", "COMPLETED"};
-        Object[][] rows = new Object[21][5];
-        for (int i = 0; i < rows.length; i++) {
-            rows[i] = new Object[]{
-                String.format("REQ%03d", i + 1),
-                types[i % types.length],
-                dates[i % dates.length],
-                priorities[i % priorities.length],
-                statuses[i % statuses.length]
-            };
-        }
-        return rows;
-    }
-
     private PlaceholderTextField txtSearch;
     private StudentHistoryTableModel historyTableModel;
     private JLabel lblPagination;
     private javax.swing.JButton btnPagePrevious;
     private javax.swing.JButton btnPageNext;
 
+    private Object[][] allHistoryRows = new Object[0][0];
     private String filterStatus = "All";
     private String filterType = "All";
 
@@ -52,6 +35,11 @@ public class studRHistory extends javax.swing.JFrame {
     }
 
     private void customizeForm() {
+        Student student = StudentService.requireStudent(this);
+        if (student == null) {
+            return;
+        }
+
         UIHelper.configureStudentShell(this,
                 pnlHeader, pnlSidebar, pnlMain, pnlPageHeader,
                 lblAppTitle, lblPageTitle, pnlHeaderLogo,
@@ -66,7 +54,7 @@ public class studRHistory extends javax.swing.JFrame {
         UIHelper.styleManagerFilterButton(btnFilter);
 
         lblTableSection.setText("Maintenance Request History");
-        historyTableModel = UIHelper.createStudentHistoryTableModel(MOCK_HISTORY);
+        historyTableModel = UIHelper.createStudentHistoryTableModel(new Object[0][0]);
         tblHistory.setModel(historyTableModel);
         UIHelper.styleManagerTableSection(lblTableSection, tblHistory, scrHistory);
         UIHelper.applyStudentHistoryTableRenderers(tblHistory);
@@ -88,8 +76,19 @@ public class studRHistory extends javax.swing.JFrame {
         btnPagePrevious.addActionListener(e -> changePage(-1));
         btnPageNext.addActionListener(e -> changePage(1));
 
+        loadHistoryData(student);
+
         UIHelper.showManagerFrame(this);
         resizeTableSection();
+    }
+
+    private void loadHistoryData(Student student) {
+        try {
+            allHistoryRows = StudentService.getHistoryRequestRows(student);
+            applySearchAndFilter();
+        } catch (DatabaseException ex) {
+            UIHelper.showDatabaseError(this, ex);
+        }
     }
 
     private void wireNavigation() {
@@ -102,7 +101,7 @@ public class studRHistory extends javax.swing.JFrame {
         String keyword = txtSearch.getInputText().trim().toLowerCase();
         List<Object[]> filtered = new ArrayList<>();
 
-        for (Object[] row : MOCK_HISTORY) {
+        for (Object[] row : allHistoryRows) {
             boolean keywordMatch = keyword.isEmpty();
             if (!keywordMatch) {
                 for (Object cell : row) {
