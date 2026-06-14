@@ -2202,9 +2202,7 @@ public final class UIHelper {
         table.setFocusable(false);
         table.setRowSelectionAllowed(false);
         applyStudentProfileTableColumns(table);
-
-        table.getColumnModel().getColumn(0).setCellRenderer(createStudentProfileCellRenderer(true));
-        table.getColumnModel().getColumn(1).setCellRenderer(createStudentProfileCellRenderer(false));
+        applyStudentProfileTableRenderers(table);
 
         scroll.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, AppColors.GRID_LINE));
         scroll.getViewport().setBackground(AppColors.SURFACE);
@@ -2232,6 +2230,12 @@ public final class UIHelper {
         table.setTableHeader(null);
         scroll.setColumnHeaderView(null);
         applyStudentProfileTableColumns(table);
+        applyStudentProfileTableRenderers(table);
+    }
+
+    private static void applyStudentProfileTableRenderers(JTable table) {
+        table.getColumnModel().getColumn(0).setCellRenderer(createStudentProfileCellRenderer(true));
+        table.getColumnModel().getColumn(1).setCellRenderer(createStudentProfileCellRenderer(false));
     }
 
     private static DefaultTableCellRenderer createStudentProfileCellRenderer(boolean labelColumn) {
@@ -2243,14 +2247,20 @@ public final class UIHelper {
                         tbl, value, isSelected, hasFocus, row, column);
                 label.setFont(labelColumn ? AppFonts.body() : AppFonts.bodyBold());
                 label.setForeground(AppColors.LABEL);
-                label.setBackground(labelColumn ? AppColors.STAT_TOTAL_BODY : AppColors.SURFACE);
+                label.setBackground(labelColumn ? AppColors.STAT_TOTAL_HEADER : AppColors.SURFACE);
                 label.setOpaque(true);
                 label.setHorizontalAlignment(JLabel.LEFT);
                 label.setVerticalAlignment(JLabel.CENTER);
-                label.setBorder(createStudentTableCellBorder(row, column, tbl.getColumnCount(), tbl.getRowCount()));
+                label.setBorder(createStudentProfileCellBorder(row, column, tbl.getColumnCount(), tbl.getRowCount()));
                 return label;
             }
         };
+    }
+
+    private static Border createStudentProfileCellBorder(int row, int column, int columnCount, int rowCount) {
+        return BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 0, 1, 1, AppColors.GRID_LINE),
+                new EmptyBorder(0, 12, 0, 12));
     }
 
     private static Border createStudentTableCellBorder(int row, int column, int columnCount, int rowCount) {
