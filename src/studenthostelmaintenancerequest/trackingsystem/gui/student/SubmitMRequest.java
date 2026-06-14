@@ -5,6 +5,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.LogoPanel;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.ManagerNavButton;
+import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextArea;
+import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField;
 import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
 
 /**
@@ -75,11 +77,11 @@ public class SubmitMRequest extends javax.swing.JFrame {
             javax.swing.JOptionPane.showMessageDialog(this, "Please select a Request Type.", "Validation", javax.swing.JOptionPane.WARNING_MESSAGE);
             return;
         }
-        if (txtDescription.getText().trim().isEmpty()) {
+        if (txtDescription.getInputText().isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(this, "Please enter an Issue Description.", "Validation", javax.swing.JOptionPane.WARNING_MESSAGE);
             return;
         }
-        if (txtPlace.getText().trim().isEmpty()) {
+        if (txtPlace.getInputText().isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(this, "Please enter a Place Name.", "Validation", javax.swing.JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -124,12 +126,13 @@ public class SubmitMRequest extends javax.swing.JFrame {
         lblPlace = new javax.swing.JLabel();
         txtDate = new javax.swing.JTextField();
         txtRoom = new javax.swing.JTextField();
-        txtPlace = new javax.swing.JTextField();
+        txtPlace = new PlaceholderTextField("e.g. Dhuam, KK5, etc");
         lblRequestType = new javax.swing.JLabel();
         cmbRequestType = new javax.swing.JComboBox<>();
         lblDescription = new javax.swing.JLabel();
         scrDescription = new javax.swing.JScrollPane();
-        txtDescription = new javax.swing.JTextArea();
+        txtDescription = new PlaceholderTextArea(
+                "Please describe the problem in detail to help our technicians prepare...");
         lblPriority = new javax.swing.JLabel();
         cmbPriority = new javax.swing.JComboBox<>();
         lblPriorityHint = new javax.swing.JLabel();
@@ -432,9 +435,9 @@ public class SubmitMRequest extends javax.swing.JFrame {
     private javax.swing.JPanel pnlUserProfile;
     private javax.swing.JPanel pnlUserText;
     private javax.swing.JScrollPane scrDescription;
-    private javax.swing.JTextArea txtDescription;
+    private PlaceholderTextArea txtDescription;
     private javax.swing.JTextField txtDate;
-    private javax.swing.JTextField txtPlace;
+    private PlaceholderTextField txtPlace;
     private javax.swing.JTextField txtRoom;
     // End of variables declaration//GEN-END:variables
 }

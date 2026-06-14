@@ -2255,14 +2255,10 @@ public final class UIHelper {
     private static final class StudentBadgeTableCellRenderer extends JPanel implements javax.swing.table.TableCellRenderer {
 
         private final java.util.function.Function<String, JComponent> badgeFactory;
-        private final JPanel badgeHost;
 
         private StudentBadgeTableCellRenderer(java.util.function.Function<String, JComponent> badgeFactory) {
-            super(new BorderLayout());
+            super(new FlowLayout(FlowLayout.CENTER, 0, 8));
             this.badgeFactory = badgeFactory;
-            this.badgeHost = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
-            this.badgeHost.setOpaque(false);
-            add(this.badgeHost, BorderLayout.CENTER);
             setOpaque(true);
             setBackground(AppColors.SURFACE);
         }
@@ -2270,8 +2266,8 @@ public final class UIHelper {
         @Override
         public Component getTableCellRendererComponent(
                 JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            badgeHost.removeAll();
-            badgeHost.add(badgeFactory.apply(String.valueOf(value)));
+            removeAll();
+            add(badgeFactory.apply(String.valueOf(value)));
             setBorder(createStudentTableCellBorder(row, column, table.getColumnCount(), table.getRowCount()));
             return this;
         }
