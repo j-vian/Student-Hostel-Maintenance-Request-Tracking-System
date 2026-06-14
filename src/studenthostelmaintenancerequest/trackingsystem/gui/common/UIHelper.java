@@ -2603,6 +2603,289 @@ public final class UIHelper {
         }
     }
 
+    public static final int STAFF_MANAGE_COL_STATUS = 3;
+    public static final int STAFF_TABLE_PAGE_SIZE = STUDENT_TABLE_PAGE_SIZE;
+
+    public enum StaffNavPage {
+        DASHBOARD, MANAGE_REQUESTS, VIEW_ROOM, HISTORY
+    }
+
+    public static void configureStaffShell(
+            javax.swing.JFrame frame,
+            JPanel pnlHeader,
+            JPanel pnlSidebar,
+            JPanel pnlMain,
+            JPanel pnlPageHeader,
+            JLabel lblAppTitle,
+            JLabel lblPageTitle,
+            LogoPanel pnlHeaderLogo,
+            JPanel pnlUserProfile,
+            JLabel lblUserName,
+            JLabel lblUserRole,
+            JButton btnUserMenu,
+            ManagerNavButton btnNavDashboard,
+            ManagerNavButton btnNavManageRequests,
+            ManagerNavButton btnNavViewRoom,
+            ManagerNavButton btnNavHistory,
+            StaffNavPage activePage) {
+
+        styleManagerShell(pnlHeader, pnlSidebar, pnlMain, lblAppTitle, pnlHeaderLogo);
+        styleManagerPageHeader(pnlPageHeader, lblPageTitle);
+        installStaffSession(frame, pnlUserProfile, lblUserName, lblUserRole, btnUserMenu);
+        pnlSidebar.setPreferredSize(new Dimension(STUDENT_SIDEBAR_WIDTH, 0));
+        layoutStaffSidebar(pnlSidebar, btnNavDashboard, btnNavManageRequests, btnNavViewRoom, btnNavHistory);
+        styleManagerNavButton(btnNavDashboard, activePage == StaffNavPage.DASHBOARD);
+        styleManagerNavButton(btnNavManageRequests, activePage == StaffNavPage.MANAGE_REQUESTS);
+        styleManagerNavButton(btnNavViewRoom, activePage == StaffNavPage.VIEW_ROOM);
+        styleManagerNavButton(btnNavHistory, activePage == StaffNavPage.HISTORY);
+    }
+
+    public static void installStaffSession(
+            javax.swing.JFrame frame,
+            javax.swing.JPanel pnlUserProfile,
+            javax.swing.JLabel lblUserName,
+            javax.swing.JLabel lblUserRole,
+            javax.swing.JButton btnUserMenu) {
+        ManagerUserMenu.install(pnlUserProfile, lblUserName, lblUserRole, btnUserMenu,
+                () -> {
+                    SessionManager.clear();
+                    navigateTo(frame, new LoginFrame());
+                });
+        if (SessionManager.isLoggedIn()) {
+            lblUserName.setText(SessionManager.getFullName());
+            lblUserRole.setText("STAFF");
+        } else {
+            lblUserName.setText("John Doe");
+            lblUserRole.setText("STAFF");
+        }
+    }
+
+    public static void layoutStaffSidebar(JPanel pnlSidebar, ManagerNavButton... buttons) {
+        pnlSidebar.setPreferredSize(new Dimension(STUDENT_SIDEBAR_WIDTH, 0));
+        layoutManagerSidebar(pnlSidebar, buttons);
+    }
+
+    public static Object[][] buildStaffProfileMockRows() {
+        return new Object[][]{
+            {"Name", "John Doe"},
+            {"Staff ID", "ST12345"}
+        };
+    }
+
+    public static Object[][] buildStaffDashboardActiveMockRows() {
+        return new Object[][]{
+            {"REQ001", "Electrical", "8 June 2026", "IN PROGRESS"},
+            {"REQ002", "Electrical", "8 June 2026", "SUBMITTED"},
+            {"REQ003", "Plumbing", "8 June 2026", "SUBMITTED"}
+        };
+    }
+
+    public static Object[][] buildStaffManageRequestMockRows() {
+        Object[][] rows = new Object[12][4];
+        String[] types = {"Electrical", "Plumbing", "Furniture"};
+        String[] statuses = {"IN PROGRESS", "SUBMITTED", "SUBMITTED"};
+        for (int i = 0; i < rows.length; i++) {
+            rows[i] = new Object[]{
+                String.format("REQ%03d", i + 1),
+                types[i % types.length],
+                "8 June 2026",
+                statuses[i % statuses.length]
+            };
+        }
+        return rows;
+    }
+
+    public static Object[][] buildStaffHistoryMockRows() {
+        Object[][] rows = new Object[12][5];
+        String[] types = {"Electrical", "Plumbing", "Furniture"};
+        String[] priorities = {"High", "Medium", "Low"};
+        String[] statuses = {"IN PROGRESS", "SUBMITTED", "COMPLETED"};
+        for (int i = 0; i < rows.length; i++) {
+            rows[i] = new Object[]{
+                String.format("REQ%03d", i + 1),
+                types[i % types.length],
+                "8 June 2026",
+                priorities[i % priorities.length],
+                statuses[i % statuses.length]
+            };
+        }
+        return rows;
+    }
+
+    public static StaffManageRequestTableModel createStaffManageRequestTableModel() {
+        return createStaffManageRequestTableModel(new Object[0][4]);
+    }
+
+    public static StaffManageRequestTableModel createStaffManageRequestTableModel(Object[][] data) {
+        return new StaffManageRequestTableModel(data, new String[]{
+            "Request ID", "Request Type", "Date Raised", "Status"});
+    }
+
+    public static void applyStaffManageRequestTableRenderers(
+            JTable table, java.util.function.BooleanSupplier statusEditMode) {
+        DefaultTableCellRenderer centerRenderer = createStudentGridCellRenderer();
+
+        for (int column = 0; column < STAFF_MANAGE_COL_STATUS; column++) {
+            table.getColumnModel().getColumn(column).setCellRenderer(centerRenderer);
+        }
+
+        table.getColumnModel().getColumn(STAFF_MANAGE_COL_STATUS).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
+            JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
+            wrapper.setBackground(AppColors.SURFACE);
+            if (statusEditMode.getAsBoolean()) {
+                wrapper.add(new StatusDropdownPanel(String.valueOf(value)));
+            } else {
+                wrapper.add(new StatusBadgeLabel(String.valueOf(value)));
+            }
+            return wrapper;
+        });
+    }
+
+    public static TableCellEditor createStaffManageRequestStatusEditor(JTable table) {
+        return createManagerManageRequestStatusEditor(table);
+    }
+
+    public static void sizeStaffManageRequestTable(JTable table, JScrollPane scroll) {
+        sizeManagerPaginatedTable(table, scroll);
+    }
+
+    public static void updateStaffPaginationFooter(
+            JLabel lblShowing, JButton btnPrevious, JButton btnNext,
+            StaffManageRequestTableModel model) {
+        updateStudentPaginationFooter(lblShowing, btnPrevious, btnNext,
+                model.getShowingFrom(), model.getShowingTo(), model.getTotalRowCount(),
+                model.canGoPrevious(), model.canGoNext());
+    }
+
+    public static final class StaffManageRequestTableModel extends AbstractTableModel {
+
+        private final java.util.List<Object[]> allRows = new java.util.ArrayList<>();
+        private final String[] columnNames;
+        private int currentPage;
+        private boolean statusColumnEditable;
+
+        public StaffManageRequestTableModel(Object[][] data, Object[] columns) {
+            this.columnNames = new String[columns.length];
+            for (int i = 0; i < columns.length; i++) {
+                this.columnNames[i] = String.valueOf(columns[i]);
+            }
+            for (Object[] row : data) {
+                if (isStaffActiveStatus(row[STAFF_MANAGE_COL_STATUS])) {
+                    allRows.add(row.clone());
+                }
+            }
+        }
+
+        private static boolean isStaffActiveStatus(Object status) {
+            String normalized = StatusBadgeLabel.formatStatus(String.valueOf(status));
+            return "IN PROGRESS".equals(normalized) || "SUBMITTED".equals(normalized);
+        }
+
+        @Override
+        public int getRowCount() {
+            int start = currentPage * STAFF_TABLE_PAGE_SIZE;
+            return Math.min(STAFF_TABLE_PAGE_SIZE, Math.max(allRows.size() - start, 0));
+        }
+
+        @Override
+        public int getColumnCount() {
+            return columnNames.length;
+        }
+
+        @Override
+        public String getColumnName(int column) {
+            return columnNames[column];
+        }
+
+        @Override
+        public Object getValueAt(int row, int column) {
+            int index = currentPage * STAFF_TABLE_PAGE_SIZE + row;
+            return index < allRows.size() ? allRows.get(index)[column] : null;
+        }
+
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return statusColumnEditable && column == STAFF_MANAGE_COL_STATUS;
+        }
+
+        @Override
+        public void setValueAt(Object value, int row, int column) {
+            if (!isCellEditable(row, column)) {
+                return;
+            }
+            int index = currentPage * STAFF_TABLE_PAGE_SIZE + row;
+            if (index >= allRows.size()) {
+                return;
+            }
+            allRows.get(index)[column] = value;
+            fireTableCellUpdated(row, column);
+        }
+
+        public void setStatusColumnEditable(boolean editable) {
+            this.statusColumnEditable = editable;
+        }
+
+        public int getTotalRowCount() {
+            return allRows.size();
+        }
+
+        public int getShowingFrom() {
+            return allRows.isEmpty() ? 0 : currentPage * STAFF_TABLE_PAGE_SIZE + 1;
+        }
+
+        public int getShowingTo() {
+            return Math.min((currentPage + 1) * STAFF_TABLE_PAGE_SIZE, allRows.size());
+        }
+
+        public boolean canGoPrevious() {
+            return currentPage > 0;
+        }
+
+        public boolean canGoNext() {
+            return (currentPage + 1) * STAFF_TABLE_PAGE_SIZE < allRows.size();
+        }
+
+        public void previousPage() {
+            if (!canGoPrevious()) {
+                return;
+            }
+            currentPage--;
+            fireTableDataChanged();
+        }
+
+        public void nextPage() {
+            if (!canGoNext()) {
+                return;
+            }
+            currentPage++;
+            fireTableDataChanged();
+        }
+
+        public void replaceRows(Object[][] rows) {
+            allRows.clear();
+            for (Object[] row : rows) {
+                if (isStaffActiveStatus(row[STAFF_MANAGE_COL_STATUS])) {
+                    allRows.add(row.clone());
+                }
+            }
+            currentPage = 0;
+            fireTableDataChanged();
+        }
+
+        public void resetPage() {
+            currentPage = 0;
+            fireTableDataChanged();
+        }
+
+        public java.util.List<Object[]> getAllRows() {
+            java.util.List<Object[]> copy = new java.util.ArrayList<>();
+            for (Object[] row : allRows) {
+                copy.add(row.clone());
+            }
+            return copy;
+        }
+    }
+
     private static JPanel createRequirementItem(String text) {
         JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         row.setOpaque(false);
