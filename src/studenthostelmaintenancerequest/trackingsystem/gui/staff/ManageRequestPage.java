@@ -213,7 +213,7 @@ public class ManageRequestPage extends javax.swing.JFrame {
         pnlBody = new javax.swing.JPanel();
         pnlSidebar = new javax.swing.JPanel();
         btnNavDashboard = new ManagerNavButton("Dashboard");
-        btnNavManageRequests = new ManagerNavButton("Submit Maintenance Request");
+        btnNavManageRequests = new ManagerNavButton("Manage Request");
         btnNavViewRoom = new ManagerNavButton("View Room Details");
         btnNavHistory = new ManagerNavButton("View Request History");
         pnlContent = new javax.swing.JPanel();
@@ -229,7 +229,7 @@ public class ManageRequestPage extends javax.swing.JFrame {
         tblRequests = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Submit Maintenance Request");
+        setTitle("Manage Request");
 
         pnlRoot.setLayout(new java.awt.BorderLayout());
 
@@ -325,7 +325,7 @@ public class ManageRequestPage extends javax.swing.JFrame {
 
         pnlContent.setLayout(new java.awt.BorderLayout());
 
-        lblPageTitle.setText("Submit Maintenance Request");
+        lblPageTitle.setText("Manage Request");
 
         javax.swing.GroupLayout pnlPageHeaderLayout = new javax.swing.GroupLayout(pnlPageHeader);
         pnlPageHeader.setLayout(pnlPageHeaderLayout);

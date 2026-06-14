@@ -85,7 +85,7 @@ public class ViewRoomDetails extends javax.swing.JFrame {
         pnlBody = new javax.swing.JPanel();
         pnlSidebar = new javax.swing.JPanel();
         btnNavDashboard = new ManagerNavButton("Dashboard");
-        btnNavManageRequests = new ManagerNavButton("Submit Maintenance Request");
+        btnNavManageRequests = new ManagerNavButton("Manage Request");
         btnNavViewRoom = new ManagerNavButton("View Room Details");
         btnNavHistory = new ManagerNavButton("View Request History");
         pnlContent = new javax.swing.JPanel();

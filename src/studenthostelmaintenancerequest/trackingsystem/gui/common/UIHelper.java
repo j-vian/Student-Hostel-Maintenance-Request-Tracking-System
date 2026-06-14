@@ -2723,6 +2723,7 @@ public final class UIHelper {
 
     public static void applyStaffManageRequestTableRenderers(
             JTable table, java.util.function.BooleanSupplier statusEditMode) {
+        disableStudentTableGrid(table);
         DefaultTableCellRenderer centerRenderer = createStudentGridCellRenderer();
 
         for (int column = 0; column < STAFF_MANAGE_COL_STATUS; column++) {
@@ -2731,12 +2732,14 @@ public final class UIHelper {
 
         table.getColumnModel().getColumn(STAFF_MANAGE_COL_STATUS).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
             JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 8));
+            wrapper.setOpaque(true);
             wrapper.setBackground(AppColors.SURFACE);
             if (statusEditMode.getAsBoolean()) {
                 wrapper.add(new StatusDropdownPanel(String.valueOf(value)));
             } else {
                 wrapper.add(new StatusBadgeLabel(String.valueOf(value)));
             }
+            wrapper.setBorder(createStudentTableCellBorder(row, column, tbl.getColumnCount(), tbl.getRowCount()));
             return wrapper;
         });
     }
