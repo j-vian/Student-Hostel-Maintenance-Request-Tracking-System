@@ -5,39 +5,90 @@
 package studenthostelmaintenancerequest.trackingsystem;
 
 /**
+ * Represents a hostel room and its linked maintenance requests (aggregation).
  *
  * @author vian
  */
-public class Room{
-    //data variable
+public class Room {
+
+    // instance fields for class state
+    private int roomId;
     private String roomNumber;
-    private String block;
+    private String placeName;
+    private MaintenanceRequest[] linkedRequests;
+    private int requestCount;
 
-    //constructor
-    public Room(String roomNumber, String block){
+    // construct object with initial state
+    public Room(String roomNumber, String placeName) {
+        this(0, roomNumber, placeName);
+    }
+
+    // construct object with initial state
+    public Room(int roomId, String roomNumber, String placeName) {
+        this.roomId = roomId;
         this.roomNumber = roomNumber;
-        this.block = block;
+        this.placeName = placeName;
+        this.linkedRequests = new MaintenanceRequest[100];
+        this.requestCount = 0;
     }
 
-    //getRoomDetails method
-    public String getRoomDetails(){
-        return "Room Number: " + roomNumber + ", Block: " + block;
+    // return requested value
+    public String getRoomDetails() {
+        return "Room Number: " + roomNumber + ", Place: " + placeName;
     }
 
-    //Getters and Setters
-    public String getRoomNumber(){
+    public void linkMaintenanceRequest(MaintenanceRequest request) {
+        if (requestCount < linkedRequests.length) {
+            linkedRequests[requestCount] = request;
+            requestCount++;
+        }
+    }
+
+    public void viewLinkedRequests() {
+        if (requestCount == 0) {
+            System.out.println("No maintenance requests linked to " + getRoomDetails() + ".");
+            return;
+        }
+
+        System.out.println("Maintenance requests for " + getRoomDetails() + ":");
+        for (int i = 0; i < requestCount; i++) {
+            linkedRequests[i].displayDetails();
+            System.out.println();
+        }
+    }
+
+    public int getRoomId() {
+        return roomId;
+    }
+
+    public String getRoomNumber() {
         return roomNumber;
     }
 
-    public void setRoomNumber(String roomNumber){
+    public void setRoomNumber(String roomNumber) {
         this.roomNumber = roomNumber;
     }
 
-    public String getBlock(){
-        return block;
+    public String getPlaceName() {
+        return placeName;
     }
 
-    public void setBlock(String block){
-        this.block = block;
+    public void setPlaceName(String placeName) {
+        this.placeName = placeName;
+    }
+
+    /**
+     * Backward-compatible alias for older code that used block.
+     */
+    public String getBlock() {
+        return placeName;
+    }
+
+    public void setBlock(String placeName) {
+        this.placeName = placeName;
+    }
+
+    public int getRequestCount() {
+        return requestCount;
     }
 }

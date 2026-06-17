@@ -5,88 +5,106 @@
 package studenthostelmaintenancerequest.trackingsystem;
 
 /**
+ * Concrete class representing a maintenance staff member.
  *
  * @author chaic
  */
-
-
-/**
- * Concrete class representing a maintenance staff member.
- * Extends User and can view and update assigned maintenance requests.
- */
 public class Staff extends User {
 
-    // Private attributes - access through getters/setters only
+    // instance fields for class state
     private String staffRole;
     private MaintenanceRequest[] assignedRequests;
-    private int count; // tracks how many requests have been assigned
+    private int count;
 
-    /**
-     * Constructor initialises all Staff attributes including inherited ones.
-     */
-    public Staff(String userId, String name, String email, String staffRole) {
-        super(userId, name, email); // Call parent User constructor
-        this.staffRole        = staffRole;
-        this.assignedRequests = new MaintenanceRequest[100]; // max 100 requests
-        this.count = 0; //set count to 0 by default
+    // construct object with initial state
+    public Staff(String userId, String username, String firstName, String lastName,
+            String email, String password, String staffRole) {
+        super(userId, username, firstName, lastName, email, password, UserRole.STAFF);
+        this.staffRole = staffRole;
+        this.assignedRequests = new MaintenanceRequest[100];
+        this.count = 0;
     }
 
-    //Updates the status of a given request if it belongs to this staff member's assigned list.
+    /**
+     * Legacy constructor for the Phase II console application.
+     */
+    // construct object with initial state
+    public Staff(String userId, String fullName, String email, String staffRole) {
+        this(userId, fullName.toLowerCase().replace(" ", ""), fullName, "",
+                email, "", staffRole);
+    }
+
+    @Override
+    // process business logic
+    public void login() {
+        System.out.println("Staff " + getFullName() + " (ID: " + getUserId() + ", Role: "
+                + staffRole + ") logged in.");
+    }
+
+    @Override
+    public void logout() {
+        System.out.println("Staff " + getFullName() + " (ID: " + getUserId() + ") logged out.");
+    }
+
     public void updateRequestStatus(String requestId, Status status) {
-        // Loop only through filled slots using count, not the full 100
         for (int i = 0; i < count; i++) {
             if (assignedRequests[i].getRequestId().equals(requestId)) {
-                assignedRequests[i].setStatus(status);
+                assignedRequests[i].recordStatusChange(status);
                 System.out.println("Request " + requestId + " status updated to " + status + ".");
                 return;
             }
         }
-        // If no match was found, notify the user
-        System.out.println("Request " + requestId + " not found in " + getName() + "'s assigned list.");
+        System.out.println("Request " + requestId + " not found in " + getFullName() + "'s assigned list.");
     }
 
-    //Displays all maintenance requests assigned to this staff member.
     public void viewAssignedRequests() {
-        // Use count to check if any requests have been assigned
         if (count == 0) {
-            System.out.println("No requests assigned to " + getName() + ".");
+            System.out.println("No requests assigned to " + getFullName() + ".");
             return;
         }
-        System.out.println("Requests assigned to " + getName() + ":");
-        // Loop only through filled slots using count, not the full 100
+
+        System.out.println("Requests assigned to " + getFullName() + ":");
         for (int i = 0; i < count; i++) {
             assignedRequests[i].displayDetails();
+            System.out.println();
         }
     }
-
-    // Getters/Setter
 
     public String getStaffRole() {
         return staffRole;
     }
 
-    //Returns the array of maintenance requests assigned to this staff member.
-    public MaintenanceRequest[] getAssignedRequests() {
-        return assignedRequests;
-    }
-
-    //Returns the number of requests currently assigned to this staff member. 
     public int getCount() {
         return count;
     }
 
-   
-
-    //Updates the staff member's role. 
     public void setStaffRole(String staffRole) {
         this.staffRole = staffRole;
     }
-    
-    //addAssignedRequest method - To add the request to the Staff object's assignedRequests array
+
     public void addAssignedRequest(MaintenanceRequest request) {
         if (count < assignedRequests.length) {
             assignedRequests[count] = request;
             count++;
+        }
+    }
+
+    public MaintenanceRequest getAssignedRequestAt(int index) {
+        if (index < 0 || index >= count) {
+            return null;
+        }
+        return assignedRequests[index];
+    }
+
+    public void loadAssignedRequests(MaintenanceRequest[] loadedRequests) {
+        count = 0;
+        if (loadedRequests == null) {
+            return;
+        }
+        for (MaintenanceRequest request : loadedRequests) {
+            if (request != null && count < assignedRequests.length) {
+                assignedRequests[count++] = request;
+            }
         }
     }
 }

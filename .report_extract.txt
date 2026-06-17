@@ -1,0 +1,1903 @@
+pages: 67
+
+---PAGE 1---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 1 of 67 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+STUDENT HOSTEL MAINTENANCE REQUEST  
+&  
+TRACKING SYSTEM 
+ 
+ 
+ 
+GROUP NO.: 
+8 
+MEMBERS 
+DETAILS: 
+STUDENT ID 
+NAME 
+CB25174 
+JOHN VIANNEY ALBERT 
+CB25168 
+CHAI CHUAN YI 
+CB25158 
+KU FAROUQ BIN CHE KU ZAKARIA 
+ 
+ 
+ 
+ 
+
+---PAGE 2---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 2 of 67 
+ 
+Table of Contents 
+1.0  Introduction ......................................................................................................................... 4 
+1.1  Background of the Proposed System .............................................................................. 4 
+1.2  Problem Faced by Students and Users ............................................................................ 5 
+1.3  Objectives of the System ................................................................................................ 6 
+2.0  System Description ............................................................................................................. 7 
+2.1  Purpose of the System ..................................................................................................... 7 
+2.2  Target Users .................................................................................................................... 8 
+2.3  Main Features and Functionalities .................................................................................. 9 
+3.0  System Design  ................................................................................................................. 11 
+3.1  System Design Overview .............................................................................................. 11 
+3.1.1  Authentication Module .......................................................................................... 11 
+3.1.2  Student Module ...................................................................................................... 14 
+3.1.3  Staff Module .......................................................................................................... 16 
+3.1.4  Manager Module .................................................................................................... 19 
+3.2  UML Class Diagram ..................................................................................................... 22 
+3.3  Description of Classes Used ......................................................................................... 23 
+3.4    Explanation of Relationships ...................................................................................... 26 
+3.4.1  Inheritance.............................................................................................................. 26 
+3.4.2  Realization (Interface Implementation) ................................................................. 26 
+3.4.3  Composition ........................................................................................................... 27 
+3.4.4  Aggregation............................................................................................................ 27 
+3.4.5  Association ............................................................................................................. 28 
+3.4.6  Dependency............................................................................................................ 28 
+4.0  System Design  ................................................................................................................. 29 
+4.1  Programming Language and Development Environment ............................................. 29 
+4.2  Description of Important Classes and Methods ............................................................ 31 
+4.2.1  User Hierarchy (Authentication and Management) ............................................... 31 
+4.2.2 Maintenance Request Hierarchy ............................................................................. 32 
+4.2.3  Factory Design Pattern – MaintenanceFactory ...................................................... 32 
+4.2.4  Room and Request History .................................................................................... 33 
+4.2.5  Maintenance Manager (Console Controller) ......................................................... 33 
+4.2.6  Database Layer – DataAccess Interface and DatabaseHandler ............................. 34 
+4.2.7  Service Layer (GUI Business Logic) ..................................................................... 34 
+4.2.8  Graphical User Interface (GUI) ............................................................................. 35 
+4.2.9  Console Application Entry Point – Main.java ....................................................... 35 
+4.3  Application of OOP Concepts ...................................................................................... 36 
+
+---PAGE 3---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 3 of 67 
+ 
+4.4  Additional Programming Constructs ............................................................................ 38 
+4.5  Summary of Implementation ........................................................................................ 39 
+5.0  Sample Output / Program Execution  ............................................................................... 40 
+5.1  System Execution Environment .................................................................................... 40 
+5.2  Application Launch ....................................................................................................... 41 
+5.3  Authentication and Account Management.................................................................... 42 
+5.3.1  User Login ............................................................................................................. 42 
+5.3.2  User Registration (Sign Up)................................................................................... 44 
+5.3.3  Forgot Password..................................................................................................... 46 
+5.4  Student Module Execution ............................................................................................ 47 
+5.4.1  Submitting a Maintenance Request ....................................................................... 47 
+5.4.2  Viewing Request History ....................................................................................... 49 
+5.5 Staff Module Execution ................................................................................................. 50 
+5.5.1  Managing Assigned Requests ................................................................................ 51 
+5.5.2  Viewing Room Details ........................................................................................... 53 
+5.6 Manager Module Execution ........................................................................................... 54 
+5.6.1  Assigning Staff to Requests ................................................................................... 55 
+5.6.2  Managing Active Requests .................................................................................... 57 
+5.6.3  Viewing Request History and Room Details ......................................................... 58 
+5.7  End-to-End Workflow Demonstration .......................................................................... 59 
+5.8  Database Verification.................................................................................................... 60 
+5.9  Summary of Program Execution ................................................................................... 61 
+6.0  Conclusion  ....................................................................................................................... 62 
+6.1  Project Summary ........................................................................................................... 62 
+6.2  What the Group Learned from the Project .................................................................... 63 
+6.3  Benefits of the Developed System ................................................................................ 65 
+6.4  Closing Remarks ........................................................................................................... 67 
+ 
+
+---PAGE 4---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 4 of 67 
+ 
+1.0  Introduction 
+ 
+1.1  Background of the Proposed System 
+The management of maintenance services in student hostel facilities has traditionally relied on 
+manual, paper-based reporting processes. Students experiencing issues such as faulty electrical 
+equipment, leaking water pipes, or broken furniture are required to report these problems 
+verbally or through handwritten forms submitted to hostel administrators. These conventional 
+methods are inherently inefficient, prone to human error, and lack the transparency and 
+traceability required for effective service management. 
+ 
+In many educational institutions, hostel maintenance requests are processed on an informal, 
+first-come, first-served basis with no structured priority system. This results in critical issues, 
+such as electrical hazards or water leaks, being handled with the same level of urgency as minor 
+cosmetic defects. Furthermore, the absence of a centralised digital record system means that 
+maintenance history is rarely documented, preventing administrators from analysing recurring 
+issues or evaluating staff performance. 
+ 
+The Student Hostel Maintenance Request & Tracking System software is developed as a 
+desktop application based on Java programming language, following the principles of Object 
+Oriented Programming (OOP). In the final version, the application offers an interface, which 
+was designed using Java Swing libraries, and is backed by MySQL database, which stores the 
+users’ credentials, as well as requests for maintenance. It implements the entire process of 
+handling the maintenance requests from the moment when students submit their requests until 
+their resolution and finalization supervised by the Hostel Admin (Maintenance Manager). 
+ 
+ 
+
+---PAGE 5---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 5 of 67 
+ 
+1.2  Problem Faced by Students and Users 
+The following critical problems have been identified with the existing manual hostel 
+maintenance system: 
+ 
+• 
+Maintenance requests are frequently lost, forgotten, or misplaced due to the absence 
+of a formal digital logging mechanism, resulting in issues remaining unresolved 
+indefinitely. 
+• 
+There is no structured tracking system, making it impossible for students to monitor 
+the status or progress of their submitted maintenance requests. 
+• 
+The lack of a priority classification system results in urgent and safety-critical issues 
+being handled with the same urgency as non-urgent, low-impact requests. 
+• 
+Inefficient and disorganised staff deployment leads to duplicated effort or unattended 
+requests, reducing overall service quality and increasing resolution time. 
+• 
+The absence of a maintenance history log prevents the administration from identifying 
+recurring problems, evaluating staff performance, or planning preventive maintenance 
+activities. 
+• 
+Communication between students and maintenance staff is poor, leaving students 
+uninformed about the progress or expected resolution timeline of their reported issues. 
+ 
+ 
+
+---PAGE 6---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 6 of 67 
+ 
+1.3  Objectives of the System 
+The Student Hostel Maintenance Request & Tracking System is developed with the following 
+general and specific objectives: 
+ 
+General Objective: 
+To design and develop a Student Hostel Maintenance Request & Tracking System using 
+Object-Oriented Programming principles in Java that automates and streamlines the 
+maintenance request management process within a student hostel environment. 
+ 
+Specific Objectives: 
+• 
+Designing and developing a system whereby students will be able to submit 
+maintenance requests through the internet by providing details such as request type 
+(electrical, plumbing, or furniture), place of the problem, problem description, and 
+request priority. 
+• 
+Designing and developing a system whereby the maintenance staff will be able to 
+view their assigned requests and change the status of the request during the entire 
+process of maintenance (submitted, under progress, completed, cancelled). 
+• 
+Designing and developing a system whereby the Hostel Admin/Maintenance Manager 
+will be able to assign maintenance requests to staff members, manage ongoing 
+maintenance requests, view all the requests made and their histories as well as 
+monitor the general maintenance processes from his dashboard. 
+• 
+Integrating security features to the system such as authentication and authorization 
+which include login for users, user registration, password resetting, and user roles for 
+students, maintenance staff and maintenance manager. 
+• 
+Incorporation of main Object Oriented Programming techniques that include 
+inheritance, encapsulation, abstraction, polymorphism, composition, aggregation, and 
+interface. 
+• 
+Integration of factory design pattern by implementing MaintenanceFactory class used 
+for creation of request objects. 
+• 
+Designing and development of a GUI with database implementation through MySQL 
+database engine. 
+• 
+Implementation of request history using the RequestHistory class for accountability 
+and analysis. 
+ 
+ 
+
+---PAGE 7---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 7 of 67 
+ 
+2.0  System Description 
+ 
+2.1  Purpose of the System 
+The Student Hostel Maintenance Request & Tracking System is a Java-based desktop 
+application designed to digitise and automate the maintenance request management process 
+within a student hostel environment. The system serves as a centralised platform that facilitates 
+the seamless submission, tracking, assignment, and resolution of maintenance requests across 
+three distinct categories: electrical, plumbing, and furniture. 
+ 
+In using an organized digital system for submitting the maintenance requests rather than the 
+informal method that students use, the intention is to ensure that the requests cannot be lost and 
+will have faster response times, follow a priority system, and also ensure that there is a history 
+recorded of all maintenance done before. The software will manage the entire life cycle of the 
+request right from the point the request is made by a student, until it is assigned and handled 
+by a manager and finally completed or canceled, and the details recorded in the MySQL 
+database. 
+ 
+ 
+
+---PAGE 8---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 8 of 67 
+ 
+2.2  Target Users 
+The system is designed to serve three distinct user roles within the hostel management 
+structure: 
+ 
+a) Students 
+The system’s main end-users are the students who reside in the hostel. When registering, a 
+student is assigned a room number based on the student account. Once logged in, students can 
+request new maintenance by selecting the type of request. Then, they enter the name of the 
+place where the problem occurred, provide a description of the issue and set a priority. The 
+dashboard displays a student’s active requests and allows them to search the complete history 
+of all their previously-submitted requests (including current status and priority); no need to 
+manually follow up with staff. 
+ 
+b) Maintenance Staff 
+Maintenance team members carry out their responsibilities on the basis of assigned requests 
+submitted to the team by its manager. The system provides a user with a personalized dashboard 
+page where they can see their profile, list of in-progress requests and completed and cancelled 
+requests. The maintenance member can change the status of requests they are working on by 
+marking them as Completed or Cancelled. From the page, he or she also may check room 
+details and details of a student who submitted the request. The request history shows all 
+requests that have been submitted, cancelled or completed. 
+ 
+c) Maintenance Manager 
+The Hostel Admin is the system administrator and the superintendent of all maintenance 
+operations. The manager account is pre-seeded in the database and cannot be created through 
+public registration. Once logged in, the manager can see dashboard statistics such as total, 
+active, completed and cancelled requests, manage active in-progress requests, assign 
+unassigned submitted requests to available staff members, see room details associated with a 
+request and view the full request history with search and filter options. 
+ 
+ 
+
+---PAGE 9---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 9 of 67 
+ 
+2.3  Main Features and Functionalities 
+The system provides the following key features and functionalities: 
+ 
+• 
+User Authentication and Registration: The system provides a login page for all user 
+roles. New Student and Staff accounts can be registered through a sign-up form. Users 
+who forget their password can verify their registered email and set a new password. 
+Upon successful login, users are redirected to a role-specific dashboard. 
+• 
+Maintenance Request Submission: Students submit maintenance requests 
+electronically by selecting the request category (electrical, plumbing, or furniture), 
+confirming their room number, entering the place name, providing a detailed issue 
+description, and selecting a priority level (High, Medium, or Low). 
+• 
+Priority-Based Request Management: Each maintenance request is assigned a 
+priority level, ensuring that critical or safety-related issues can be identified and 
+handled appropriately. 
+• 
+Request Status Tracking: The system maintains and displays the lifecycle status of 
+every request using the Status enumeration: SUBMITTED, IN_PROGRESS, 
+COMPLETED, and CANCELLED, giving all users clear visibility of the current state 
+of each request. 
+• 
+Staff Assignment: The Hostel Admin assigns specific staff members to submitted 
+requests that have not yet been assigned. Once assigned, the request status is 
+automatically updated to IN_PROGRESS. 
+• 
+Request History Logging: All status changes for a given request are recorded by the 
+RequestHistory class in memory and persisted in the database, providing a complete 
+audit trail from submission to resolution. 
+• 
+Search and Filter Functionality: Students, staff, and the manager can search and 
+filter request records by request ID, status, type, or priority depending on their role, 
+enabling efficient retrieval of specific records. 
+• 
+Factory-Based Request Creation: The MaintenanceFactory class dynamically 
+instantiates the appropriate request subclass (ElectricalRequest, PlumbingRequest, or 
+FurnitureRequest) based on the request type provided, implementing the Factory 
+Design Pattern to decouple object creation from client code. 
+• 
+Database Persistence: All user and request data is persisted through the 
+DatabaseHandler class, which implements the DataAccess interface and provides 
+
+---PAGE 10---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 10 of 67 
+ 
+insert, update, delete, and fetch operations using MySQL, ensuring that data is 
+retained and accessible across multiple application sessions. 
+• 
+Graphical User Interface (GUI): The system features a user-friendly GUI with 
+consistent navigation sidebars for each role, allowing all three user types to interact 
+with the system intuitively without requiring technical expertise. 
+ 
+ 
+
+---PAGE 11---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 11 of 67 
+ 
+3.0  System Design 
+ 
+3.1  System Design Overview 
+This section presents the interface design of the completed Student Hostel Maintenance 
+Request & Tracking System. The application follows a role-based navigation structure: all 
+users begin at the authentication screens, after which they are directed to a dedicated dashboard 
+based on their account role (Student, Staff, or Manager). Each role has its own set of pages 
+accessible through a sidebar menu. The figures below illustrate the main screens of the system, 
+organised by user flow from authentication, through student and staff modules, to the manager 
+module. 
+ 
+The figure below illustrates the overall interface design of the proposed system: 
+3.1.1  Authentication Module 
+ 
+3.1.1.1  Login Page 
+ 
+The login page allows registered users to sign in using their email and password. Links are 
+provided to navigate to the sign-up page or the forgot-password page. 
+ 
+ 
+
+---PAGE 12---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 12 of 67 
+ 
+3.1.1.2  Sign Up Page 
+ 
+The sign-up page allows new Student or Staff accounts to be created. Users enter personal 
+details, credentials, and role-specific information such as room number (Student) or staff 
+expertise (Staff). 
+ 
+ 
+
+---PAGE 13---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 13 of 67 
+ 
+3.1.1.3  Forgot Password Page 
+ 
+The forgot-password page allows users to verify their registered email address before 
+proceeding to reset their password. 
+ 
+3.1.1.4  Set New Password Page 
+ 
+After email verification, users enter and confirm a new password on this page. Password 
+strength requirements are enforced before the change is saved to the database. 
+ 
+
+---PAGE 14---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 14 of 67 
+ 
+3.1.2  Student Module 
+ 
+3.1.2.1  Student Dashboard 
+ 
+The student dashboard displays the logged-in student's profile summary (name, student ID, 
+and room number) and a table of active maintenance requests currently in Submitted or In 
+Progress status. 
+ 
+ 
+
+---PAGE 15---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 15 of 67 
+ 
+3.1.2.2  Submit Maintenance Request Page 
+ 
+This page provides a form for students to submit a new maintenance request. Fields include 
+date, room number, place name, request type, issue description, and priority level. 
+ 
+3.1.2.3  Student View Request History Page 
+ 
+This page lists all maintenance requests previously submitted by the student, including 
+completed and cancelled records. Users can search by request ID and filter by status or 
+request type. 
+
+---PAGE 16---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 16 of 67 
+ 
+3.1.3  Staff Module 
+ 
+3.1.3.1  Staff Dashboard 
+ 
+ 
+The staff dashboard displays the logged-in staff member's profile (name and staff ID) and a 
+table of in-progress requests currently assigned to them. 
+ 
+ 
+
+---PAGE 17---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 17 of 67 
+ 
+3.1.3.2  Staff Manage Request Page 
+ 
+This page lists all in-progress requests assigned to the staff member. The staff can update the 
+status of a request to Completed or Cancelled and confirm the changes to save them to the 
+database. 
+ 
+3.1.3.3  Staff View Room Details Page 
+ 
+This page allows staff to search for a request by ID and view the associated room number, 
+place name, student name, and request type for that assignment. 
+
+---PAGE 18---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 18 of 67 
+ 
+3.1.3.4  Staff View Request History Page 
+ 
+This page displays the complete history of all requests ever assigned to the logged-in staff 
+member, with search and priority filter options. 
+ 
+ 
+
+---PAGE 19---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 19 of 67 
+ 
+3.1.4  Manager Module 
+ 
+3.1.4.1  Manager Dashboard 
+ 
+The manager dashboard displays summary statistics (total, active, completed, and cancelled 
+requests) and a table of recent active requests requiring attention. 
+ 
+3.1.4.2  Manager Manage Active Requests Page 
+ 
+This page lists all requests currently in In Progress status. The manager can update the status 
+to Completed or Cancelled and save the changes to the database. 
+
+---PAGE 20---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 20 of 67 
+ 
+3.1.4.3  Manager Assign Staff Page 
+ 
+This page lists all submitted requests that have not yet been assigned to any staff member. 
+The manager selects a staff member from a dropdown and confirms the assignment. 
+ 
+3.1.4.4  Manager View Room Details Page 
+ 
+This page allows the manager to search for a request by ID and view the linked room number, 
+place name, student name, and request type. 
+ 
+ 
+
+---PAGE 21---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 21 of 67 
+ 
+3.1.4.5  Manager View Request History Page 
+ 
+This page displays the complete history of all maintenance requests in the system, with 
+search and filter options by status and request type.  
+ 
+
+---PAGE 22---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 22 of 67 
+ 
+3.2  UML Class Diagram 
+The UML Class Diagram below illustrates the complete structure of the system, including all 
+classes, their attributes, methods, and the relationships between them. The diagram serves as 
+the primary blueprint for the implementation phase of the project. 
+ 
+Link: Click here to view Class Diagram in the browser 
+ 
+ 
+
+---PAGE 23---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 23 of 67 
+ 
+3.3  Description of Classes Used 
+The system comprises multiple classes, two interfaces, and two enumerations, each with a 
+clearly defined responsibility within the overall system architecture. The table below provides 
+a structured description of every class as reflected in the UML Class Diagram. 
+Class / Enum 
+Type 
+Responsibility 
+Authenticatable 
+Interface 
+Defines the authentication contract 
+implemented by User. Declares 
+getEmail(), checkPassword(), and 
+getRole() methods used during login 
+validation. 
+User 
+Abstract Class 
+Serves as the base class for all system 
+users. Contains shared attributes (userId, 
+username, firstName, lastName, email, 
+password, role) and methods login(), 
+logout(), getFullName(), and 
+checkPassword(). Implements 
+Authenticatable. 
+Student 
+Concrete 
+Class 
+(extends User) 
+Represents a hostel student. Stores a 
+Room reference and a list of submitted 
+MaintenanceRequest objects. Provides 
+submitRequest(), viewRequests(), and 
+loadRequests(). 
+Staff 
+Concrete 
+Class 
+(extends User) 
+Represents a maintenance staff member. 
+Stores staffRole and a list of assigned 
+MaintenanceRequest objects. Provides 
+updateRequestStatus(), 
+viewAssignedRequests(), 
+addAssignedRequest(), and 
+loadAssignedRequests(). 
+HostelAdmin 
+Concrete 
+Class 
+(extends User) 
+Represents the pre-seeded 
+manager/admin account. Overrides 
+login() and logout() with manager-
+specific messages. Corresponds to the 
+MANAGER role in the database. 
+UserRole 
+Enumeration 
+Defines the three application roles: 
+STUDENT, STAFF, and MANAGER. 
+Used by User and throughout the 
+authentication and navigation logic. 
+MaintenanceRequest 
+Abstract Class 
+Base class for all request types. Contains 
+requestId, description, priority, status, 
+room, history, and dateRaised. Declares 
+abstract processRequest() and provides 
+
+---PAGE 24---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 24 of 67 
+ 
+Class / Enum 
+Type 
+Responsibility 
+displayDetails(), recordStatusChange(), 
+and viewHistory(). 
+ElectricalRequest 
+Concrete 
+Class 
+(extends 
+MaintenanceRequest) 
+Represents electrical maintenance 
+issues. Overrides processRequest() with 
+electrical-specific processing logic. 
+PlumbingRequest 
+Concrete 
+Class 
+(extends 
+MaintenanceRequest) 
+Represents plumbing maintenance 
+issues. Overrides processRequest() with 
+plumbing-specific processing logic. 
+FurnitureRequest 
+Concrete 
+Class 
+(extends 
+MaintenanceRequest) 
+Represents furniture maintenance issues. 
+Overrides processRequest() with 
+furniture-specific processing logic. 
+Status 
+Enumeration 
+Defines the four valid request lifecycle 
+states: SUBMITTED, IN_PROGRESS, 
+COMPLETED, and CANCELLED. 
+Room 
+Support Class 
+Represents a hostel room. Stores 
+roomId, roomNumber, placeName, and 
+linked MaintenanceRequest objects. 
+Provides getRoomDetails() and 
+linkMaintenanceRequest(). 
+RequestHistory 
+Support Class 
+Tracks status changes for a maintenance 
+request. Stores historyId, statusChanges, 
+statusCounters, and historyLog. 
+Provides recordStatus() and 
+viewHistory(). 
+MaintenanceFactory 
+Factory Class 
+Implements the Factory Design Pattern. 
+Provides createRequest() to instantiate 
+the correct MaintenanceRequest 
+subclass based on the request type 
+string. 
+MaintenanceManager Manager Class 
+Acts as the in-memory coordinator of 
+maintenance operations. Maintains a list 
+of MaintenanceRequest objects and 
+provides addRequest(), assignStaff(), 
+updateRequestStatus(), searchRequest(), 
+and loadRequests(). 
+DataAccess 
+Interface 
+Defines the database operation contract: 
+authenticate(), registerStudent(), 
+registerStaff(), insertRequest(), 
+updateRequestStatus(), deleteRequest(), 
+fetchAllRequests(), and related methods. 
+
+---PAGE 25---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 25 of 67 
+ 
+Class / Enum 
+Type 
+Responsibility 
+DatabaseHandler 
+Concrete 
+Class 
+(implements 
+DataAccess) 
+Implements all database operations 
+using JDBC and MySQL. Uses the 
+Singleton pattern via getInstance() and 
+contains a MaintenanceFactory for 
+reconstructing request objects from 
+database records. 
+SignUpData 
+Support Class 
+Immutable data transfer object holding 
+registration form data (userId, username, 
+email, password, role, roomNumber, 
+staffRole) passed from the GUI to the 
+database layer. 
+SessionManager 
+Utility Class 
+Holds the currently logged-in User 
+object for the active GUI session. 
+Provides setCurrentUser(), 
+getCurrentUser(), and clear(). 
+AuthService 
+Service Class 
+Handles login, registration, and 
+password reset logic. Validates 
+credentials through DataAccess and 
+navigates users to the appropriate role-
+based dashboard. 
+StudentService 
+Service Class 
+Provides backend operations for student 
+GUI screens, including submitRequest(), 
+getActiveRequestRows(), and 
+refreshStudentRequests(). 
+StaffService 
+Service Class 
+Provides backend operations for staff 
+GUI screens, including 
+updateAssignedRequestStatus(), 
+getManageActiveRows(), and 
+refreshAssignedRequests(). 
+ManagerService 
+Service Class 
+Provides backend operations for 
+manager GUI screens, including 
+getDashboardCounts(), 
+saveStaffAssignments(), and 
+saveActiveRequestStatuses(). 
+ 
+ 
+ 
+
+---PAGE 26---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 26 of 67 
+ 
+3.4    Explanation of Relationships 
+The classes within the system interact through several well-defined Object-Oriented 
+relationships. These relationships are visually represented in the UML Class Diagram and are 
+explained in detail below. 
+ 
+3.4.1  Inheritance 
+Inheritance establishes an "is-a" relationship between a parent (superclass) and its child classes 
+(subclasses), promoting code reuse and establishing a clear class hierarchy. 
+ 
+• User → Student, Staff, and HostelAdmin: All three user types inherit from the 
+abstract User class. They reuse common attributes and provide concrete 
+implementations of login() and logout(). 
+• 
+MaintenanceRequest → ElectricalRequest, PlumbingRequest, and FurnitureRequest: 
+All three concrete request types inherit from MaintenanceRequest. They inherit core 
+request attributes and override the abstract processRequest() method with type-
+specific logic, demonstrating polymorphism. 
+ 
+3.4.2  Realization (Interface Implementation) 
+Realization represents a "implements" relationship, shown as a dashed line with a hollow 
+triangle pointing to the interface.  
+ 
+• 
+User → Authenticatable: The User class implements the Authenticatable interface, 
+providing concrete implementations of getEmail(), checkPassword(), and getRole(). 
+• 
+DatabaseHandler → DataAccess: The DatabaseHandler class implements the 
+DataAccess interface, providing all persistent database operations defined in the 
+contract. 
+ 
+
+---PAGE 27---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 27 of 67 
+ 
+3.4.3  Composition 
+Composition represents a strong "has-a" relationship (filled diamond), where the contained 
+object's lifecycle depends on the container. 
+ 
+• Student ◆→ MaintenanceRequest (1 to 0..*): A Student owns a list of 
+MaintenanceRequest objects submitted through their account. These requests are 
+created as part of the student's interaction with the system. 
+• 
+MaintenanceRequest ◆→ RequestHistory (1 to 1): Each MaintenanceRequest 
+contains exactly one RequestHistory object, created automatically when the request is 
+instantiated. The history cannot exist independently of its parent request. 
+ 
+3.4.4  Aggregation 
+Aggregation represents a weak "has-a" relationship (hollow diamond), where the contained 
+object can exist independently of the container. 
+ 
+• Staff ◇→ MaintenanceRequest (1 to 0..*): A Staff member holds a list of assigned 
+MaintenanceRequest objects. Requests exist independently in the system and can be 
+reassigned to a different staff member. 
+• MaintenanceManager ◇→ MaintenanceRequest (1 to 0..*): The 
+MaintenanceManager maintains an in-memory collection of all MaintenanceRequest 
+objects loaded from the database. 
+• 
+Room ◇→ MaintenanceRequest (1 to 0..*): A Room maintains a list of linked 
+MaintenanceRequest objects. Requests exist independently and can be associated with 
+different rooms. 
+ 
+ 
+
+---PAGE 28---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 28 of 67 
+ 
+3.4.5  Association 
+Association represents a general reference relationship between two classes without implying 
+ownership. 
+ 
+• User → UserRole (1 to 1): Each User has exactly one UserRole (STUDENT, STAFF, 
+or MANAGER) stored in the role attribute. 
+• Student → Room (1 to 0..1): Each Student is associated with one Room object linked 
+to their account at registration. 
+• MaintenanceRequest → Room (0.. to 1):* Each MaintenanceRequest is associated 
+with exactly one Room, providing the physical location of the reported issue. 
+• MaintenanceRequest → Status (1 to 1): Each MaintenanceRequest has exactly one 
+current Status value. 
+• 
+SessionManager → User (1 to 0..1): The SessionManager holds a reference to the 
+currently logged-in User for the active session. 
+ 
+3.4.6  Dependency 
+Dependency represents a "uses" relationship (dashed arrow), where one class depends on 
+another without a permanent structural link. 
+ 
+• 
+MaintenanceFactory <> MaintenanceRequest: The factory dynamically creates 
+concrete request subclasses at runtime based on the request type. 
+• 
+DatabaseHandler <> MaintenanceFactory: DatabaseHandler uses MaintenanceFactory 
+to reconstruct request objects when loading data from the database. 
+• 
+AuthService, StudentService, StaffService, ManagerService <> DataAccess: All 
+service classes depend on the DataAccess interface (implemented by 
+DatabaseHandler) to perform database operations. 
+• 
+AuthService <> SessionManager and SignUpData: AuthService uses SessionManager 
+to store the logged-in user and SignUpData as the registration payload. 
+• 
+StudentService <> MaintenanceFactory and MaintenanceManager: StudentService 
+uses the factory to create new requests and the manager to update the in-memory 
+request list after submission. 
+
+---PAGE 29---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 29 of 67 
+ 
+4.0  System Design 
+ 
+4.1  Programming Language and Development Environment 
+The Student Hostel Maintenance Request & Tracking System was developed using Java in 
+NetBeans IDE, as required by the project guideline. The system was built in two phases: 
+ 
+• Phase II (Console Application): The Main class provides a text-based menu for 
+submitting, searching, updating, and tracking maintenance requests through the IDE 
+console. 
+• Phase III (Enhanced Application): The system was extended with a Graphical User 
+Interface (GUI) using Java Swing, MySQL database integration via JDBC, and 
+advanced OOP features including abstract classes, interfaces, polymorphism, and the 
+Factory Design Pattern. 
+• The backend database runs on XAMPP MySQL using the schema defined in 
+hostel_maintenance_schema.sql. Database connection settings are centralized in the 
+DatabaseConfig class, while all SQL operations are handled through the 
+DatabaseHandler class, which implements the DataAccess interface. 
+ 
+ 
+The application follows a layered structure: 
+Layer 
+Responsibility 
+Key Classes 
+Model 
+Represents real-world 
+entities 
+User, Student, Staff, HostelAdmin, MaintenanceR
+equest, Room, RequestHistory 
+Data Access 
+Database CRUD 
+operations 
+DataAccess, DatabaseHandler, DatabaseConfig 
+Service 
+Business logic and 
+validation 
+AuthService, StudentService, StaffService, Manag
+erService 
+Presentation 
+User interaction 
+LoginFrame, stdDashboard, staffDashboard, Mana
+gerDashboardFrame, and related GUI frames 
+Console (Phase II) 
+Menu-driven testing 
+Main, MaintenanceManager, MaintenanceFactory 
+ 
+
+---PAGE 30---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 30 of 67 
+ 
+ 
+Figure 1: Screenshot of NetBeans Project Explorer 
+ 
+
+---PAGE 31---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 31 of 67 
+ 
+4.2  Description of Important Classes and Methods 
+ 
+4.2.1  User Hierarchy (Authentication and Management) 
+The User class is an abstract base class that stores common attributes such as userId, username, 
+firstName, lastName, email, password, and role. It implements the Authenticatable interface, 
+which defines the contract for authentication-related behaviour. 
+ 
+Three concrete subclasses represent the system’s user roles: 
+Class 
+Role 
+Key Methods 
+Student 
+Student 
+submitRequest(), viewRequests(), loadReq
+uests() 
+Staff 
+Maintenance staff 
+updateRequestStatus(), viewAssignedRequ
+ests(), addAssignedRequest() 
+HostelAdmin 
+Hostel manager 
+login(), logout() (overridden for manager-
+specific messages) 
+ 
+Each subclass overrides the login() and logout() methods to display role-specific messages, 
+demonstrating polymorphism. For example, when a student logs in, the system prints "Student 
+[name] logged in", whereas a manager receives a different message. 
+ 
+The AuthService class handles GUI authentication. Its login() method validates credentials 
+through the database, stores the logged-in user in SessionManager, and navigates to the correct 
+dashboard based on role (stdDashboard, staffDashboard, or ManagerDashboardFrame). 
+ 
+ 
+
+---PAGE 32---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 32 of 67 
+ 
+4.2.2 Maintenance Request Hierarchy 
+MaintenanceRequest is an abstract class representing any hostel maintenance issue. It contains 
+encapsulated fields such as requestId, description, priority, status, room, and dateRaised. Each 
+request is automatically linked to a RequestHistory object upon creation. 
+ 
+The abstract method processRequest() is implemented differently in each subclass: 
+Class 
+Request Type 
+processRequest() Behaviour 
+ElectricalRequest 
+Electrical 
+Dispatches an electrician to inspect the issue 
+PlumbingRequest 
+Plumbing 
+Dispatches a plumber to resolve the issue 
+FurnitureRequest 
+Furniture 
+Dispatches furniture repair staff 
+ 
+Common methods shared by all request types include: 
+ 
+• displayDetails() — prints request information to the console 
+• recordStatusChange(Status newStatus) — updates status and logs the change in 
+history 
+• viewHistory() — displays the full status change log 
+ 
+4.2.3  Factory Design Pattern – MaintenanceFactory 
+The Factory Design Pattern is applied through the MaintenanceFactory class. Instead of 
+creating request objects directly throughout the system, the factory centralizes object creation 
+based on request type. 
+ 
+The method createRequest(String type, String requestId, String description, String priority, 
+Room room) uses a switch statement to instantiate the correct subclass: 
+ 
+• "electrical" → ElectricalRequest 
+• "plumbing" → PlumbingRequest 
+• "furniture" → FurnitureRequest 
+ 
+This pattern improves code reusability and maintainability, because adding a new request type 
+only requires updating the factory class rather than every part of the system that creates 
+requests. 
+
+---PAGE 33---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 33 of 67 
+ 
+4.2.4  Room and Request History 
+The Room class represents a hostel room using roomNumber and placeName. It maintains an 
+array of linked maintenance requests, demonstrating aggregation — a room can exist 
+independently, but it references multiple requests. 
+ 
+The RequestHistory class tracks all status changes for a single request. It is created inside the 
+MaintenanceRequest constructor, forming a composition relationship — the history cannot 
+exist without its parent request. Key methods include: 
+ 
+• recordStatus(Status newStatus) — logs each status change using a String[] history log 
+and int[] status counters 
+• viewHistory() — displays the full change log and status summary 
+ 
+4.2.5  Maintenance Manager (Console Controller) 
+The MaintenanceManager class acts as a central controller for the Phase II console application. 
+It stores all requests in a MaintenanceRequest[] array and provides methods to: 
+Method 
+Function 
+addRequest() 
+Adds a new request to the in-memory array 
+findRequestById() 
+Searches for a request by ID using a for loop 
+updateRequestStatus() 
+Updates the status of a specific request 
+assignStaff() 
+Assigns a staff member and sets status to IN_PROGRESS 
+displayAllRequests() 
+Displays all stored requests 
+searchRequest() 
+Finds and displays a single request 
+ 
+ 
+ 
+
+---PAGE 34---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 34 of 67 
+ 
+4.2.6  Database Layer – DataAccess Interface and DatabaseHandler 
+The DataAccess interface defines the contract for all database operations, including: 
+ 
+• Create: registerStudent(), registerStaff(), insertRequest(), findOrCreateRoom() 
+• Read: authenticate(), findRequestById(), fetchAllRequests(), 
+fetchRequestsByStudent(), fetchRequestsByStaff(), fetchAllStaff() 
+• Update: updateRequestStatus(), assignStaffToRequest(), updatePassword() 
+• Delete: deleteRequest() 
+ 
+The DatabaseHandler class implements DataAccess using the Singleton pattern (getInstance()), 
+ensuring only one database connection handler exists. It uses JDBC with PreparedStatement to 
+prevent SQL injection and executes SQL queries against four main tables: users, rooms, 
+maintenance_requests, and request_status_history. 
+ 
+When loading requests from the database, DatabaseHandler uses MaintenanceFactory to 
+recreate the correct MaintenanceRequest subclass based on the stored request_type, again 
+demonstrating polymorphism. 
+ 
+4.2.7  Service Layer (GUI Business Logic) 
+To separate GUI code from business logic, three service classes were created: 
+Service Class 
+Purpose 
+Key Methods 
+AuthService 
+Login, sign-up, 
+password reset 
+login(), register(), resetPassword(), verifyEmailForPas
+swordReset() 
+StudentService 
+Student dashboard 
+operations 
+submitRequest(), getActiveRequestRows(), getHistory
+RequestRows(), refreshStudentRequests() 
+StaffService 
+Staff dashboard 
+operations 
+Status updates, assigned request management 
+ManagerService 
+Manager dashboard 
+operations 
+getDashboardCounts(), staff assignment, request 
+management 
+ 
+The SessionManager class stores the currently logged-in User object as a static variable, 
+allowing any GUI screen to access the active session. 
+ 
+ 
+
+---PAGE 35---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 35 of 67 
+ 
+4.2.8  Graphical User Interface (GUI) 
+The GUI was built using Java Swing in NetBeans Form Editor. The main entry point for the 
+GUI application is LoginFrame.main(). After successful login, users are directed to role-
+specific dashboards: 
+User Role 
+Dashboard Class 
+Main Features 
+Student 
+stdDashboard 
+View profile, submit requests, view active 
+requests and history 
+Staff 
+staffDashboard 
+View assigned requests, update status, view 
+room details 
+Manager 
+ManagerDashboardFrame 
+Overview statistics, assign staff, manage 
+requests, view history 
+ 
+Reusable GUI components are stored in the gui.common package, including CardPanel, 
+StatusBadgeComboBox, PriorityBadgeLabel, PlaceholderTextField, and UIHelper for 
+consistent styling across all screens. 
+ 
+4.2.9  Console Application Entry Point – Main.java 
+The Main class serves as the Phase II console entry point. It demonstrates: 
+ 
+• Control structures: while loop for the main menu, switch for menu options, if-else for 
+validation 
+• Input/Output: Scanner for reading user input, System.out.println() for output 
+• Arrays: MaintenanceRequest[100] in MaintenanceManager, Student, and Staff 
+• String methods: trim(), toUpperCase(), equals(), isEmpty(), format() 
+• Object interaction: Creates Room, Student, Staff, uses MaintenanceFactory and 
+MaintenanceManager 
+ 
+ 
+
+---PAGE 36---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 36 of 67 
+ 
+4.3  Application of OOP Concepts 
+The following table summarizes how each OOP concept is applied in the system: 
+OOP Concept 
+Application in the System 
+Example 
+Encapsulation 
+All class attributes are 
+declared private and accessed 
+through public getter and 
+setter methods. This protects 
+data integrity and hides 
+internal implementation. 
+User stores password as private; access is 
+through checkPassword(). MaintenanceRequest fields are private with 
+controlled access via getters/setters. 
+Abstraction 
+Abstract classes define 
+common structure without 
+complete implementation. 
+Interfaces define behavioural 
+contracts. 
+User (abstract) and MaintenanceRequest (abstract) cannot be instantiated 
+directly. Authenticatable and DataAccess interfaces define required methods 
+without implementation. 
+Inheritance 
+Subclasses extend parent 
+classes to reuse code and 
+establish an "is-a" 
+relationship. 
+Student, Staff, 
+and HostelAdmin extend User. ElectricalRequest, PlumbingRequest, 
+and FurnitureRequest extend MaintenanceRequest. 
+Polymorphism 
+Subclasses provide different 
+implementations of the same 
+method. The correct method is 
+called at runtime based on the 
+actual object type. 
+Overridden login()/logout() in each user subclass. 
+Overridden processRequest() in each request 
+subclass. MaintenanceFactory.createRequest() returns MaintenanceRequest but 
+creates the appropriate subclass. DatabaseHandler.mapUser() creates the 
+correct User subclass based on database role. 
+Composition 
+A class contains another class 
+as a part that cannot exist 
+independently. Strong "has-a" 
+relationship. 
+MaintenanceRequest composes RequestHistory — history is created inside the 
+request constructor and is destroyed with the request. 
+Aggregation 
+A class references other 
+objects that can exist 
+Room aggregates MaintenanceRequest[] — requests can exist without the 
+room object in memory. Student aggregates submitted 
+
+---PAGE 37---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 37 of 67 
+ 
+independently. Weaker "has-
+a" relationship. 
+requests. Staff aggregates assigned requests. MaintenanceManager aggregates 
+all system requests. 
+Interface 
+Defines a contract that 
+implementing classes must 
+follow. 
+Authenticatable requires getEmail(), checkPassword(), 
+and getRole(). DataAccess defines all database operation signatures 
+implemented by DatabaseHandler. 
+Factory Pattern 
+Centralizes object creation to 
+promote loose coupling and 
+easy extensibility. 
+MaintenanceFactory.createRequest() creates the correct request subclass based 
+on type string. 
+Singleton Pattern 
+Ensures only one instance of a 
+class exists. 
+DatabaseHandler.getInstance() provides a single shared database handler. 
+ 
+ 
+
+---PAGE 38---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 38 of 67 
+ 
+4.4  Additional Programming Constructs 
+Beyond core OOP principles, the system also demonstrates the following constructs required in Phase II: 
+Construct 
+Where Applied 
+Control & Repetition 
+Statements 
+Main.java: while(running) main menu loop, switch for menu choices, if-else for input 
+validation. MaintenanceFactory: switch for request type. RequestHistory: switch for status counting. 
+Arrays (Primitive & Object) 
+MaintenanceRequest[100] in MaintenanceManager, Student, Staff, and Room. int[] 
+statusCounters and String[] historyLog in RequestHistory. MaintenanceRequest[] returned from database 
+fetch methods. 
+String Class & Methods 
+trim(), toLowerCase(), toUpperCase(), equals(), isEmpty(), contains(), format(), substring(), replaceAll() used 
+throughout for input validation, ID formatting, and display formatting. 
+Enumeration 
+Status enum defines fixed 
+values: SUBMITTED, IN_PROGRESS, COMPLETED, CANCELLED. UserRole enum 
+defines: STUDENT, STAFF, MANAGER. 
+ 
+ 
+ 
+ 
+ 
+
+---PAGE 39---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 39 of 67 
+ 
+4.5  Summary of Implementation 
+The system was successfully implemented using Java OOP principles across two development 
+phases. Phase II established the core domain model with console-based interaction, while Phase 
+III enhanced the system with a Swing GUI, MySQL database persistence, and advanced OOP 
+features. The layered architecture, Model, Data Access, Service, and Presentation, ensures the 
+code is modular, maintainable, and demonstrates all required OOP concepts including 
+encapsulation, abstraction, inheritance, polymorphism, composition, aggregation, interfaces, 
+and the Factory Design Pattern. 
+ 
+ 
+ 
+
+---PAGE 40---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 40 of 67 
+ 
+5.0  Sample Output / Program Execution 
+ 
+5.1  System Execution Environment 
+The system was executed using the following setup: 
+Component 
+Details 
+IDE 
+NetBeans 
+Language 
+Java (Swing GUI) 
+Database 
+MySQL via XAMPP 
+Database name 
+hostel_maintenance_db 
+Entry point 
+LoginFrame.java → Run File 
+JDBC driver 
+MySQL Connector/J 
+ 
+Before running the application, XAMPP MySQL was started and the database schema was 
+imported by executing hostel_maintenance_schema.sql in phpMyAdmin. This created the 
+required tables (users, rooms, maintenance_requests, request_status_history) and seeded 
+sample data for testing. 
+ 
+ 
+Figure 2: Screenshot of XAMPP Control Panel with MySQL running 
+
+---PAGE 41---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 41 of 67 
+ 
+5.2  Application Launch 
+The GUI application is launched by running LoginFrame from NetBeans. The login screen 
+displays the system title, email and password fields, and links for Sign Up and Forgot 
+Password. 
+ 
+Figure 3: Screenshot of the Login screen on startup 
+ 
+ 
+
+---PAGE 42---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 42 of 67 
+ 
+5.3  Authentication and Account Management 
+ 
+5.3.1  User Login 
+Users log in with their registered email and password. Upon successful authentication, 
+AuthService validates credentials against the MySQL database and redirects the user to the 
+appropriate dashboard based on role: 
+Role 
+Redirected To 
+Student 
+stdDashboard 
+Staff 
+staffDashboard 
+Manager 
+ManagerDashboardFrame 
+ 
+Test accounts used during execution: 
+Role 
+Email 
+Password 
+Student 
+john123@gmail.com 
+student123 
+Staff (Electrician) 
+farouq001@gmail.com 
+staff123 
+Staff (Plumber) 
+faiz002@gmail.com 
+staff123 
+Manager 
+hostelcare-admin@admin.com.my 
+umpsaADMINs3cr37 
+ 
+ 
+Figure 4: Screenshot of the Login screen with email and password filled in, just before 
+clicking Login 
+
+---PAGE 43---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 43 of 67 
+ 
+If invalid credentials are entered, an error dialog is displayed (e.g. "Invalid email or 
+password."), demonstrating input validation. 
+ 
+Figure 5: Screenshot of the login error message dialog for invalid credentials 
+ 
+ 
+
+---PAGE 44---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 44 of 67 
+ 
+5.3.2  User Registration (Sign Up) 
+New students and staff can register through the Sign Up page. The form collects personal 
+details, role selection, and role-specific fields: 
+ 
+• Student: room number is required 
+• Staff: area of expertise is required (e.g. Electrician, Plumber) 
+ 
+Password must be at least 8 characters and include one uppercase letter and one number or 
+symbol. Upon successful registration, a confirmation message is shown and the user is returned 
+to the login screen. 
+ 
+ 
+Figure 6: Screenshot of the Sign Up form filled in for a new Student account 
+ 
+ 
+
+---PAGE 45---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 45 of 67 
+ 
+ 
+Figure 7: Screenshot of the "Account created successfully" confirmation dialog 
+ 
+ 
+
+---PAGE 46---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 46 of 67 
+ 
+5.3.3  Forgot Password 
+Users who forget their password can use the Forgot Password link. They enter their registered 
+email, set a new password on the next screen, and receive a confirmation message before being 
+redirected to login. 
+ 
+ 
+Figure 8: Screenshot of the Forgot Password 
+ 
+Figure 9: Screenshot Set New Password screen 
+
+---PAGE 47---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 47 of 67 
+ 
+5.4  Student Module Execution 
+After logging in as a student, the Student Dashboard displays: 
+ 
+1. Student Profile — name, student ID, and room number 
+2. Active Maintenance Requests — requests with status Submitted or In Progress 
+ 
+5.4.1  Submitting a Maintenance Request 
+The student navigates to Submit Request and fills in: 
+Field 
+Example Input 
+Date 
+Auto-filled (current date) 
+Room No. 
+Auto-filled from student profile (e.g. A-10-05) 
+Place Name 
+DHUAM 
+Request Type 
+Electrical / Plumbing / Furniture 
+Priority 
+High / Medium / Low 
+Issue Description 
+e.g. "Power socket not working near study desk." 
+ 
+When Submit is clicked, the system: 
+ 
+1. Validates all required fields 
+2. Uses MaintenanceFactory to create the correct request object 
+3. Saves the record to the maintenance_requests table via DatabaseHandler 
+4. Displays a success message with the generated Request ID (e.g. "Request REQ004 
+submitted successfully!") 
+ 
+
+---PAGE 48---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 48 of 67 
+ 
+ 
+Figure 10: Screenshot of the Submit Request form with all fields filled in 
+ 
+ 
+Figure 11: Screenshot of the success dialog showing the generated Request ID 
+ 
+ 
+
+---PAGE 49---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 49 of 67 
+ 
+5.4.2  Viewing Request History 
+From Request History, the student can search by Request ID, filter by status or type, and view 
+all past requests including completed and cancelled ones. 
+ 
+Figure 12: Screenshot of the Student Request History page with search/filter and a list of 
+requests 
+ 
+ 
+
+---PAGE 50---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 50 of 67 
+ 
+5.5 Staff Module Execution 
+After logging in as staff, the Staff Dashboard shows the staff profile (name, staff ID, 
+expertise) and a table of in-progress assigned requests. 
+ 
+Figure 13: Screenshot of the Staff Dashboard 
+ 
+ 
+
+---PAGE 51---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 51 of 67 
+ 
+5.5.1  Managing Assigned Requests 
+On Manage Requests, staff can: 
+ 
+• Search requests by ID 
+• Filter by priority 
+• Update request status (e.g. from In Progress to Completed) 
+• Confirm changes, which are saved to the database 
+ 
+Figure 14: Screenshot of the Staff Manage Requests page showing assigned requests 
+ 
+
+---PAGE 52---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 52 of 67 
+ 
+ 
+Figure 15: Screenshot of a request status being updated to "Completed" and saved 
+ 
+ 
+
+---PAGE 53---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 53 of 67 
+ 
+5.5.2  Viewing Room Details 
+Staff can open View Room Details to see room number, place name, student name, and request 
+type for an assigned request. 
+ 
+Figure 16: Screenshot of the Staff View Room Details page 
+ 
+ 
+
+---PAGE 54---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 54 of 67 
+ 
+5.6 Manager Module Execution 
+After logging in as a manager, the Manager Dashboard displays: 
+ 
+• Statistics cards: Total, Active, Completed, and Cancelled requests 
+• Recent Requests table: latest submitted and in-progress requests 
+ 
+ 
+Figure 17: Screenshot of the Manager Dashboard with stat cards and recent requests table 
+ 
+ 
+
+---PAGE 55---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 55 of 67 
+ 
+5.6.1  Assigning Staff to Requests 
+The manager opens Assign Staff to view unassigned requests (status Submitted, no staff 
+assigned). For each request, the manager selects a staff member from a dropdown and confirms 
+the assignment. The system updates assigned_staff_id and changes status to In Progress in the 
+database. 
+ 
+Figure 18: Screenshot of the Assign Staff page showing unassigned requests 
+ 
+
+---PAGE 56---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 56 of 67 
+ 
+ 
+Figure 19: Screenshot of a staff member selected in the dropdown for a request 
+(edit/assign mode) 
+ 
+ 
+
+---PAGE 57---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 57 of 67 
+ 
+5.6.2  Managing Active Requests 
+On Manage Active Requests, the manager can search, filter, and update the status of in-progress 
+requests (e.g. mark as Completed or Cancelled). 
+ 
+Figure 20: Screenshot of the Manager Manage Active Requests page 
+ 
+ 
+
+---PAGE 58---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 58 of 67 
+ 
+5.6.3  Viewing Request History and Room Details 
+The manager can use Request History to view all requests across the system, and View Room 
+Details to inspect room and student information linked to a specific request. 
+ 
+Figure 21: Screenshot of the Manager Request History page 
+ 
+ 
+Figure 22: Screenshot of the Manager View Room Details page 
+
+---PAGE 59---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 59 of 67 
+ 
+5.7  End-to-End Workflow Demonstration 
+The following sequence shows a complete maintenance request lifecycle across all three user 
+roles: 
+Step 
+User 
+Action 
+Result 
+1 
+Student 
+Logs in and submits a new 
+Electrical request (High priority) 
+Request created with 
+status Submitted (e.g. REQ004) 
+2 
+Manager 
+Logs in, opens Assign Staff, 
+assigns an Electrician to REQ004 
+Status changes to In Progress; 
+staff is linked in database 
+3 
+Staff 
+Logs in, opens Manage Requests, 
+marks REQ004 as Completed 
+Status updated in database and 
+visible to all roles 
+4 
+Student 
+Opens Dashboard / Request 
+History 
+Updated status Completed is 
+displayed 
+5 
+Manager 
+Opens Dashboard 
+Stat cards and recent requests 
+reflect the update 
+ 
+ 
+ 
+
+---PAGE 60---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 60 of 67 
+ 
+5.8  Database Verification 
+To confirm that GUI actions persist correctly, the maintenance_requests and 
+request_status_history tables can be viewed in phpMyAdmin after execution. This verifies that 
+Create, Read, and Update operations work as intended. 
+ 
+Figure 23: Screenshot of phpMyAdmin showing maintenance_requests table with sample 
+records 
+ 
+ 
+Figure 24: Screenshot of request_status_history table showing status change log for a 
+request 
+ 
+
+---PAGE 61---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 61 of 67 
+ 
+5.9  Summary of Program Execution 
+The GUI application runs successfully with role-based access for Students, Staff, and 
+Managers. Users can log in, register, submit and track maintenance requests, assign staff, 
+update statuses, and view history, with all changes stored in the MySQL database. Input 
+validation, success/error messages, and real-time table updates provide clear feedback during 
+execution, demonstrating a fully functional Phase III system. 
+ 
+ 
+
+---PAGE 62---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 62 of 67 
+ 
+6.0  Conclusion 
+ 
+6.1  Project Summary 
+The Student Hostel Maintenance Request & Tracking System is a group project developed for 
+the course BCS2143 Object-Oriented Programming.  
+The main issue is about student hostel maintenance requesting and tracking. It is a system for 
+students, staff and managers to perform different functionalities on a new digital platform. 
+  
+The project was developed in phases where in Phase II a console application was created and 
+then in Phase III it was enhanced to a fully functional GUI application with MySQL database 
+integration. The system displays the application of basic OOP concepts such as encapsulation, 
+abstraction, inheritance, polymorphism, composition, aggregation, interfaces and the Factory 
+Design Pattern in an actual scenario that pertains to student life on a campus. 
+ 
+ 
+
+---PAGE 63---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 63 of 67 
+ 
+6.2  What the Group Learned from the Project 
+Through this project, the group gained valuable knowledge and hands-on experience in both 
+software development and teamwork: 
+ 
+Object-Oriented Programming Concepts 
+The group learned how to translate theoretical OOP concepts into a working application. For 
+example, inheritance was applied through the User and MaintenanceRequest class hierarchies, 
+while polymorphism was demonstrated through overridden methods such as login(), logout(), 
+and processRequest(). The Factory Design Pattern taught the group how to centralize object 
+creation and improve code maintainability. Composition and aggregation were understood in 
+practice — RequestHistory is composed within each MaintenanceRequest, while Room and 
+MaintenanceManager aggregate collections of requests. 
+ 
+System Design and Architecture 
+The group learned to design a system using UML class diagrams before implementation, and 
+to organize code into logical layers: Model, Data Access, Service, and Presentation. This 
+separation made the codebase easier to manage, debug, and extend as new features were added 
+during Phase III. 
+ 
+Database Integration 
+Integrating MySQL through JDBC exposed the group to real database operations. The 
+DatabaseHandler class implements full CRUD functionality — creating user accounts and 
+requests, reading and searching records, updating statuses and assignments, and deleting 
+requests when needed. The group also learned the importance of using PreparedStatement to 
+write secure SQL queries and of designing relational tables with foreign keys to maintain data 
+integrity. 
+ 
+Graphical User Interface Development 
+Building the GUI with Java Swing required the group to think about user experience, not just 
+functionality. Role-based dashboards were designed so that each user type sees only relevant 
+features. Form validation, error messages, and success confirmations were implemented to 
+guide users and prevent invalid input. 
+ 
+ 
+
+---PAGE 64---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 64 of 67 
+ 
+Software Development Practices 
+The group learned the value of working in phases, backing up code regularly, and testing each 
+module before integration. Using NetBeans IDE, version control, and a shared database schema 
+helped keep development consistent across team members. Clear naming conventions, 
+encapsulation, and reusable components (such as those in the gui.common package) improved 
+code readability and reduced duplication. 
+ 
+Teamwork and Individual Responsibility 
+As a group project, each member contributed to different modules — domain classes, database 
+layer, authentication, student/staff/manager GUI screens, and documentation. The group 
+learned to coordinate tasks, integrate individual contributions into a single cohesive system, 
+and explain their own work during development and presentation preparation. 
+ 
+ 
+
+---PAGE 65---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 65 of 67 
+ 
+6.3  Benefits of the Developed System 
+The Student Hostel Maintenance Request & Tracking System provides practical benefits to all 
+parties involved in hostel maintenance management: 
+ 
+For Students 
+ 
+• Students can submit maintenance requests digitally at any time without visiting the 
+management office in person. 
+• The system auto-fills room details and records the date, reducing errors in reporting. 
+• Students can track the status of their requests (Submitted, In Progress, Completed, or 
+Cancelled) from their dashboard and request history page. 
+• Priority levels (High, Medium, Low) allow urgent issues such as electrical faults to be 
+flagged appropriately. 
+ 
+For Maintenance Staff 
+ 
+• Staff members receive clearly assigned tasks with request details, room information, 
+and issue descriptions. 
+• The Manage Requests page allows staff to search, filter, and update request status 
+directly from their dashboard. 
+• Staff can view room details linked to each request, helping them prepare before 
+attending to the issue. 
+ 
+For Hostel Managers 
+ 
+• The manager dashboard provides an overview of all maintenance activity through 
+statistics cards (Total, Active, Completed, Cancelled). 
+• Managers can assign the appropriate staff member to each unassigned request based 
+on expertise (e.g. Electrician, Plumber). 
+• Request history and room details are accessible in one system, improving oversight 
+and decision-making. 
+• Status changes are logged in the database, creating an audit trail of who changed what 
+and when. 
+ 
+
+---PAGE 66---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 66 of 67 
+ 
+For the University / Hostel Administration 
+ 
+• Replacing manual or informal reporting with a centralized digital system reduces lost 
+requests and miscommunication. 
+• Maintenance data is stored in a structured database, enabling future reporting and 
+analysis (e.g. most common issue types, average resolution time). 
+• The system improves accountability by linking every request to a student, an assigned 
+staff member, and a status history. 
+• The modular OOP design allows the system to be extended in the future — for 
+example, adding new request types, notification features, or mobile access — without 
+rewriting the entire application. 
+ 
+ 
+
+---PAGE 67---
+BCS2143: Object Oriented Programming 
+ 
+ 
+Page 67 of 67 
+ 
+6.4  Closing Remarks 
+In conclusion, the Student Hostel Maintenance Request & Tracking System fulfils the 
+objectives set out in the project proposal. It applies OOP principles learned throughout the 
+BCS2143 course, integrates a functional GUI and MySQL database, and delivers a practical 
+solution to a real problem faced by hostel residents. The project strengthened the group's 
+technical skills in Java programming, system design, and database management, while also 
+developing teamwork and problem-solving abilities. The completed system is a reliable 
+foundation that can be further improved and deployed to enhance the overall hostel 
+maintenance experience at the university. 
+

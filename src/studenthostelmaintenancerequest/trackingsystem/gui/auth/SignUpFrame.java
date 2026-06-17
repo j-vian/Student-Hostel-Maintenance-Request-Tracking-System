@@ -1,0 +1,421 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ */
+package studenthostelmaintenancerequest.trackingsystem.gui.auth;
+
+import studenthostelmaintenancerequest.trackingsystem.AuthService;
+import studenthostelmaintenancerequest.trackingsystem.SignUpData;
+import studenthostelmaintenancerequest.trackingsystem.UserRole;
+import studenthostelmaintenancerequest.trackingsystem.gui.common.GradientBackgroundPanel;
+import studenthostelmaintenancerequest.trackingsystem.gui.common.PasswordFieldPanel;
+import studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField;
+import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
+
+/**
+ *
+ * @author vian
+ */
+public class SignUpFrame extends javax.swing.JFrame {
+
+    // logger for runtime diagnostics
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(SignUpFrame.class.getName());
+    // UI component and state fields
+    private javax.swing.JScrollPane scrollMain;
+
+    // construct frame and initialize UI
+    public SignUpFrame() {
+        initComponents();
+        customizeForm();
+    }
+
+    private void customizeForm() {
+        installScrollPane();
+
+        UIHelper.styleSignupCard(pnlCard, lblTitle, btnSignUp);
+        UIHelper.styleSignupFieldLabel(
+                lblFirstName, lblLastName, lblUsername, lblUserId, lblEmail,
+                lblPassword, lblConfirmPassword, lblRole, lblRoomNumber, lblExpertise);
+        UIHelper.styleSignupHalfTextField(txtFirstName, txtLastName);
+        UIHelper.styleSignupTextField(txtUsername, txtUserId, txtEmail, txtRoomNumber, txtOtherExpertise);
+        UIHelper.styleSignupComboBox(cmbRole, cmbExpertise);
+
+        lblRoomNumber.setVisible(false);
+        txtRoomNumber.setVisible(false);
+        lblExpertise.setVisible(false);
+        cmbExpertise.setVisible(false);
+        txtOtherExpertise.setVisible(false);
+
+        UIHelper.centerCardInScrollPane(scrollMain, pnlScrollHost, pnlCard);
+
+        setSize(UIHelper.FRAME_WIDTH, UIHelper.FRAME_HEIGHT);
+        setLocationRelativeTo(null);
+        getRootPane().setDefaultButton(btnSignUp);
+    }
+
+    /**
+     * JScrollPane is created at runtime because the NetBeans Form Editor cannot load
+     * DesignScrollPaneLayout metadata in the .form file.
+     */
+    private void installScrollPane() {
+        pnlBackground.remove(pnlScrollHost);
+
+        scrollMain = new javax.swing.JScrollPane(pnlScrollHost);
+        scrollMain.setBorder(null);
+        scrollMain.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollMain.setOpaque(false);
+        scrollMain.getViewport().setOpaque(false);
+
+        javax.swing.GroupLayout pnlBackgroundLayout = new javax.swing.GroupLayout(pnlBackground);
+        pnlBackground.setLayout(pnlBackgroundLayout);
+        pnlBackgroundLayout.setHorizontalGroup(
+                pnlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(scrollMain, javax.swing.GroupLayout.DEFAULT_SIZE, 1100, Short.MAX_VALUE));
+        pnlBackgroundLayout.setVerticalGroup(
+                pnlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(scrollMain, javax.swing.GroupLayout.DEFAULT_SIZE, 720, Short.MAX_VALUE));
+    }
+
+    private void cmbRoleActionPerformed(java.awt.event.ActionEvent evt) {
+        String selected = (String) cmbRole.getSelectedItem();
+        boolean student = "Student".equals(selected);
+        boolean staff = "Staff".equals(selected);
+        lblRoomNumber.setVisible(student);
+        txtRoomNumber.setVisible(student);
+        lblExpertise.setVisible(staff);
+        cmbExpertise.setVisible(staff);
+        updateOtherExpertiseField();
+        refreshCardLayout();
+    }
+
+    private void cmbExpertiseActionPerformed(java.awt.event.ActionEvent evt) {
+        updateOtherExpertiseField();
+        refreshCardLayout();
+    }
+
+    private void updateOtherExpertiseField() {
+        boolean staff = "Staff".equals(cmbRole.getSelectedItem());
+        boolean other = "Other".equals(cmbExpertise.getSelectedItem());
+        txtOtherExpertise.setVisible(staff && other);
+        if (!other) {
+            txtOtherExpertise.setText("");
+        }
+    }
+
+    private void refreshCardLayout() {
+        pnlCard.revalidate();
+        pnlCard.repaint();
+        UIHelper.refreshScrollHostSize(scrollMain, pnlScrollHost, pnlCard);
+    }
+
+    private void btnSignUpActionPerformed(java.awt.event.ActionEvent evt) {
+        String roleSelection = String.valueOf(cmbRole.getSelectedItem());
+        UserRole role = "Student".equals(roleSelection) ? UserRole.STUDENT
+                : "Staff".equals(roleSelection) ? UserRole.STAFF : null;
+
+        if (role == null) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Please select Student or Staff.",
+                    "Sign Up", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String staffRole = null;
+        String otherExpertise = null;
+        if (role == UserRole.STAFF) {
+            String expertise = String.valueOf(cmbExpertise.getSelectedItem());
+            if ("Select your expertise".equals(expertise)) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Please select staff expertise.",
+                        "Sign Up", javax.swing.JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if ("Other".equals(expertise)) {
+                otherExpertise = txtOtherExpertise.getText().trim();
+                staffRole = otherExpertise.isEmpty() ? null : otherExpertise;
+            } else {
+                staffRole = expertise;
+            }
+        }
+
+        SignUpData data = new SignUpData(
+                txtUserId.getText().trim(),
+                txtUsername.getText().trim(),
+                txtFirstName.getText().trim(),
+                txtLastName.getText().trim(),
+                txtEmail.getText().trim(),
+                new String(pnlPassword.getPasswordField().getPassword()),
+                role,
+                txtRoomNumber.getText().trim(),
+                staffRole,
+                otherExpertise);
+
+        String confirmPassword = new String(pnlConfirmPassword.getPasswordField().getPassword());
+        AuthService.register(this, data, confirmPassword);
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        pnlBackground = new studenthostelmaintenancerequest.trackingsystem.gui.common.GradientBackgroundPanel();
+        pnlScrollHost = new javax.swing.JPanel();
+        pnlCard = new javax.swing.JPanel();
+        lblTitle = new javax.swing.JLabel();
+        lblFirstName = new javax.swing.JLabel();
+        txtFirstName = new PlaceholderTextField("First Name");
+        lblLastName = new javax.swing.JLabel();
+        txtLastName = new PlaceholderTextField("Last Name");
+        lblUsername = new javax.swing.JLabel();
+        txtUsername = new PlaceholderTextField("Username");
+        lblUserId = new javax.swing.JLabel();
+        txtUserId = new PlaceholderTextField("User ID");
+        lblEmail = new javax.swing.JLabel();
+        txtEmail = new PlaceholderTextField("Email");
+        lblPassword = new javax.swing.JLabel();
+        pnlPassword = new PasswordFieldPanel("Password", UIHelper.SIGNUP_HALF_WIDTH);
+        lblConfirmPassword = new javax.swing.JLabel();
+        pnlConfirmPassword = new PasswordFieldPanel("Confirm Password", UIHelper.SIGNUP_HALF_WIDTH);
+        lblRole = new javax.swing.JLabel();
+        cmbRole = new javax.swing.JComboBox();
+        lblRoomNumber = new javax.swing.JLabel();
+        txtRoomNumber = new PlaceholderTextField("Room Number");
+        lblExpertise = new javax.swing.JLabel();
+        cmbExpertise = new javax.swing.JComboBox();
+        txtOtherExpertise = new PlaceholderTextField("e.g. Electrician, Plumber");
+        btnSignUp = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Create Account");
+
+        pnlScrollHost.setOpaque(false);
+
+        lblTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTitle.setText("Create Account");
+
+        lblFirstName.setText("First Name");
+
+        lblLastName.setText("Last Name");
+
+        lblUsername.setText("Username");
+
+        lblUserId.setText("User ID");
+
+        lblEmail.setText("Email");
+
+        lblPassword.setText("Password");
+
+        lblConfirmPassword.setText("Confirm Password");
+
+        lblRole.setText("Select Role");
+
+        cmbRole.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Select your role", "Student", "Staff" }));
+        cmbRole.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbRoleActionPerformed(evt);
+            }
+        });
+
+        lblRoomNumber.setText("Room Number");
+
+        lblExpertise.setText("Select Expertise");
+
+        cmbExpertise.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Select your expertise", "Electrician", "Plumber", "Furniture Tech", "Other" }));
+        cmbExpertise.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbExpertiseActionPerformed(evt);
+            }
+        });
+
+        btnSignUp.setText("Sign Up");
+        btnSignUp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSignUpActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlCardLayout = new javax.swing.GroupLayout(pnlCard);
+        pnlCard.setLayout(pnlCardLayout);
+        pnlCardLayout.setHorizontalGroup(
+            pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlCardLayout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTitle, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblUsername)
+                    .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblUserId)
+                    .addComponent(txtUserId, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblEmail)
+                    .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblRole)
+                    .addComponent(cmbRole, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblRoomNumber)
+                    .addComponent(txtRoomNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblExpertise)
+                    .addComponent(cmbExpertise, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtOtherExpertise, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSignUp, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(pnlCardLayout.createSequentialGroup()
+                        .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblFirstName)
+                            .addComponent(txtFirstName, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(16, 16, 16)
+                        .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblLastName)
+                            .addComponent(txtLastName, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(pnlCardLayout.createSequentialGroup()
+                        .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblPassword)
+                            .addComponent(pnlPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(16, 16, 16)
+                        .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblConfirmPassword)
+                            .addComponent(pnlConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(40, 40, 40))
+        );
+        pnlCardLayout.setVerticalGroup(
+            pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlCardLayout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addComponent(lblTitle)
+                .addGap(20, 20, 20)
+                .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblFirstName)
+                    .addComponent(lblLastName))
+                .addGap(6, 6, 6)
+                .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtFirstName, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtLastName, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addComponent(lblUsername)
+                .addGap(6, 6, 6)
+                .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(lblUserId)
+                .addGap(6, 6, 6)
+                .addComponent(txtUserId, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(lblEmail)
+                .addGap(6, 6, 6)
+                .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblPassword)
+                    .addComponent(lblConfirmPassword))
+                .addGap(6, 6, 6)
+                .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addComponent(lblRole)
+                .addGap(6, 6, 6)
+                .addComponent(cmbRole, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(lblRoomNumber)
+                .addGap(6, 6, 6)
+                .addComponent(txtRoomNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(lblExpertise)
+                .addGap(6, 6, 6)
+                .addComponent(cmbExpertise, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(txtOtherExpertise, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(16, 16, 16)
+                .addComponent(btnSignUp, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(40, 40, 40))
+        );
+
+        javax.swing.GroupLayout pnlScrollHostLayout = new javax.swing.GroupLayout(pnlScrollHost);
+        pnlScrollHost.setLayout(pnlScrollHostLayout);
+        pnlScrollHostLayout.setHorizontalGroup(
+            pnlScrollHostLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlScrollHostLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(pnlCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlScrollHostLayout.setVerticalGroup(
+            pnlScrollHostLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlScrollHostLayout.createSequentialGroup()
+                .addGap(32, 32, 32)
+                .addComponent(pnlCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32))
+        );
+
+        javax.swing.GroupLayout pnlBackgroundLayout = new javax.swing.GroupLayout(pnlBackground);
+        pnlBackground.setLayout(pnlBackgroundLayout);
+        pnlBackgroundLayout.setHorizontalGroup(
+            pnlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnlScrollHost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        pnlBackgroundLayout.setVerticalGroup(
+            pnlBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnlScrollHost, javax.swing.GroupLayout.PREFERRED_SIZE, 720, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnlBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnlBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
+            logger.log(java.util.logging.Level.SEVERE, null, ex);
+        }
+
+        UIHelper.initApplicationLook();
+        java.awt.EventQueue.invokeLater(() -> new SignUpFrame().setVisible(true));
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnSignUp;
+    private javax.swing.JComboBox cmbExpertise;
+    private javax.swing.JComboBox cmbRole;
+    private javax.swing.JLabel lblConfirmPassword;
+    private javax.swing.JLabel lblEmail;
+    private javax.swing.JLabel lblExpertise;
+    private javax.swing.JLabel lblFirstName;
+    private javax.swing.JLabel lblLastName;
+    private javax.swing.JLabel lblPassword;
+    private javax.swing.JLabel lblRole;
+    private javax.swing.JLabel lblRoomNumber;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JLabel lblUserId;
+    private javax.swing.JLabel lblUsername;
+    private studenthostelmaintenancerequest.trackingsystem.gui.common.GradientBackgroundPanel pnlBackground;
+    private javax.swing.JPanel pnlCard;
+    private PasswordFieldPanel pnlConfirmPassword;
+    private PasswordFieldPanel pnlPassword;
+    private javax.swing.JPanel pnlScrollHost;
+    private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtEmail;
+    private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtFirstName;
+    private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtLastName;
+    private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtOtherExpertise;
+    private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtRoomNumber;
+    private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtUserId;
+    private studenthostelmaintenancerequest.trackingsystem.gui.common.PlaceholderTextField txtUsername;
+    // End of variables declaration//GEN-END:variables
+}

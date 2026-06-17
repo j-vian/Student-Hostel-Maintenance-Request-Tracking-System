@@ -5,22 +5,22 @@
 package studenthostelmaintenancerequest.trackingsystem;
 
 /**
- *
  * @author vian
  */
 public class PlumbingRequest extends MaintenanceRequest {
-    //constructor
-    public PlumbingRequest(String requestId, String description, String priority) {
-        super(requestId, description, priority);
+
+    // construct object with initial state
+    public PlumbingRequest(String requestId, String description, String priority, Room room) {
+        super(requestId, description, priority, room);
     }
-    
-    //processRequest method - polymorphism
+
     @Override
+    // process business logic
     public void processRequest() {
         System.out.println("Processing Plumbing Request [ID: " + getRequestId() + "]");
         System.out.println("Issue: " + getDescription());
         System.out.println("Priority: " + getPriority());
-        System.out.println("Action: Dispatcing plumber to inspect and resolve the issue.");
-        System.out.println("Statust updated to: " + getStatus());
+        System.out.println("Action: Dispatching plumber to inspect and resolve the issue.");
+        System.out.println("Status updated to: " + getStatus());
     }
 }

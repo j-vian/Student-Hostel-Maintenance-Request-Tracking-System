@@ -5,17 +5,17 @@
 package studenthostelmaintenancerequest.trackingsystem;
 
 /**
- *
  * @author vian
  */
 public class ElectricalRequest extends MaintenanceRequest {
-    //constructor
-    public ElectricalRequest(String requestId, String description, String priority) {
-        super(requestId, description, priority);
+
+    // construct object with initial state
+    public ElectricalRequest(String requestId, String description, String priority, Room room) {
+        super(requestId, description, priority, room);
     }
-    
-    //processRequest method - polymorphism
+
     @Override
+    // process business logic
     public void processRequest() {
         System.out.println("Processing Electrical Request [ID: " + getRequestId() + "]");
         System.out.println("Issue: " + getDescription());
