@@ -9,11 +9,13 @@ package studenthostelmaintenancerequest.trackingsystem;
  */
 public class PlumbingRequest extends MaintenanceRequest {
 
+    // construct object with initial state
     public PlumbingRequest(String requestId, String description, String priority, Room room) {
         super(requestId, description, priority, room);
     }
 
     @Override
+    // process business logic
     public void processRequest() {
         System.out.println("Processing Plumbing Request [ID: " + getRequestId() + "]");
         System.out.println("Issue: " + getDescription());

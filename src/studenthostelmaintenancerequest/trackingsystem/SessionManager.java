@@ -5,11 +5,14 @@ package studenthostelmaintenancerequest.trackingsystem;
  */
 public final class SessionManager {
 
+    // instance fields for class state
     private static User currentUser;
 
+    // construct object with initial state
     private SessionManager() {
     }
 
+    // update object state
     public static void setCurrentUser(User user) {
         currentUser = user;
     }

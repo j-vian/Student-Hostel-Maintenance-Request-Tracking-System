@@ -16,6 +16,7 @@ import javax.swing.border.EmptyBorder;
 
 public final class ManagerUserMenu {
 
+    // construct frame and initialize UI
     private ManagerUserMenu() {
     }
 
@@ -43,6 +44,7 @@ public final class ManagerUserMenu {
         lblUserRole.addMouseListener(opener);
     }
 
+    // apply UI styling and setup
     private static void styleTrigger(JPanel trigger, JLabel lblUserName, JLabel lblUserRole, JButton chevron) {
         trigger.setOpaque(true);
         trigger.setBackground(AppColors.SURFACE);

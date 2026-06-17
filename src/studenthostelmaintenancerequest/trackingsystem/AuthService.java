@@ -12,8 +12,10 @@ import studenthostelmaintenancerequest.trackingsystem.gui.student.stdDashboard;
  */
 public final class AuthService {
 
+    // constants used by this class
     private static final DataAccess dataAccess = DatabaseHandler.getInstance();
 
+    // construct frame and initialize UI
     private AuthService() {
     }
 

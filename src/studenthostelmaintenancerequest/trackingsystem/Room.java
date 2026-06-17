@@ -11,16 +11,19 @@ package studenthostelmaintenancerequest.trackingsystem;
  */
 public class Room {
 
+    // instance fields for class state
     private int roomId;
     private String roomNumber;
     private String placeName;
     private MaintenanceRequest[] linkedRequests;
     private int requestCount;
 
+    // construct object with initial state
     public Room(String roomNumber, String placeName) {
         this(0, roomNumber, placeName);
     }
 
+    // construct object with initial state
     public Room(int roomId, String roomNumber, String placeName) {
         this.roomId = roomId;
         this.roomNumber = roomNumber;
@@ -29,6 +32,7 @@ public class Room {
         this.requestCount = 0;
     }
 
+    // return requested value
     public String getRoomDetails() {
         return "Room Number: " + roomNumber + ", Place: " + placeName;
     }

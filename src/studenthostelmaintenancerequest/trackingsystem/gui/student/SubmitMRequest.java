@@ -18,13 +18,16 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
  */
 public class SubmitMRequest extends javax.swing.JFrame {
 
+    // constants used by this class
     private static final int FORM_FIELD_WIDTH = 544;
 
+    // construct frame and initialize UI
     public SubmitMRequest() {
         initComponents();
         customizeForm();
     }
 
+    // apply UI styling and setup
     private void customizeForm() {
         Student student = StudentService.requireStudent(this);
         if (student == null) {

@@ -12,13 +12,16 @@ import javax.swing.text.AbstractDocument;
 
 public class PlaceholderTextField extends JTextField {
 
+    // instance fields for class state
     private final String placeholder;
 
     /** No-arg constructor required by the NetBeans Form Editor at design time. */
+    // construct frame and initialize UI
     public PlaceholderTextField() {
         this("Placeholder");
     }
 
+    // construct frame and initialize UI
     public PlaceholderTextField(String placeholder) {
         this.placeholder = placeholder;
         setOpaque(true);
@@ -35,6 +38,7 @@ public class PlaceholderTextField extends JTextField {
     }
 
     @Override
+    // process business logic
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (getText().isEmpty()) {

@@ -5,6 +5,7 @@ package studenthostelmaintenancerequest.trackingsystem;
  */
 public final class SignUpData {
 
+    // instance fields for class state
     private final String userId;
     private final String username;
     private final String firstName;
@@ -16,6 +17,7 @@ public final class SignUpData {
     private final String staffRole;
     private final String otherExpertise;
 
+    // construct object with initial state
     public SignUpData(String userId, String username, String firstName, String lastName,
             String email, String password, UserRole role, String roomNumber,
             String staffRole, String otherExpertise) {
@@ -31,6 +33,7 @@ public final class SignUpData {
         this.otherExpertise = otherExpertise;
     }
 
+    // return requested value
     public String getUserId() {
         return userId;
     }

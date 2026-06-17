@@ -11,8 +11,10 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.StatusBadgeLabe
 public final class RequestDisplayFormatter {
 
     private static final DateTimeFormatter DATE_FORMAT =
+            // process class operations
             DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH);
 
+    // construct object with initial state
     private RequestDisplayFormatter() {
     }
 

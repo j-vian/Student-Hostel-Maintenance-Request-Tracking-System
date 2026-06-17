@@ -19,11 +19,14 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
  */
 public class ManagerViewRoomFrame extends javax.swing.JFrame {
 
+    // logger for runtime diagnostics
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ManagerViewRoomFrame.class.getName());
 
+    // instance fields for class state
     private PlaceholderTextField txtSearch;
     private ManagerRoomInformationPanel pnlRoomInformation;
 
+    // construct frame and initialize UI
     public ManagerViewRoomFrame() {
         initComponents();
         customizeForm();

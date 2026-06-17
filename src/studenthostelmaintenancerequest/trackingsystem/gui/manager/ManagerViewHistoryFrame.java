@@ -21,8 +21,10 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.Manage
  */
 public class ManagerViewHistoryFrame extends javax.swing.JFrame {
 
+    // logger for runtime diagnostics
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ManagerViewHistoryFrame.class.getName());
 
+    // instance fields for class state
     private ManagerViewHistoryTableModel requestTableModel;
     private PlaceholderTextField txtSearch;
     private javax.swing.JLabel lblPagination;
@@ -34,6 +36,7 @@ public class ManagerViewHistoryFrame extends javax.swing.JFrame {
     private String filterPriority = "All";
     private String filterType = "All";
 
+    // construct frame and initialize UI
     public ManagerViewHistoryFrame() {
         initComponents();
         customizeForm();

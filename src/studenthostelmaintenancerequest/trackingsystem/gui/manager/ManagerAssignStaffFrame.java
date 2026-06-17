@@ -22,8 +22,10 @@ import javax.swing.table.TableCellEditor;
  */
 public class ManagerAssignStaffFrame extends javax.swing.JFrame {
 
+    // logger for runtime diagnostics
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ManagerAssignStaffFrame.class.getName());
 
+    // instance fields for class state
     private ManagerAssignStaffTableModel requestTableModel;
     private TableCellEditor staffCellEditor;
     private boolean staffEditMode;
@@ -38,6 +40,7 @@ public class ManagerAssignStaffFrame extends javax.swing.JFrame {
     private String filterType = "All";
     private String filterPriority = "All";
 
+    // construct frame and initialize UI
     public ManagerAssignStaffFrame() {
         initComponents();
         customizeForm();

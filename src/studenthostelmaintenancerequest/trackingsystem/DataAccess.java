@@ -5,6 +5,7 @@ package studenthostelmaintenancerequest.trackingsystem;
  */
 public interface DataAccess {
 
+    // process class operations
     boolean testConnection();
 
     User authenticate(String email, String plainPassword) throws DatabaseException;
@@ -20,6 +21,7 @@ public interface DataAccess {
     String generateNextRequestId() throws DatabaseException;
 
     void insertRequest(MaintenanceRequest request, String studentId, int roomId, String changedBy)
+            // data variables
             throws DatabaseException;
 
     void updateRequestStatus(String requestId, Status newStatus, String changedBy)

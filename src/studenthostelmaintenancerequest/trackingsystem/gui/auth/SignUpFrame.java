@@ -18,9 +18,12 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
  */
 public class SignUpFrame extends javax.swing.JFrame {
 
+    // logger for runtime diagnostics
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(SignUpFrame.class.getName());
+    // UI component and state fields
     private javax.swing.JScrollPane scrollMain;
 
+    // construct frame and initialize UI
     public SignUpFrame() {
         initComponents();
         customizeForm();

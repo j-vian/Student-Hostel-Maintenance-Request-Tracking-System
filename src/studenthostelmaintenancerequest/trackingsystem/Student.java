@@ -11,10 +11,12 @@ package studenthostelmaintenancerequest.trackingsystem;
  */
 public class Student extends User {
 
+    // instance fields for class state
     private Room room;
     private MaintenanceRequest[] requests;
     private int count;
 
+    // construct object with initial state
     public Student(String userId, String username, String firstName, String lastName,
             String email, String password, Room room) {
         super(userId, username, firstName, lastName, email, password, UserRole.STUDENT);
@@ -26,12 +28,14 @@ public class Student extends User {
     /**
      * Legacy constructor for the Phase II console application.
      */
+    // construct object with initial state
     public Student(String userId, String fullName, String email, Room room) {
         this(userId, fullName.toLowerCase().replace(" ", ""), fullName, "",
                 email, "", room);
     }
 
     @Override
+    // process business logic
     public void login() {
         System.out.println("Student " + getFullName() + " (ID: " + getUserId() + ") logged in.");
     }

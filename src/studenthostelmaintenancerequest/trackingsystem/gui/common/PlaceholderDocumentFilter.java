@@ -23,6 +23,7 @@ class PlaceholderDocumentFilter extends DocumentFilter {
     }
 
     @Override
+    // remove data and update state
     public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
         super.remove(fb, offset, length);
     }

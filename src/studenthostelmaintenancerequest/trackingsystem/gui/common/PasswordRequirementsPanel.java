@@ -6,6 +6,7 @@ import javax.swing.JPanel;
 
 public class PasswordRequirementsPanel extends JPanel {
 
+    // construct frame and initialize UI
     public PasswordRequirementsPanel() {
         JPanel requirements = UIHelper.createRequirementsPanel();
         setOpaque(false);

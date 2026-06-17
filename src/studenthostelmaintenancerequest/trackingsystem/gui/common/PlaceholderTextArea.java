@@ -11,12 +11,15 @@ import javax.swing.event.DocumentListener;
 
 public class PlaceholderTextArea extends JTextArea {
 
+    // instance fields for class state
     private final String placeholder;
 
+    // construct frame and initialize UI
     public PlaceholderTextArea() {
         this("Placeholder");
     }
 
+    // construct frame and initialize UI
     public PlaceholderTextArea(String placeholder) {
         this.placeholder = placeholder;
         setOpaque(true);
@@ -45,6 +48,7 @@ public class PlaceholderTextArea extends JTextArea {
     }
 
     @Override
+    // process business logic
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (getText().isEmpty()) {

@@ -16,13 +16,17 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
  */
 public class SetNewPasswordFrame extends javax.swing.JFrame {
 
+    // logger for runtime diagnostics
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(SetNewPasswordFrame.class.getName());
+    // instance fields for class state
     private final String resetEmail;
 
+    // construct frame and initialize UI
     public SetNewPasswordFrame() {
         this(null);
     }
 
+    // construct frame and initialize UI
     public SetNewPasswordFrame(String resetEmail) {
         this.resetEmail = resetEmail;
         initComponents();

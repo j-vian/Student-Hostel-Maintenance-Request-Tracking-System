@@ -18,7 +18,9 @@ import java.util.List;
  */
 public class DatabaseHandler implements DataAccess {
 
+    // instance fields for class state
     private static DatabaseHandler instance;
+    // instance fields for class state
     private final MaintenanceFactory requestFactory = new MaintenanceFactory();
     /** Placeholder until the student submits a request with the actual place name. */
     private static final String STUDENT_REGISTRATION_PLACE = "TBD";

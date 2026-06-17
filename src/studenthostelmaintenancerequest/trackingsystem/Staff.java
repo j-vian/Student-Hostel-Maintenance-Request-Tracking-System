@@ -11,10 +11,12 @@ package studenthostelmaintenancerequest.trackingsystem;
  */
 public class Staff extends User {
 
+    // instance fields for class state
     private String staffRole;
     private MaintenanceRequest[] assignedRequests;
     private int count;
 
+    // construct object with initial state
     public Staff(String userId, String username, String firstName, String lastName,
             String email, String password, String staffRole) {
         super(userId, username, firstName, lastName, email, password, UserRole.STAFF);
@@ -26,12 +28,14 @@ public class Staff extends User {
     /**
      * Legacy constructor for the Phase II console application.
      */
+    // construct object with initial state
     public Staff(String userId, String fullName, String email, String staffRole) {
         this(userId, fullName.toLowerCase().replace(" ", ""), fullName, "",
                 email, "", staffRole);
     }
 
     @Override
+    // process business logic
     public void login() {
         System.out.println("Staff " + getFullName() + " (ID: " + getUserId() + ", Role: "
                 + staffRole + ") logged in.");

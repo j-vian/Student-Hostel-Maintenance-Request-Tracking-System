@@ -4,12 +4,14 @@ import java.awt.Color;
 
 public final class AppColors {
 
+    // constants used by this class
     public static final Color PRIMARY = color("0D5C63");
     public static final Color LABEL = color("1A1C1C");
     public static final Color PLACEHOLDER = color("707979");
     public static final Color BACKGROUND = color("F9F9F6");
     public static final Color INPUT_FILL = color("F9F9F6");
     public static final Color BORDER = color("DADAD7");
+    // constants used by this class
     public static final Color GRID_LINE = Color.BLACK;
     public static final Color CARD = Color.WHITE;
     public static final Color BUTTON_TEXT = Color.WHITE;
@@ -39,6 +41,7 @@ public final class AppColors {
     public static final Color STATUS_IN_PROGRESS_BG = color("FFE7D1");
     public static final Color STATUS_COMPLETED_BG = color("D1FADF");
 
+    // construct frame and initialize UI
     private AppColors() {
     }
 

@@ -13,9 +13,11 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
  */
 public final class StaffService {
 
+    // constants used by this class
     private static final DataAccess dataAccess = DatabaseHandler.getInstance();
     private static final MaintenanceManager manager = new MaintenanceManager();
 
+    // construct frame and initialize UI
     private StaffService() {
     }
 

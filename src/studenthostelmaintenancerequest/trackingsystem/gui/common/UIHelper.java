@@ -43,6 +43,7 @@ import javax.swing.border.LineBorder;
 
 public final class UIHelper {
 
+    // constants used by this class
     public static final int FRAME_WIDTH = 1100;
     public static final int FRAME_HEIGHT = 720;
 
@@ -65,9 +66,11 @@ public final class UIHelper {
     public static final int MANAGER_SEARCH_HEIGHT = 36;
     public static final int DESCRIPTION_PREVIEW_MAX_LENGTH = 40;
 
+    // construct frame and initialize UI
     private UIHelper() {
     }
 
+    // process business logic
     public static String truncateDescriptionForDisplay(String description) {
         if (description == null) {
             return "";

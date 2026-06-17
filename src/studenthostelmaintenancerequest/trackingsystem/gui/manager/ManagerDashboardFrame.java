@@ -19,8 +19,10 @@ import javax.swing.JLabel;
  */
 public class ManagerDashboardFrame extends javax.swing.JFrame {
 
+    // logger for runtime diagnostics
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ManagerDashboardFrame.class.getName());
 
+    // construct frame and initialize UI
     public ManagerDashboardFrame() {
         initComponents();
         customizeForm();
@@ -351,6 +353,7 @@ public class ManagerDashboardFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    // UI component and state fields
     private javax.swing.JButton btnUserMenu;
     private ManagerNavButton btnNavAssignStaff;
     private ManagerNavButton btnNavDashboard;

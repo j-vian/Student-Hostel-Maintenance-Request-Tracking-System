@@ -5,12 +5,14 @@ package studenthostelmaintenancerequest.trackingsystem;
  */
 public class HostelAdmin extends User {
 
+    // construct object with initial state
     public HostelAdmin(String userId, String username, String firstName, String lastName,
             String email, String password) {
         super(userId, username, firstName, lastName, email, password, UserRole.MANAGER);
     }
 
     @Override
+    // process business logic
     public void login() {
         System.out.println("Manager " + getFullName() + " (ID: " + getUserId() + ") logged in.");
     }

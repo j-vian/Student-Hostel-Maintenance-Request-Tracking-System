@@ -16,15 +16,18 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
  */
 public class ViewRoomDetails extends javax.swing.JFrame {
 
+    // instance fields for class state
     private Staff staff;
     private PlaceholderTextField txtSearch;
     private ManagerRoomInformationPanel pnlRoomInformation;
 
+    // construct frame and initialize UI
     public ViewRoomDetails() {
         initComponents();
         customizeForm();
     }
 
+    // apply UI styling and setup
     private void customizeForm() {
         staff = StaffService.requireStaff(this);
         if (staff == null) {

@@ -18,6 +18,7 @@ import javax.swing.border.LineBorder;
 
 public class ManagerRoomInformationPanel extends JPanel {
 
+    // constants used by this class
     private static final int CARD_HEIGHT = 300;
     private static final int ROW_HEIGHT = 118;
 
@@ -27,6 +28,7 @@ public class ManagerRoomInformationPanel extends JPanel {
     private final JLabel lblStudentName;
     private final JLabel lblRequestType;
 
+    // construct frame and initialize UI
     public ManagerRoomInformationPanel() {
         setLayout(new BorderLayout());
         setOpaque(false);
@@ -94,6 +96,7 @@ public class ManagerRoomInformationPanel extends JPanel {
         setVisible(true);
     }
 
+    // process business logic
     public void clearDetails() {
         setVisible(false);
         setPreferredSize(new Dimension(0, 0));

@@ -4,6 +4,7 @@ import java.awt.Font;
 
 public final class AppFonts {
 
+    // constants used by this class
     public static final int HEADER_SIZE = 28;
     public static final int LOGIN_HEADER_SIZE = 24;
     public static final int LABEL_SIZE = 14;
@@ -20,9 +21,11 @@ public final class AppFonts {
     public static final int TABLE_SECTION_SIZE = 16;
     public static final int STATUS_BADGE_SIZE = 12;
 
+    // construct frame and initialize UI
     private AppFonts() {
     }
 
+    // process business logic
     public static String family() {
         return FontLoader.family();
     }

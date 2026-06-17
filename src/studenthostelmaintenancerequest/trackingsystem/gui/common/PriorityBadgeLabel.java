@@ -9,15 +9,18 @@ import javax.swing.border.EmptyBorder;
 public class PriorityBadgeLabel extends JLabel {
 
     /** No-arg constructor required by the NetBeans Form Editor at design time. */
+    // construct frame and initialize UI
     public PriorityBadgeLabel() {
         this("Medium");
     }
 
+    // construct frame and initialize UI
     public PriorityBadgeLabel(String priority) {
         super(formatPriority(priority));
         applyPriorityStyle(priority);
     }
 
+    // process business logic
     public static String formatPriority(String priority) {
         if (priority == null) {
             return "";

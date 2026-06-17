@@ -13,13 +13,16 @@ import javax.swing.border.LineBorder;
  */
 public class StaffDropdownPanel extends JPanel {
 
+    // constants used by this class
     private static final int PANEL_WIDTH = 168;
     private static final int PANEL_HEIGHT = 30;
 
+    // construct frame and initialize UI
     public StaffDropdownPanel(String staffName, boolean notAssigned) {
         this(staffName, notAssigned, true);
     }
 
+    // construct frame and initialize UI
     public StaffDropdownPanel(String staffName, boolean notAssigned, boolean includeArrow) {
         setLayout(new BorderLayout());
         setOpaque(true);

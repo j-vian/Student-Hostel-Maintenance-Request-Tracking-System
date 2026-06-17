@@ -14,16 +14,19 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.StaffA
  */
 public class staffDashboard extends javax.swing.JFrame {
 
+    // instance fields for class state
     private StaffActiveRequestTableModel activeTableModel;
     private JLabel lblActivePagination;
     private javax.swing.JButton btnActivePrevious;
     private javax.swing.JButton btnActiveNext;
 
+    // construct frame and initialize UI
     public staffDashboard() {
         initComponents();
         customizeForm();
     }
 
+    // apply UI styling and setup
     private void customizeForm() {
         Staff staff = StaffService.requireStaff(this);
         if (staff == null) {

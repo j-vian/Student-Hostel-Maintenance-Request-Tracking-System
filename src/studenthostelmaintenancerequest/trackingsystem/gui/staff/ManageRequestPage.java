@@ -19,6 +19,7 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.StaffM
  */
 public class ManageRequestPage extends javax.swing.JFrame {
 
+    // instance fields for class state
     private Staff staff;
     private StaffManageRequestTableModel requestTableModel;
     private TableCellEditor statusCellEditor;
@@ -31,11 +32,13 @@ public class ManageRequestPage extends javax.swing.JFrame {
     private Object[][] allManageRows = new Object[0][0];
     private String filterPriority = "All";
 
+    // construct frame and initialize UI
     public ManageRequestPage() {
         initComponents();
         customizeForm();
     }
 
+    // apply UI styling and setup
     private void customizeForm() {
         staff = StaffService.requireStaff(this);
         if (staff == null) {

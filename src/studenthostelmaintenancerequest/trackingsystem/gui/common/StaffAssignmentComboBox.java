@@ -11,10 +11,12 @@ import javax.swing.border.LineBorder;
 
 public class StaffAssignmentComboBox extends JComboBox<String> {
 
+    // construct frame and initialize UI
     public StaffAssignmentComboBox() {
         this(new String[0]);
     }
 
+    // construct frame and initialize UI
     public StaffAssignmentComboBox(String[] staffOptions) {
         super(staffOptions == null ? new String[0] : staffOptions);
         setFont(AppFonts.body());
@@ -23,6 +25,7 @@ public class StaffAssignmentComboBox extends JComboBox<String> {
         setRenderer(new StaffListCellRenderer());
     }
 
+    // update object state
     public void setSelectedStaff(String staff) {
         if (staff == null || staff.isBlank()) {
             if (getItemCount() > 0) {

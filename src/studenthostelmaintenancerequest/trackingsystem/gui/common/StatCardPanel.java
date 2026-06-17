@@ -9,14 +9,17 @@ import javax.swing.border.EmptyBorder;
 
 public class StatCardPanel extends JPanel {
 
+    // UI component and state fields
     private final JLabel lblTitle;
     private final JLabel lblCount;
 
     /** No-arg constructor required by the NetBeans Form Editor at design time. */
+    // construct frame and initialize UI
     public StatCardPanel() {
         this("Total Requests", "0", AppColors.STAT_TOTAL_HEADER, AppColors.STAT_TOTAL_BODY);
     }
 
+    // construct frame and initialize UI
     public StatCardPanel(String title, String count, Color headerBg, Color bodyBg) {
         setLayout(new BorderLayout());
         setOpaque(false);
@@ -43,6 +46,7 @@ public class StatCardPanel extends JPanel {
         add(body, BorderLayout.CENTER);
     }
 
+    // return requested value
     public JLabel getTitleLabel() {
         return lblTitle;
     }

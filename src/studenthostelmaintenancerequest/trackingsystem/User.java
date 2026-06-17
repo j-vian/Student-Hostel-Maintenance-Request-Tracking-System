@@ -11,6 +11,7 @@ package studenthostelmaintenancerequest.trackingsystem;
  */
 public abstract class User implements Authenticatable {
 
+    // instance fields for class state
     private String userId;
     private String username;
     private String firstName;
@@ -19,6 +20,7 @@ public abstract class User implements Authenticatable {
     private String password;
     private UserRole role;
 
+    // construct object with initial state
     public User(String userId, String username, String firstName, String lastName,
             String email, String password, UserRole role) {
         this.userId = userId;
@@ -33,10 +35,12 @@ public abstract class User implements Authenticatable {
     /**
      * Legacy constructor for the Phase II console application.
      */
+    // construct object with initial state
     protected User(String userId, String fullName, String email) {
         this(userId, fullName.toLowerCase().replace(" ", ""), fullName, "", email, "", UserRole.STUDENT);
     }
 
+    // process business logic
     public void login() {
         System.out.println(getFullName() + " (ID: " + userId + ") has logged in.");
     }

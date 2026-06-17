@@ -5,6 +5,7 @@ package studenthostelmaintenancerequest.trackingsystem;
  */
 public final class DatabaseConfig {
 
+    // constants used by this class
     public static final String HOST = "localhost";
     public static final int PORT = 3306;
     public static final String DATABASE = "hostel_maintenance_db";
@@ -16,6 +17,7 @@ public final class DatabaseConfig {
 
     public static final String ADMIN_EMAIL_DOMAIN = "@admin.com.my";
 
+    // construct object with initial state
     private DatabaseConfig() {
     }
 }

@@ -17,8 +17,10 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
  */
 public class LoginFrame extends javax.swing.JFrame {
 
+    // logger for runtime diagnostics
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(LoginFrame.class.getName());
 
+    // construct frame and initialize UI
     public LoginFrame() {
         initComponents();
         customizeForm();
@@ -208,6 +210,7 @@ public class LoginFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    // UI component and state fields
     private javax.swing.JButton btnLogin;
     private javax.swing.JLabel lblEmail;
     private javax.swing.JLabel lblForgotPassword;

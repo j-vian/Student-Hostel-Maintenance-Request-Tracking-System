@@ -15,8 +15,10 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
  */
 public class ForgotPasswordFrame extends javax.swing.JFrame {
 
+    // logger for runtime diagnostics
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ForgotPasswordFrame.class.getName());
 
+    // construct frame and initialize UI
     public ForgotPasswordFrame() {
         initComponents();
         customizeForm();
@@ -175,6 +177,7 @@ public class ForgotPasswordFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    // UI component and state fields
     private javax.swing.JButton btnVerify;
     private javax.swing.JLabel lblEmail;
     private javax.swing.JLabel lblInstruction1;

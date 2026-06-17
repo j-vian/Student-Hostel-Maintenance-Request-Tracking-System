@@ -12,6 +12,7 @@ import javax.swing.border.EmptyBorder;
 
 public class CardPanel extends JPanel {
 
+    // constants used by this class
     private static final int SHADOW_OFFSET = 4;
     private static final int SHADOW_BLUR = 14;
     private static final int CORNER_RADIUS = 10;
@@ -21,6 +22,7 @@ public class CardPanel extends JPanel {
     private final JPanel body;
     private final int contentWidth;
 
+    // construct frame and initialize UI
     public CardPanel(int contentWidth) {
         this.contentWidth = contentWidth;
         setOpaque(false);
@@ -36,6 +38,7 @@ public class CardPanel extends JPanel {
         add(body);
     }
 
+    // return requested value
     public JPanel getBody() {
         return body;
     }

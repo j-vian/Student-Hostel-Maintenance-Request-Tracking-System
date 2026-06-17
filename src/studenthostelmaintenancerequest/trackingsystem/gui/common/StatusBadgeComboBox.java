@@ -10,8 +10,10 @@ import javax.swing.border.LineBorder;
 
 public class StatusBadgeComboBox extends JComboBox<String> {
 
+    // constants used by this class
     private static final String[] MANAGER_STATUS_OPTIONS = {"IN PROGRESS", "COMPLETED", "CANCELLED"};
 
+    // construct frame and initialize UI
     public StatusBadgeComboBox() {
         super(MANAGER_STATUS_OPTIONS);
         setFont(AppFonts.statusBadge());
@@ -20,6 +22,7 @@ public class StatusBadgeComboBox extends JComboBox<String> {
         setRenderer(new StatusBadgeListCellRenderer());
     }
 
+    // update object state
     public void setSelectedStatus(String status) {
         String normalized = StatusBadgeLabel.formatStatus(status);
         for (int i = 0; i < getItemCount(); i++) {

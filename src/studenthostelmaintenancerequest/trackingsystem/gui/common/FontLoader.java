@@ -10,7 +10,9 @@ import java.util.logging.Logger;
 
 final class FontLoader {
 
+    // logger for runtime diagnostics
     private static final Logger LOGGER = Logger.getLogger(FontLoader.class.getName());
+    // constants used by this class
     private static final String FAMILY = "Hanken Grotesk";
     private static Font regular;
     private static Font bold;
@@ -27,6 +29,7 @@ final class FontLoader {
         }
     }
 
+    // construct frame and initialize UI
     private FontLoader() {
     }
 

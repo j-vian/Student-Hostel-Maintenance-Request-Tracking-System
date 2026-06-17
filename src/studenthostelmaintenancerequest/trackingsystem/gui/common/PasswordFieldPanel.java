@@ -6,17 +6,21 @@ import javax.swing.JPanel;
 
 public class PasswordFieldPanel extends JPanel {
 
+    // instance fields for class state
     private final PlaceholderPasswordField passwordField;
 
     /** No-arg constructor required by the NetBeans Form Editor at design time. */
+    // construct frame and initialize UI
     public PasswordFieldPanel() {
         this("Placeholder");
     }
 
+    // construct frame and initialize UI
     public PasswordFieldPanel(String placeholder) {
         this(placeholder, UIHelper.FIELD_WIDTH);
     }
 
+    // construct frame and initialize UI
     public PasswordFieldPanel(String placeholder, int width) {
         passwordField = new PlaceholderPasswordField(placeholder);
         JPanel container = UIHelper.createPasswordWithToggle(passwordField, width);
@@ -29,6 +33,7 @@ public class PasswordFieldPanel extends JPanel {
         setMaximumSize(size);
     }
 
+    // return requested value
     public PlaceholderPasswordField getPasswordField() {
         return passwordField;
     }

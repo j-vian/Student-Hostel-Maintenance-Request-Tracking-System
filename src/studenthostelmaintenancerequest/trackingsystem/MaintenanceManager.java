@@ -12,14 +12,17 @@ package studenthostelmaintenancerequest.trackingsystem;
  */
 public class MaintenanceManager {
 
+    // instance fields for class state
     private MaintenanceRequest[] requests;
     private int count;
 
+    // construct object with initial state
     public MaintenanceManager() {
         this.requests = new MaintenanceRequest[100];
         this.count = 0;
     }
 
+    // process business logic
     public void addRequest(MaintenanceRequest request) {
         if (count < requests.length) {
             requests[count] = request;

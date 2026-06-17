@@ -14,16 +14,19 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.Studen
  */
 public class stdDashboard extends javax.swing.JFrame {
 
+    // instance fields for class state
     private StudentActiveRequestTableModel activeTableModel;
     private JLabel lblActivePagination;
     private javax.swing.JButton btnActivePrevious;
     private javax.swing.JButton btnActiveNext;
 
+    // construct frame and initialize UI
     public stdDashboard() {
         initComponents();
         customizeForm();
     }
 
+    // apply UI styling and setup
     private void customizeForm() {
         Student student = StudentService.requireStudent(this);
         if (student == null) {

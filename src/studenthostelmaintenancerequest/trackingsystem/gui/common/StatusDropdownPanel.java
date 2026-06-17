@@ -16,9 +16,11 @@ import javax.swing.border.LineBorder;
  */
 public class StatusDropdownPanel extends JPanel {
 
+    // constants used by this class
     private static final int PANEL_WIDTH = 148;
     private static final int PANEL_HEIGHT = 30;
 
+    // construct frame and initialize UI
     public StatusDropdownPanel(String status) {
         this(status, true);
     }
@@ -27,6 +29,7 @@ public class StatusDropdownPanel extends JPanel {
      * @param includeArrow when false, only the badge area is shown (for use inside JComboBox
      *                     where the LAF draws the arrow button separately)
      */
+    // construct frame and initialize UI
     public StatusDropdownPanel(String status, boolean includeArrow) {
         setLayout(new BorderLayout());
         setOpaque(true);
@@ -54,6 +57,7 @@ public class StatusDropdownPanel extends JPanel {
         setMaximumSize(size);
     }
 
+    // create and return configured object
     static JComponent createDropdownArrow() {
         JComponent arrow = new JComponent() {
             @Override

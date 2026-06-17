@@ -22,8 +22,10 @@ import javax.swing.table.TableCellEditor;
  */
 public class ManagerManageRequestFrame extends javax.swing.JFrame {
 
+    // logger for runtime diagnostics
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ManagerManageRequestFrame.class.getName());
 
+    // instance fields for class state
     private ManagerManageRequestTableModel requestTableModel;
     private TableCellEditor statusCellEditor;
     private boolean statusEditMode;
@@ -38,6 +40,7 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
     private String filterPriority = "All";
     private String[] staffFilterOptions = new String[]{"All"};
 
+    // construct frame and initialize UI
     public ManagerManageRequestFrame() {
         initComponents();
         customizeForm();

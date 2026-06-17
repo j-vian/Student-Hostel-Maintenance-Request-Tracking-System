@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
  */
 public abstract class MaintenanceRequest {
 
+    // instance fields for class state
     private String requestId;
     private String description;
     private String priority;
@@ -21,6 +22,7 @@ public abstract class MaintenanceRequest {
     private RequestHistory history;
     private LocalDateTime dateRaised;
 
+    // construct object with initial state
     public MaintenanceRequest(String requestId, String description, String priority, Room room) {
         this.requestId = requestId;
         this.description = description;
@@ -35,6 +37,7 @@ public abstract class MaintenanceRequest {
         history.recordStatus(Status.SUBMITTED);
     }
 
+    // instance fields for class state
     public abstract void processRequest();
 
     public void displayDetails() {

@@ -10,12 +10,14 @@ import javax.swing.JPanel;
 
 public class GradientBackgroundPanel extends JPanel {
 
+    // construct frame and initialize UI
     public GradientBackgroundPanel() {
         setOpaque(true);
         setBackground(AppColors.GRADIENT_LIGHT_CYAN);
     }
 
     @Override
+    // process business logic
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

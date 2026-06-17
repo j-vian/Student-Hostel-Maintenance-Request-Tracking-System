@@ -12,10 +12,12 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper;
  */
 public final class StudentService {
 
+    // constants used by this class
     private static final DataAccess dataAccess = DatabaseHandler.getInstance();
     private static final MaintenanceFactory factory = new MaintenanceFactory();
     private static final MaintenanceManager manager = new MaintenanceManager();
 
+    // construct frame and initialize UI
     private StudentService() {
     }
 

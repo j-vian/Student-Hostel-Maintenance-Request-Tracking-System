@@ -19,6 +19,7 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.Studen
  */
 public class studRHistory extends javax.swing.JFrame {
 
+    // instance fields for class state
     private PlaceholderTextField txtSearch;
     private StudentHistoryTableModel historyTableModel;
     private JLabel lblPagination;
@@ -29,11 +30,13 @@ public class studRHistory extends javax.swing.JFrame {
     private String filterStatus = "All";
     private String filterType = "All";
 
+    // construct frame and initialize UI
     public studRHistory() {
         initComponents();
         customizeForm();
     }
 
+    // apply UI styling and setup
     private void customizeForm() {
         Student student = StudentService.requireStudent(this);
         if (student == null) {

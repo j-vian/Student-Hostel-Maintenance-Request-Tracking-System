@@ -5,6 +5,7 @@ package studenthostelmaintenancerequest.trackingsystem;
  */
 public interface Authenticatable {
 
+    // process class operations
     String getEmail();
 
     boolean checkPassword(String plainPassword);

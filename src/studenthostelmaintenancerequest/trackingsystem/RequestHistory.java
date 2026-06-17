@@ -13,6 +13,7 @@ import java.util.Arrays;
  */
 public class RequestHistory {
 
+    // instance fields for class state
     private String historyId;
     private String statusChanges;
     private MaintenanceRequest request;
@@ -20,6 +21,7 @@ public class RequestHistory {
     private String[] historyLog;
     private int logCount;
 
+    // construct object with initial state
     public RequestHistory(String historyId, String statusChanges, MaintenanceRequest request) {
         this.historyId = historyId;
         this.statusChanges = statusChanges.trim();
@@ -29,6 +31,7 @@ public class RequestHistory {
         this.logCount = 0;
     }
 
+    // process business logic
     public void recordStatus(Status newStatus) {
         String statusLabel = newStatus.toString().toUpperCase();
         String logEntry = "Request [" + request.getRequestId() + "] status changed to: " + statusLabel;

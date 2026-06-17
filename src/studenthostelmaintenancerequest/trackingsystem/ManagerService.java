@@ -13,10 +13,12 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.StatusBadgeLabe
 public final class ManagerService {
 
     private static final DateTimeFormatter DATE_FORMAT =
+            // process class operations
             DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH);
 
     private static final DataAccess DATA_ACCESS = DatabaseHandler.getInstance();
 
+    // construct object with initial state
     private ManagerService() {
     }
 

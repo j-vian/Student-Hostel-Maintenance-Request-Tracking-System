@@ -12,14 +12,17 @@ import javax.swing.text.AbstractDocument;
 
 public class PlaceholderPasswordField extends JPasswordField {
 
+    // instance fields for class state
     private final String placeholder;
     private boolean passwordVisible;
 
     /** No-arg constructor required by the NetBeans Form Editor at design time. */
+    // construct frame and initialize UI
     public PlaceholderPasswordField() {
         this("Placeholder");
     }
 
+    // construct frame and initialize UI
     public PlaceholderPasswordField(String placeholder) {
         this.placeholder = placeholder;
         setOpaque(true);
@@ -36,6 +39,7 @@ public class PlaceholderPasswordField extends JPasswordField {
     }
 
     @Override
+    // process business logic
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (getPassword().length == 0) {

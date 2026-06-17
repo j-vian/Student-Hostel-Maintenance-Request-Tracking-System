@@ -10,16 +10,19 @@ import javax.swing.border.EmptyBorder;
 
 public class ManagerNavButton extends JButton {
 
+    // constants used by this class
     private static final int HORIZONTAL_INSET = 12;
     private static final int VERTICAL_GAP = 4;
 
     private boolean active;
 
     /** No-arg constructor required by the NetBeans Form Editor at design time. */
+    // construct frame and initialize UI
     public ManagerNavButton() {
         this("Menu");
     }
 
+    // construct frame and initialize UI
     public ManagerNavButton(String text) {
         super(text);
         setFont(AppFonts.bodyBold());
@@ -34,6 +37,7 @@ public class ManagerNavButton extends JButton {
         setAlignmentX(javax.swing.JComponent.LEFT_ALIGNMENT);
     }
 
+    // update object state
     public void setActive(boolean active) {
         this.active = active;
         setForeground(active ? AppColors.PRIMARY : AppColors.LABEL);

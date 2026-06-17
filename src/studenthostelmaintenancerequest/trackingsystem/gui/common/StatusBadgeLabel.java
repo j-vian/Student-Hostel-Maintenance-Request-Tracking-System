@@ -9,15 +9,18 @@ import javax.swing.border.EmptyBorder;
 public class StatusBadgeLabel extends JLabel {
 
     /** No-arg constructor required by the NetBeans Form Editor at design time. */
+    // construct frame and initialize UI
     public StatusBadgeLabel() {
         this("SUBMITTED");
     }
 
+    // construct frame and initialize UI
     public StatusBadgeLabel(String status) {
         super(formatStatus(status));
         applyStatusStyle(status);
     }
 
+    // process business logic
     public static String formatStatus(String status) {
         if (status == null) {
             return "";

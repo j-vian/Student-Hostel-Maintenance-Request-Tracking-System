@@ -18,6 +18,7 @@ import studenthostelmaintenancerequest.trackingsystem.gui.common.UIHelper.Studen
  */
 public class viewRequestHistoryPage extends javax.swing.JFrame {
 
+    // instance fields for class state
     private PlaceholderTextField txtSearch;
     private StudentHistoryTableModel historyTableModel;
     private JLabel lblPagination;
@@ -27,11 +28,13 @@ public class viewRequestHistoryPage extends javax.swing.JFrame {
     private Object[][] allHistoryRows = new Object[0][0];
     private String filterPriority = "All";
 
+    // construct frame and initialize UI
     public viewRequestHistoryPage() {
         initComponents();
         customizeForm();
     }
 
+    // apply UI styling and setup
     private void customizeForm() {
         Staff staff = StaffService.requireStaff(this);
         if (staff == null) {
