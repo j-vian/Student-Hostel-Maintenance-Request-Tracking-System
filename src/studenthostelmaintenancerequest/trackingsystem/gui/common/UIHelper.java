@@ -18,15 +18,19 @@ import java.util.List;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -1157,8 +1161,23 @@ public final class UIHelper {
         button.setEnabled(true);
     }
 
+    public static void styleManagerDeleteButton(JButton button) {
+        styleManagerToolbarButton(button, 120);
+        button.setForeground(AppColors.BUTTON_TEXT);
+        button.setBackground(AppColors.DANGER);
+        button.setBorder(new CompoundBorder(
+                new LineBorder(AppColors.DANGER, 1, true),
+                new EmptyBorder(6, 14, 6, 14)));
+    }
+
     public static void layoutManagerManageRequestToolbar(
             JPanel toolbar, JPanel searchField, JButton btnFilter, JButton btnAction) {
+        layoutManagerManageRequestToolbar(toolbar, searchField, btnFilter, null, btnAction);
+    }
+
+    public static void layoutManagerManageRequestToolbar(
+            JPanel toolbar, JPanel searchField, JButton btnFilter,
+            JButton btnDelete, JButton btnAction) {
 
         toolbar.removeAll();
         toolbar.setLayout(new javax.swing.BoxLayout(toolbar, javax.swing.BoxLayout.Y_AXIS));
@@ -1171,14 +1190,126 @@ public final class UIHelper {
         topRow.add(searchField, BorderLayout.CENTER);
         topRow.add(btnFilter, BorderLayout.EAST);
 
-        JPanel bottomRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        JPanel bottomRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         bottomRow.setOpaque(false);
         bottomRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+        if (btnDelete != null) {
+            bottomRow.add(btnDelete);
+        }
         bottomRow.add(btnAction);
 
         toolbar.add(topRow);
         toolbar.add(javax.swing.Box.createVerticalStrut(10));
         toolbar.add(bottomRow);
+    }
+
+    public static String getSelectedTableRequestId(JTable table, int requestIdColumn) {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow < 0) {
+            return null;
+        }
+        int modelRow = table.convertRowIndexToModel(selectedRow);
+        Object value = table.getModel().getValueAt(modelRow, requestIdColumn);
+        if (value == null) {
+            return null;
+        }
+        String requestId = String.valueOf(value).trim();
+        return requestId.isEmpty() ? null : requestId;
+    }
+
+    public static String showDeleteRequestPickerDialog(java.awt.Component parent, String title,
+            Object[][] rows, int statusColumnIndex) {
+        if (rows == null || rows.length == 0) {
+            JOptionPane.showMessageDialog(parent,
+                    "There are no requests available to delete.",
+                    title,
+                    JOptionPane.INFORMATION_MESSAGE);
+            return null;
+        }
+
+        DefaultListModel<String> listModel = new DefaultListModel<>();
+        String[] requestIds = new String[rows.length];
+        for (int i = 0; i < rows.length; i++) {
+            requestIds[i] = String.valueOf(rows[i][0]).trim();
+            listModel.addElement(ManagerService.formatDeleteRequestLabel(rows[i], statusColumnIndex));
+        }
+
+        JList<String> requestList = new JList<>(listModel);
+        requestList.setFont(AppFonts.body());
+        requestList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        requestList.setSelectedIndex(0);
+        requestList.setFixedCellHeight(28);
+
+        JScrollPane scrollPane = new JScrollPane(requestList);
+        scrollPane.setPreferredSize(new Dimension(560, 260));
+
+        JLabel hint = new JLabel("Choose a request from the list, then click Delete Request.");
+        hint.setFont(AppFonts.body());
+        hint.setBorder(new EmptyBorder(0, 0, 8, 0));
+
+        JPanel content = new JPanel(new BorderLayout(0, 0));
+        content.setOpaque(false);
+        content.add(hint, BorderLayout.NORTH);
+        content.add(scrollPane, BorderLayout.CENTER);
+        content.setBorder(new EmptyBorder(4, 4, 4, 4));
+
+        final String[] selectedRequestId = {null};
+        JDialog dialog = new JDialog(
+                parent instanceof java.awt.Frame ? (java.awt.Frame) parent : null,
+                title,
+                true);
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setLayout(new BorderLayout(0, 12));
+        dialog.add(content, BorderLayout.CENTER);
+
+        JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
+        actions.setOpaque(false);
+        actions.setBorder(new EmptyBorder(0, 12, 12, 12));
+
+        JButton btnCancel = new JButton("Cancel");
+        styleManagerToolbarButton(btnCancel, 100);
+        btnCancel.addActionListener(e -> dialog.dispose());
+
+        JButton btnDelete = new JButton("Delete Request");
+        styleManagerDeleteButton(btnDelete);
+        btnDelete.addActionListener(e -> {
+            int index = requestList.getSelectedIndex();
+            if (index < 0) {
+                JOptionPane.showMessageDialog(dialog,
+                        "Please choose a request from the list.",
+                        title,
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            String requestId = requestIds[index];
+            if (!confirmDeleteRequest(dialog, requestId)) {
+                return;
+            }
+
+            selectedRequestId[0] = requestId;
+            dialog.dispose();
+        });
+
+        actions.add(btnCancel);
+        actions.add(btnDelete);
+        dialog.add(actions, BorderLayout.SOUTH);
+        dialog.pack();
+        dialog.setLocationRelativeTo(parent);
+        dialog.setVisible(true);
+
+        return selectedRequestId[0];
+    }
+
+    public static boolean confirmDeleteRequest(java.awt.Component parent, String requestId) {
+        int choice = JOptionPane.showConfirmDialog(
+                parent,
+                "Delete request " + requestId + " from the database?\n"
+                        + "This will permanently remove the request and its history.",
+                "Confirm Delete",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+        return choice == JOptionPane.YES_OPTION;
     }
 
     public static final int MANAGE_REQUEST_PAGE_SIZE = 7;
@@ -1830,17 +1961,44 @@ public final class UIHelper {
 
     public static void layoutManagerViewHistoryToolbar(
             JPanel toolbar, JPanel searchField, JButton btnFilter) {
+        layoutManagerViewHistoryToolbar(toolbar, searchField, btnFilter, null);
+    }
+
+    public static void layoutManagerViewHistoryToolbar(
+            JPanel toolbar, JPanel searchField, JButton btnFilter, JButton btnDelete) {
 
         toolbar.removeAll();
-        toolbar.setLayout(new BorderLayout(12, 0));
-        toolbar.setOpaque(false);
-        toolbar.add(searchField, BorderLayout.CENTER);
-        toolbar.add(btnFilter, BorderLayout.EAST);
+        if (btnDelete == null) {
+            toolbar.setLayout(new BorderLayout(12, 0));
+            toolbar.setOpaque(false);
+            toolbar.add(searchField, BorderLayout.CENTER);
+            toolbar.add(btnFilter, BorderLayout.EAST);
 
-        Dimension size = new Dimension(Integer.MAX_VALUE, MANAGER_SEARCH_HEIGHT);
-        toolbar.setPreferredSize(new Dimension(0, MANAGER_SEARCH_HEIGHT));
-        toolbar.setMinimumSize(new Dimension(0, MANAGER_SEARCH_HEIGHT));
-        toolbar.setMaximumSize(size);
+            Dimension size = new Dimension(Integer.MAX_VALUE, MANAGER_SEARCH_HEIGHT);
+            toolbar.setPreferredSize(new Dimension(0, MANAGER_SEARCH_HEIGHT));
+            toolbar.setMinimumSize(new Dimension(0, MANAGER_SEARCH_HEIGHT));
+            toolbar.setMaximumSize(size);
+            return;
+        }
+
+        toolbar.setLayout(new javax.swing.BoxLayout(toolbar, javax.swing.BoxLayout.Y_AXIS));
+        toolbar.setOpaque(false);
+
+        JPanel topRow = new JPanel(new BorderLayout(12, 0));
+        topRow.setOpaque(false);
+        topRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+        topRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, MANAGER_SEARCH_HEIGHT));
+        topRow.add(searchField, BorderLayout.CENTER);
+        topRow.add(btnFilter, BorderLayout.EAST);
+
+        JPanel bottomRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        bottomRow.setOpaque(false);
+        bottomRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+        bottomRow.add(btnDelete);
+
+        toolbar.add(topRow);
+        toolbar.add(javax.swing.Box.createVerticalStrut(10));
+        toolbar.add(bottomRow);
     }
 
     public static final int VIEW_HISTORY_PAGE_SIZE = 7;

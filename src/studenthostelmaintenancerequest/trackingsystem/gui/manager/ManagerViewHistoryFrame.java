@@ -60,7 +60,9 @@ public class ManagerViewHistoryFrame extends javax.swing.JFrame {
         PlaceholderTextField txtSearch = new PlaceholderTextField("Search Request by ID");
         this.txtSearch = txtSearch;
         javax.swing.JPanel pnlSearchField = UIHelper.createSearchField(txtSearch);
-        UIHelper.layoutManagerViewHistoryToolbar(pnlToolbar, pnlSearchField, btnFilter);
+        javax.swing.JButton btnDeleteRequest = new javax.swing.JButton("Delete");
+        UIHelper.styleManagerDeleteButton(btnDeleteRequest);
+        UIHelper.layoutManagerViewHistoryToolbar(pnlToolbar, pnlSearchField, btnFilter, btnDeleteRequest);
         UIHelper.styleManagerFilterButton(btnFilter);
 
         lblTableSection.setText("All Requests");
@@ -90,6 +92,7 @@ public class ManagerViewHistoryFrame extends javax.swing.JFrame {
             public void removeUpdate(javax.swing.event.DocumentEvent e) { applySearchAndFilter(); }
             public void changedUpdate(javax.swing.event.DocumentEvent e) { applySearchAndFilter(); }
         });
+        btnDeleteRequest.addActionListener(e -> deleteSelectedRequest());
 
         UIHelper.showManagerFrame(this);
         javax.swing.SwingUtilities.invokeLater(() -> {
@@ -177,6 +180,33 @@ public class ManagerViewHistoryFrame extends javax.swing.JFrame {
         btnNavAssignStaff.addActionListener(e -> UIHelper.navigateTo(this, new ManagerAssignStaffFrame()));
         btnNavRoomDetails.addActionListener(e -> UIHelper.navigateTo(this, new ManagerViewRoomFrame()));
         btnNavRequestHistory.addActionListener(e -> { /* already on this page */ });
+    }
+
+    private void deleteSelectedRequest() {
+        Object[][] rows;
+        try {
+            rows = ManagerService.getHistoryRows();
+        } catch (DatabaseException ex) {
+            UIHelper.showDatabaseError(this, ex);
+            return;
+        }
+
+        String requestId = UIHelper.showDeleteRequestPickerDialog(
+                this, "Delete Request", rows, UIHelper.VIEW_HISTORY_COL_STATUS);
+        if (requestId == null) {
+            return;
+        }
+
+        try {
+            ManagerService.deleteRequest(requestId);
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Request " + requestId + " was deleted from the database.",
+                    "Delete Request",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            loadHistoryData();
+        } catch (DatabaseException ex) {
+            UIHelper.showDatabaseError(this, ex);
+        }
     }
 
     /**

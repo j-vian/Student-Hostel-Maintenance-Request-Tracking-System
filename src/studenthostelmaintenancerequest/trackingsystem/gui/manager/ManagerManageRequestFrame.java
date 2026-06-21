@@ -64,7 +64,10 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
         PlaceholderTextField txtSearch = new PlaceholderTextField("Search Request by ID");
         this.txtSearch = txtSearch;
         javax.swing.JPanel pnlSearchField = UIHelper.createSearchField(txtSearch);
-        UIHelper.layoutManagerManageRequestToolbar(pnlToolbar, pnlSearchField, btnFilter, btnConfirmChanges);
+        javax.swing.JButton btnDeleteRequest = new javax.swing.JButton("Delete");
+        UIHelper.styleManagerDeleteButton(btnDeleteRequest);
+        UIHelper.layoutManagerManageRequestToolbar(
+                pnlToolbar, pnlSearchField, btnFilter, btnDeleteRequest, btnConfirmChanges);
         UIHelper.styleManagerFilterButton(btnFilter);
         UIHelper.styleManagerUpdateButton(btnConfirmChanges);
 
@@ -103,6 +106,7 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
                 enterStatusEditMode();
             }
         });
+        btnDeleteRequest.addActionListener(e -> deleteSelectedRequest());
 
         UIHelper.showManagerFrame(this);
         javax.swing.SwingUtilities.invokeLater(() -> {
@@ -229,6 +233,41 @@ public class ManagerManageRequestFrame extends javax.swing.JFrame {
         UIHelper.styleManagerUpdateButton(btnConfirmChanges);
         loadActiveRequests();
         tblRequests.repaint();
+    }
+
+    private void deleteSelectedRequest() {
+        if (statusEditMode) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Finish or cancel the status update before deleting a request.",
+                    "Delete Request",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        Object[][] rows;
+        try {
+            rows = ManagerService.getManageActiveRows();
+        } catch (DatabaseException ex) {
+            UIHelper.showDatabaseError(this, ex);
+            return;
+        }
+
+        String requestId = UIHelper.showDeleteRequestPickerDialog(
+                this, "Delete Active Request", rows, UIHelper.MANAGE_REQUEST_COL_STATUS);
+        if (requestId == null) {
+            return;
+        }
+
+        try {
+            ManagerService.deleteRequest(requestId);
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Request " + requestId + " was deleted from the database.",
+                    "Delete Request",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            loadActiveRequests();
+        } catch (DatabaseException ex) {
+            UIHelper.showDatabaseError(this, ex);
+        }
     }
 
     /**

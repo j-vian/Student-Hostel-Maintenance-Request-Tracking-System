@@ -24,20 +24,34 @@ public final class AuthService {
     }
 
     public static void login(JFrame currentFrame, String email, String password) {
-        if (!isDatabaseReady()) {
-            showError(currentFrame,
-                    "Cannot connect to MySQL.\nStart XAMPP MySQL and run database/hostel_maintenance_schema.sql.");
-            return;
-        }
-
         try {
-            User user = dataAccess.authenticate(email, password);
-            SessionManager.setCurrentUser(user);
-            user.login();
+            User user = loginUser(email, password);
             navigateAfterLogin(currentFrame, user);
         } catch (DatabaseException ex) {
             showError(currentFrame, ex.getMessage());
         }
+    }
+
+    public static User loginUser(String email, String password) throws DatabaseException {
+        ensureDatabaseReady();
+        if (email == null || email.isBlank()) {
+            throw new DatabaseException("Please enter your email address.");
+        }
+        if (password == null || password.isEmpty()) {
+            throw new DatabaseException("Please enter your password.");
+        }
+
+        User user = dataAccess.authenticate(email.trim(), password);
+        SessionManager.setCurrentUser(user);
+        user.login();
+        return user;
+    }
+
+    public static void logoutUser() {
+        if (SessionManager.isLoggedIn()) {
+            SessionManager.getCurrentUser().logout();
+        }
+        SessionManager.clear();
     }
 
     public static void verifyEmailForPasswordReset(JFrame currentFrame, String email) {
@@ -102,32 +116,8 @@ public final class AuthService {
     }
 
     public static void register(JFrame currentFrame, SignUpData data, String confirmPassword) {
-        if (!isDatabaseReady()) {
-            showError(currentFrame,
-                    "Cannot connect to MySQL.\nStart XAMPP MySQL and run database/hostel_maintenance_schema.sql.");
-            return;
-        }
-
-        if (data.getPassword() == null || !data.getPassword().equals(confirmPassword)) {
-            showError(currentFrame, "Password and confirm password do not match.");
-            return;
-        }
-        if (!isValidPassword(data.getPassword())) {
-            showError(currentFrame,
-                    "Password must be at least 8 characters and include one uppercase letter and one number or symbol.");
-            return;
-        }
-
         try {
-            if (data.getRole() == UserRole.STUDENT) {
-                dataAccess.registerStudent(data);
-            } else if (data.getRole() == UserRole.STAFF) {
-                dataAccess.registerStaff(data);
-            } else {
-                showError(currentFrame, "Only Student and Staff accounts can be created here.");
-                return;
-            }
-
+            registerUser(data, confirmPassword);
             JOptionPane.showMessageDialog(currentFrame,
                     "Account created successfully. You can now log in.",
                     "Sign Up",
@@ -135,6 +125,25 @@ public final class AuthService {
             UIHelper.navigateTo(currentFrame, new studenthostelmaintenancerequest.trackingsystem.gui.auth.LoginFrame());
         } catch (DatabaseException ex) {
             showError(currentFrame, ex.getMessage());
+        }
+    }
+
+    public static void registerUser(SignUpData data, String confirmPassword) throws DatabaseException {
+        ensureDatabaseReady();
+        if (data.getPassword() == null || !data.getPassword().equals(confirmPassword)) {
+            throw new DatabaseException("Password and confirm password do not match.");
+        }
+        if (!isValidPassword(data.getPassword())) {
+            throw new DatabaseException(
+                    "Password must be at least 8 characters and include one uppercase letter and one number or symbol.");
+        }
+
+        if (data.getRole() == UserRole.STUDENT) {
+            dataAccess.registerStudent(data);
+        } else if (data.getRole() == UserRole.STAFF) {
+            dataAccess.registerStaff(data);
+        } else {
+            throw new DatabaseException("Only Student and Staff accounts can be created here.");
         }
     }
 
@@ -157,7 +166,7 @@ public final class AuthService {
     }
 
     private static boolean isValidPassword(String password) {
-        if (password.length() < 8) {
+        if (password == null || password.length() < 8) {
             return false;
         }
         boolean hasUpper = false;
@@ -171,6 +180,13 @@ public final class AuthService {
             }
         }
         return hasUpper && hasDigitOrSymbol;
+    }
+
+    private static void ensureDatabaseReady() throws DatabaseException {
+        if (!isDatabaseReady()) {
+            throw new DatabaseException(
+                    "Cannot connect to MySQL.\nStart XAMPP MySQL and run database/hostel_maintenance_schema.sql.");
+        }
     }
 
     private static void showError(JFrame frame, String message) {

@@ -28,6 +28,12 @@ public class Main {
         Staff staff1 = new Staff("ST001", "Ku Farouq", "farouq001@gmail.com", "Electrician");
         Staff staff2 = new Staff("ST002", "Wazif Faiz", "faiz002@gmail.com", "Plumber");
 
+        User studentUser1 = student1;
+        User studentUser2 = student2;
+        User staffUser1 = staff1;
+        User staffUser2 = staff2;
+        User[] systemUsers = {studentUser1, studentUser2, staffUser1, staffUser2};
+
         int requestCounter = 1;
 
         System.out.println("=====================================================");
@@ -36,7 +42,10 @@ public class Main {
 
         boolean running = true;
         while (running) {
+            printSessionStatus();
+
             System.out.println("\n=================== MAIN MENU ===================");
+            System.out.println("  --- Maintenance (In-Memory Demo) ---");
             System.out.println("  1. Submit a Maintenance Request     (User: Student)");
             System.out.println("  2. View All Requests                (User: Manager)");
             System.out.println("  3. Search Request by ID             (User: Manager, Student, Staff)");
@@ -44,6 +53,11 @@ public class Main {
             System.out.println("  5. Assign Staff to Request          (User: Manager)");
             System.out.println("  6. View Room Details                (User: Manager, Student, Staff)");
             System.out.println("  7. View Request History             (User: Student, Staff)");
+            System.out.println("  --- Account & Database ---");
+            System.out.println("  8. Login");
+            System.out.println("  9. Sign Up");
+            System.out.println(" 10. Delete Request                   (User: Manager, Database)");
+            System.out.println(" 11. Logout");
             System.out.println("  0. Exit");
             System.out.println("=================================================");
             System.out.print("  Enter your choice: ");
@@ -55,8 +69,8 @@ public class Main {
                     System.out.println("\n--- SUBMIT A MAINTENANCE REQUEST ---");
 
                     System.out.println("Select Student:");
-                    System.out.println("  1. " + student1.getName() + " (Room: " + student1.getRoomNumber() + ")");
-                    System.out.println("  2. " + student2.getName() + " (Room: " + student2.getRoomNumber() + ")");
+                    System.out.println("  1. " + systemUsers[0].getName() + " (Room: " + student1.getRoomNumber() + ")");
+                    System.out.println("  2. " + systemUsers[1].getName() + " (Room: " + student2.getRoomNumber() + ")");
                     System.out.print("  Enter choice (1 or 2): ");
                     String studentChoice = sc.nextLine().trim();
 
@@ -203,8 +217,8 @@ public class Main {
                     String assignId = sc.nextLine().trim().toUpperCase();
 
                     System.out.println("Select Staff Member:");
-                    System.out.println("  1. " + staff1.getName() + " (" + staff1.getStaffRole() + ")");
-                    System.out.println("  2. " + staff2.getName() + " (" + staff2.getStaffRole() + ")");
+                    System.out.println("  1. " + systemUsers[2].getName() + " (" + staff1.getStaffRole() + ")");
+                    System.out.println("  2. " + systemUsers[3].getName() + " (" + staff2.getStaffRole() + ")");
                     System.out.print("  Enter choice (1 or 2): ");
                     String staffChoice = sc.nextLine().trim();
 
@@ -244,7 +258,26 @@ public class Main {
                     }
                     break;
 
+                case "8":
+                    runConsoleLogin(sc);
+                    break;
+
+                case "9":
+                    runConsoleSignUp(sc);
+                    break;
+
+                case "10":
+                    runConsoleDeleteRequest(sc);
+                    break;
+
+                case "11":
+                    runConsoleLogout();
+                    break;
+
                 case "0":
+                    if (SessionManager.isLoggedIn()) {
+                        AuthService.logoutUser();
+                    }
                     System.out.println("\nThank you for using the Hostel Maintenance System.");
                     System.out.println("Exiting system. Goodbye!");
                     running = false;
@@ -257,5 +290,163 @@ public class Main {
         }
 
         sc.close();
+    }
+
+    private static void printSessionStatus() {
+        if (SessionManager.isLoggedIn()) {
+            User currentUser = SessionManager.getCurrentUser();
+            System.out.println("\nLogged in as: " + currentUser.getFullName()
+                    + " (" + currentUser.getRole() + ")");
+        } else {
+            System.out.println("\nLogged in as: Not logged in");
+        }
+    }
+
+    private static void runConsoleLogin(Scanner sc) {
+        System.out.println("\n--- LOGIN ---");
+        System.out.print("Email: ");
+        String email = sc.nextLine().trim();
+        System.out.print("Password: ");
+        String password = sc.nextLine();
+
+        try {
+            User user = AuthService.loginUser(email, password);
+            System.out.println("Login successful. Welcome, " + user.getFullName()
+                    + " (" + user.getRole() + ").");
+        } catch (DatabaseException ex) {
+            System.out.println("Login failed: " + ex.getMessage());
+        }
+    }
+
+    private static void runConsoleSignUp(Scanner sc) {
+        System.out.println("\n--- SIGN UP ---");
+        System.out.println("Select Role:");
+        System.out.println("  1. Student");
+        System.out.println("  2. Staff");
+        System.out.print("  Enter choice (1 or 2): ");
+        String roleChoice = sc.nextLine().trim();
+
+        UserRole role;
+        if (roleChoice.equals("1")) {
+            role = UserRole.STUDENT;
+        } else if (roleChoice.equals("2")) {
+            role = UserRole.STAFF;
+        } else {
+            System.out.println("Invalid role choice.");
+            return;
+        }
+
+        System.out.print("User ID: ");
+        String userId = sc.nextLine().trim();
+        System.out.print("Username: ");
+        String username = sc.nextLine().trim();
+        System.out.print("First Name: ");
+        String firstName = sc.nextLine().trim();
+        System.out.print("Last Name: ");
+        String lastName = sc.nextLine().trim();
+        System.out.print("Email: ");
+        String email = sc.nextLine().trim();
+        System.out.print("Password: ");
+        String password = sc.nextLine();
+        System.out.print("Confirm Password: ");
+        String confirmPassword = sc.nextLine();
+
+        String roomNumber = "";
+        String staffRole = null;
+        String otherExpertise = null;
+
+        if (role == UserRole.STUDENT) {
+            System.out.print("Room Number (e.g. A-10-05): ");
+            roomNumber = sc.nextLine().trim();
+        } else {
+            System.out.println("Select Staff Expertise:");
+            System.out.println("  1. Electrician");
+            System.out.println("  2. Plumber");
+            System.out.println("  3. Furniture Tech");
+            System.out.println("  4. Other");
+            System.out.print("  Enter choice (1 to 4): ");
+            String expertiseChoice = sc.nextLine().trim();
+            switch (expertiseChoice) {
+                case "1":
+                    staffRole = "Electrician";
+                    break;
+                case "2":
+                    staffRole = "Plumber";
+                    break;
+                case "3":
+                    staffRole = "Furniture Tech";
+                    break;
+                case "4":
+                    System.out.print("Enter expertise: ");
+                    otherExpertise = sc.nextLine().trim();
+                    staffRole = otherExpertise.isEmpty() ? null : otherExpertise;
+                    break;
+                default:
+                    System.out.println("Invalid expertise choice.");
+                    return;
+            }
+        }
+
+        SignUpData data = new SignUpData(
+                userId, username, firstName, lastName, email, password,
+                role, roomNumber, staffRole, otherExpertise);
+
+        try {
+            AuthService.registerUser(data, confirmPassword);
+            System.out.println("Account created successfully. You can now log in with option 8.");
+        } catch (DatabaseException ex) {
+            System.out.println("Sign up failed: " + ex.getMessage());
+        }
+    }
+
+    private static void runConsoleDeleteRequest(Scanner sc) {
+        System.out.println("\n--- DELETE REQUEST (DATABASE) ---");
+
+        if (!SessionManager.isLoggedIn()) {
+            System.out.println("Please log in as a manager first (option 8).");
+            return;
+        }
+        if (SessionManager.getCurrentUser().getRole() != UserRole.MANAGER) {
+            System.out.println("Only managers can delete requests from the database.");
+            return;
+        }
+
+        Object[][] rows;
+        try {
+            rows = ManagerService.getHistoryRows();
+        } catch (DatabaseException ex) {
+            System.out.println("Unable to load requests: " + ex.getMessage());
+            return;
+        }
+
+        String requestId = ManagerService.promptConsoleDeleteRequest(
+                sc, rows, ManagerService.HISTORY_STATUS_COLUMN);
+        if (requestId == null) {
+            return;
+        }
+
+        System.out.print("Delete " + requestId + " permanently? (yes/no): ");
+        String confirm = sc.nextLine().trim();
+        if (!confirm.equalsIgnoreCase("yes") && !confirm.equalsIgnoreCase("y")) {
+            System.out.println("Delete cancelled.");
+            return;
+        }
+
+        try {
+            ManagerService.deleteRequest(requestId);
+            System.out.println("Request " + requestId + " was deleted from the database.");
+        } catch (DatabaseException ex) {
+            System.out.println("Delete failed: " + ex.getMessage());
+        }
+    }
+
+    private static void runConsoleLogout() {
+        if (!SessionManager.isLoggedIn()) {
+            System.out.println("\nYou are not logged in.");
+            return;
+        }
+
+        AuthService.logoutUser();
+        System.out.println("\nYou have been logged out.");
     }
 }

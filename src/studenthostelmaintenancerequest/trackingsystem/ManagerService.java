@@ -165,6 +165,55 @@ public final class ManagerService {
         }
     }
 
+    public static void deleteRequest(String requestId) throws DatabaseException {
+        if (requestId == null || requestId.isBlank()) {
+            throw new DatabaseException("Request ID is required.");
+        }
+        DATA_ACCESS.deleteRequest(requestId.trim());
+    }
+
+    public static final int HISTORY_STATUS_COLUMN = 7;
+
+    public static String formatDeleteRequestLabel(Object[] row, int statusColumnIndex) {
+        if (row == null || row.length == 0) {
+            return "";
+        }
+        Object status = statusColumnIndex >= 0 && statusColumnIndex < row.length
+                ? row[statusColumnIndex] : "";
+        return String.valueOf(row[0]) + "  |  " + row[1] + "  |  " + row[2] + "  |  " + status;
+    }
+
+    public static String promptConsoleDeleteRequest(java.util.Scanner sc, Object[][] rows,
+            int statusColumnIndex) {
+        if (rows == null || rows.length == 0) {
+            System.out.println("No requests available to delete.");
+            return null;
+        }
+
+        System.out.println("\nSelect a request to delete:");
+        for (int i = 0; i < rows.length; i++) {
+            System.out.println("  " + (i + 1) + ". " + formatDeleteRequestLabel(rows[i], statusColumnIndex));
+        }
+        System.out.print("Enter choice (0 to cancel): ");
+        String choice = sc.nextLine().trim();
+        if (choice.equals("0") || choice.isEmpty()) {
+            System.out.println("Delete cancelled.");
+            return null;
+        }
+
+        try {
+            int index = Integer.parseInt(choice) - 1;
+            if (index < 0 || index >= rows.length) {
+                System.out.println("Invalid choice.");
+                return null;
+            }
+            return String.valueOf(rows[index][0]).trim();
+        } catch (NumberFormatException ex) {
+            System.out.println("Invalid choice.");
+            return null;
+        }
+    }
+
     public static void saveStaffAssignments(List<Object[]> rows) throws DatabaseException {
         String changedBy = currentManagerId();
         DatabaseHandler db = DatabaseHandler.getInstance();
